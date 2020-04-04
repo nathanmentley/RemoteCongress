@@ -51,6 +51,8 @@ FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
 FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
+        private static string HostName = "localhost:5001";
+
         public static async Task Main(string[] args)
         {
             using var serviceProvider = GetServiceProvider();
@@ -66,6 +68,16 @@ kwMRyHisc6diIMoNAgMBAAE=";
             Console.WriteLine(
                 $"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
             );
+
+            var vote = await service.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
+            Console.WriteLine(
+                $"created vote[{vote.Id}] for bill[{vote.BillId}]. Opinion={vote.Opinion} message={vote.Message}"
+            );
+
+            vote = await service.GetVote(vote.Id);
+            Console.WriteLine(
+                $"fetched vote[{vote.Id}] {bill.BlockContent} Signed And Verified"
+            );
         }
 
         private static ServiceProvider GetServiceProvider() =>
@@ -79,7 +91,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
                     return new HttpClient(handler);
                 })
                 .AddSingleton<ClientConfig>(
-                    new ClientConfig("localhost:5001")
+                    new ClientConfig(HostName)
                 )
 
                 .AddSingleton<ISignedDataHttpClient, SignedDataHttpClient>()
