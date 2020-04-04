@@ -94,8 +94,6 @@ kwMRyHisc6diIMoNAgMBAAE=";
                     new ClientConfig(HostName)
                 )
 
-                .AddSingleton<ISignedDataHttpClient, SignedDataHttpClient>()
-
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()
 

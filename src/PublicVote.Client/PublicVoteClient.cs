@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Newtonsoft.Json.Linq;
 using PublicVote.Common;
 using PublicVote.Common.Encryption;
 using PublicVote.Common.Repositories;
@@ -47,8 +48,10 @@ namespace PublicVote.Client
             string content
         )
         {
-            //TODO: generate content
-            var blockContent = "{title: \"title\", content: \"content\"}";
+            var blockContent = JToken.FromObject(new {
+                title = title,
+                content = content
+            }).ToString();
 
             var signedData = new SignedData(
                 publicKey,
@@ -68,12 +71,15 @@ namespace PublicVote.Client
             string privateKey,
             string publicKey,
             string billId,
-            bool? opinon,
+            bool? opinion,
             string message
         )
         {
-            //TODO: generate content
-            var blockContent = "{billId: \"title\", message: \"content\", opinion: false}";
+            var blockContent = JToken.FromObject(new {
+                billId = billId,
+                opinion = opinion,
+                message = message
+            }).ToString();
 
             var signedData = new SignedData(
                 publicKey,

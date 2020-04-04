@@ -1,5 +1,5 @@
 /*
-    PublicVote - A platform for conducting small secure public elections
+    PublicVote - A platform for conducting small secure internal elections
     Copyright (C) 2020  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
@@ -26,13 +26,12 @@ using System.Threading.Tasks;
 
 namespace PublicVote.Client
 {
-    public class SignedDataHttpClient: ISignedDataHttpClient
+    internal class HttpRepository
     {
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
 
-
-        public SignedDataHttpClient(ClientConfig config, HttpClient httpClient)
+        internal HttpRepository(ClientConfig config, HttpClient httpClient)
         {
             _config = config ??
                 throw new ArgumentNullException(nameof(config));
@@ -41,7 +40,7 @@ namespace PublicVote.Client
                 throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<SignedData> CreateSignedData(string endpoint, SignedData content)
+        internal async Task<SignedData> CreateSignedData(string endpoint, SignedData content)
         {
             var json = GetJson(content);
             var buffer = Encoding.UTF8.GetBytes(json);
@@ -56,7 +55,7 @@ namespace PublicVote.Client
             return await GetSignedData(response);
         }
 
-        public async Task<SignedData> FetchSignedData(string endpoint, string id)
+        internal async Task<SignedData> FetchSignedData(string endpoint, string id)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 $"{_config.Protocol}://{_config.ServerHostName}/{endpoint}/{id}"

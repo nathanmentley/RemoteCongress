@@ -18,6 +18,7 @@
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PublicVote.Client
@@ -25,17 +26,22 @@ namespace PublicVote.Client
     public class VoteRepository: IVoteRepository
     {
         private readonly static string Endpoint = "vote";
-        private readonly ISignedDataHttpClient _signedDataHttpClient;
+        private readonly HttpRepository _httpRepository;
 
-        public VoteRepository(ISignedDataHttpClient signedDataHttpClient)
+        public VoteRepository(ClientConfig config, HttpClient httpClient)
         {
-            _signedDataHttpClient = signedDataHttpClient ??
-                throw new ArgumentNullException(nameof(signedDataHttpClient));
+            if (config is null)
+                throw new ArgumentNullException(nameof(config));
+
+            if (httpClient is null)
+                throw new ArgumentNullException(nameof(httpClient));
+
+            _httpRepository = new HttpRepository(config, httpClient);
         }
 
         public async Task<Vote> Create(Vote instance)
         {
-            var signedData = await _signedDataHttpClient.CreateSignedData(
+            var signedData = await _httpRepository.CreateSignedData(
                 Endpoint,
                 new SignedData(instance)
             );
@@ -45,7 +51,7 @@ namespace PublicVote.Client
 
         public async Task<Vote> Fetch(string id)
         {
-            var signedData = await _signedDataHttpClient.FetchSignedData(Endpoint, id);
+            var signedData = await _httpRepository.FetchSignedData(Endpoint, id);
 
             return new Vote(id, signedData);
         }

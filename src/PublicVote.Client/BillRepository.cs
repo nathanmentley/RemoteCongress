@@ -18,6 +18,7 @@
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PublicVote.Client
@@ -25,17 +26,22 @@ namespace PublicVote.Client
     public class BillRepository: IBillRepository
     {
         private readonly static string Endpoint = "bill";
-        private readonly ISignedDataHttpClient _signedDataHttpClient;
+        private readonly HttpRepository _httpRepository;
 
-        public BillRepository(ISignedDataHttpClient signedDataHttpClient)
+        public BillRepository(ClientConfig config, HttpClient httpClient)
         {
-            _signedDataHttpClient = signedDataHttpClient ??
-                throw new ArgumentNullException(nameof(signedDataHttpClient));
+            if (config is null)
+                throw new ArgumentNullException(nameof(config));
+
+            if (httpClient is null)
+                throw new ArgumentNullException(nameof(httpClient));
+
+            _httpRepository = new HttpRepository(config, httpClient);
         }
 
         public async Task<Bill> Create(Bill instance)
         {
-            var signedData = await _signedDataHttpClient.CreateSignedData(
+            var signedData = await _httpRepository.CreateSignedData(
                 Endpoint,
                 new SignedData(instance)
             );
@@ -45,7 +51,7 @@ namespace PublicVote.Client
 
         public async Task<Bill> Fetch(string id)
         {
-            var signedData = await _signedDataHttpClient.FetchSignedData(Endpoint, id);
+            var signedData = await _httpRepository.FetchSignedData(Endpoint, id);
 
             return new Bill(id, signedData);
         }
