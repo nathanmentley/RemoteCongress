@@ -3,7 +3,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\PublicVote.Server.Actions\PublicVote.Server.Actions.csproj" />
+    <ProjectReference Include="..\PublicVote.Server.DAL\PublicVote.Server.DAL.csproj" />
   </ItemGroup>
 </Project>

@@ -15,17 +15,23 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using PublicVote.Common.Encryption;
+using System;
 
-namespace PublicVote.Common
+namespace PublicVote.Server.DAL.Exceptions
 {
-    public interface ISignedData
+    public class BlockNotStorableException: BlockStorageException
     {
-        string PublicKey { get; }
-        string BlockContent { get; }
-        byte[] Signature { get; }
 
-        bool IsValid =>
-            RsaUtils.VerifySignature(PublicKey, BlockContent, Signature);
+        public BlockNotStorableException(string message, Exception innerException): base(message, innerException)
+        {
+        }
+
+        public BlockNotStorableException(string message): base(message)
+        {
+        }
+
+        public BlockNotStorableException(): base()
+        {
+        }
     }
 }

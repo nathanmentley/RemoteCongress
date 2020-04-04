@@ -15,17 +15,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using PublicVote.Common.Encryption;
-
-namespace PublicVote.Common
+namespace PublicVote.Common.Repositories
 {
-    public interface ISignedData
+    public interface IBillRepository: IImmutableDataRepository<Bill>
     {
-        string PublicKey { get; }
-        string BlockContent { get; }
-        byte[] Signature { get; }
-
-        bool IsValid =>
-            RsaUtils.VerifySignature(PublicKey, BlockContent, Signature);
     }
 }

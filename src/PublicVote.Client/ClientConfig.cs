@@ -15,17 +15,22 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using PublicVote.Common.Encryption;
+using System;
 
-namespace PublicVote.Common
+namespace PublicVote.Client
 {
-    public interface ISignedData
+    public class ClientConfig
     {
-        string PublicKey { get; }
-        string BlockContent { get; }
-        byte[] Signature { get; }
+        public string ServerHostName { get; }
+        public string Protocol =>
+            "https";
 
-        bool IsValid =>
-            RsaUtils.VerifySignature(PublicKey, BlockContent, Signature);
+        public ClientConfig(string serverHostName)
+        {
+            if (string.IsNullOrWhiteSpace(serverHostName))
+                throw new ArgumentNullException(nameof(serverHostName));
+
+            ServerHostName = serverHostName;
+        }
     }
 }

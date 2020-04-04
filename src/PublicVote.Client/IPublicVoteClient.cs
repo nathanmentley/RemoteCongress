@@ -15,17 +15,19 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using PublicVote.Common.Encryption;
+using PublicVote.Common;
+using System.Threading.Tasks;
 
-namespace PublicVote.Common
+namespace PublicVote.Client
 {
-    public interface ISignedData
+    public interface IPublicVoteClient
     {
-        string PublicKey { get; }
-        string BlockContent { get; }
-        byte[] Signature { get; }
+        Task<Bill> CreateBill(string privateKey, string publicKey, string title, string content);
 
-        bool IsValid =>
-            RsaUtils.VerifySignature(PublicKey, BlockContent, Signature);
+        Task<Bill> GetBill(string id);
+
+        Task<Vote> CreateVote(string privateKey, string publicKey, string billId, bool? opinon, string message);
+
+        Task<Vote> GetVote(string id);
     }
 }

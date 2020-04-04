@@ -15,17 +15,25 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using PublicVote.Common.Encryption;
+using System;
 
-namespace PublicVote.Common
+namespace PublicVote.Common.Exceptions
 {
-    public interface ISignedData
+    public class InvalidBlockSignatureException : Exception
     {
-        string PublicKey { get; }
-        string BlockContent { get; }
-        byte[] Signature { get; }
+        public InvalidBlockSignatureException(string message, Exception innerException):
+            base(message, innerException)
+        {
+        }
 
-        bool IsValid =>
-            RsaUtils.VerifySignature(PublicKey, BlockContent, Signature);
+        public InvalidBlockSignatureException(string message):
+            base(message)
+        {
+        }
+
+        public InvalidBlockSignatureException():
+            base()
+        {
+        }
     }
 }

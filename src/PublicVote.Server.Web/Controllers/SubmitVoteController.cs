@@ -17,29 +17,34 @@
 */
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
 
-namespace PublicVote.Server.DAL
+namespace PublicVote.Controllers
 {
-    public class VoteRepository: IVoteRepository
+    [ApiController]
+    [Route("vote")]
+    public class SubmitVoteController
     {
-        private readonly IBlockchainClient _client;
+        private readonly ILogger<SubmitVoteController> _logger;
+        private readonly IVoteRepository _voteRepository;
 
-        public VoteRepository(IBlockchainClient client)
+        public SubmitVoteController(
+            ILogger<SubmitVoteController> logger,
+            IVoteRepository voteRepository
+        )
         {
-            _client = client ??
-                throw new ArgumentNullException(nameof(client));
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
+            _voteRepository = voteRepository ??
+                throw new ArgumentNullException(nameof(voteRepository));
         }
 
-        public async Task<Vote> Create(Vote vote)
-        {
-            var id = await _client.AppendToChain(vote);
-
-            return new Vote(id, vote);
-        }
-
-        public async Task<Vote> Fetch(string id) =>
-            new Vote(id, await _client.FetchFromChain(id));
+        [HttpPost]
+        public async Task<Vote> Post([FromBody] Vote vote) =>
+            await _voteRepository.Create(vote);
     }
 }

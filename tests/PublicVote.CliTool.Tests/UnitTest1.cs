@@ -17,7 +17,7 @@
 */
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace PublicVote.Server.Web.Tests
+namespace PublicVote.CliTool.Tests
 {
     [TestClass]
     public class UnitTest1
