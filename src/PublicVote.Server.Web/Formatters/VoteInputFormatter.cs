@@ -19,10 +19,25 @@ using PublicVote.Common;
 
 namespace PublicVote.Server.Web.Formatters
 {
+    /// <summary>
+    /// Reads and validates a signed <see cref="Vote"/> from the input.
+    /// </summary>
     public class VoteInputFormatter: BaseInputFormatter<Vote>
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public VoteInputFormatter(): base() {}
 
+        /// <summary>
+        /// Converts from a <see cref="SignedData"/> to a <see cref="Vote"/>.
+        /// </summary>
+        /// <param name="data">
+        /// The <see cref="SignedData"/> containing the data to convert.
+        /// </param>
+        /// <returns>
+        /// The validated, and signed <see cref="Vote"/>.
+        /// </returns>
         protected override Vote FromSignedData(SignedData data) => new Vote(data);
     }
 }

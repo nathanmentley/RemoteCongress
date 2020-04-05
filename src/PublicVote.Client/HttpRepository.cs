@@ -26,11 +26,36 @@ using System.Threading.Tasks;
 
 namespace PublicVote.Client
 {
+    /// <summary>
+    /// A Http Repository that can be used to easily interact with the PublicVote api.
+    /// </summary>
+    /// <remarks>
+    /// This doesn't validate data. Repositories that use this should be doing that.
+    ///     In theory, they're operating on <see cref="Bill"/>s, <see cref="Votes"/>,
+    ///     or another they that inherits correctly from <see cref="BaseBlockModel"/>
+    ///     and we're getting validation when converting <see cref="SignedData"/> to
+    ///     one of those types.
+    /// </remarks>
     internal class HttpRepository
     {
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config">
+        /// The PublicApi connection configuration data.
+        /// </param>
+        /// <param name="httpClient">
+        /// The <see cref="HttpClient"/> to connect to the PublicVote API.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="config"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="httpClient"/> is null.
+        /// </exception>
         internal HttpRepository(ClientConfig config, HttpClient httpClient)
         {
             _config = config ??
@@ -40,6 +65,18 @@ namespace PublicVote.Client
                 throw new ArgumentNullException(nameof(httpClient));
         }
 
+        /// <summary>
+        /// Persits the <paramref name="content"/> if it passes validation.
+        /// </summary>
+        /// <param name="endpoint">
+        /// The endpoint to send the request to.
+        /// </param>
+        /// <param name="content">
+        /// The <see cref="SignedData"/> content to send to the endpoint.
+        /// </param>
+        /// <returns>
+        /// An unvalidated <see cref="SignedData"/> that was returned from the server.
+        /// </returns>
         internal async Task<SignedData> CreateSignedData(string endpoint, SignedData content)
         {
             var json = GetJson(content);
@@ -55,6 +92,18 @@ namespace PublicVote.Client
             return await GetSignedData(response);
         }
 
+        /// <summary>
+        /// Fetches a <see cref="SignedData"/> instance by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="endpoint">
+        /// The endpoint to send the request to.
+        /// </param>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="SignedData"/> to fetch.
+        /// </param>
+        /// <returns>
+        /// An unvalidated <see cref="SignedData"/> that was returned from the server.
+        /// </returns>
         internal async Task<SignedData> FetchSignedData(string endpoint, string id)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
@@ -64,12 +113,18 @@ namespace PublicVote.Client
             return await GetSignedData(response);
         }
 
+        /// <summary>
+        /// Converts <see cref="SignedData"/> to a json string.
+        /// </summary>
         private static string GetJson(SignedData signedData)
         {
             //TODO: move this code to common, and share between server and client.
             return JsonConvert.SerializeObject(new SignedData(signedData));
         }
 
+        /// <summary>
+        /// Pulls a <see cref="SignedData"/> instance from a <see cref="HttpResponseMessage"/>.
+        /// </summary>
         private static async Task<SignedData> GetSignedData(HttpResponseMessage response)
         {
             using var body = await response.Content.ReadAsStreamAsync();

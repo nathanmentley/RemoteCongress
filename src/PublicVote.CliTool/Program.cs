@@ -55,26 +55,32 @@ kwMRyHisc6diIMoNAgMBAAE=";
 
         public static async Task Main(string[] args)
         {
+            //Setup client in DI
             using var serviceProvider = GetServiceProvider();
             
-            var service = serviceProvider.GetService<IPublicVoteClient>();
+            // pull out the client
+            var publicVoteClient = serviceProvider.GetService<IPublicVoteClient>();
 
-            var bill = await service.CreateBill(PrivateKey, PublicKey, "title", "content");
+            //create a bill
+            var bill = await publicVoteClient.CreateBill(PrivateKey, PublicKey, "title", "content");
             Console.WriteLine(
                 $"created bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
             );
 
-            bill = await service.GetBill(bill.Id);
+            //pull the bill from the api
+            bill = await publicVoteClient.GetBill(bill.Id);
             Console.WriteLine(
                 $"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
             );
 
-            var vote = await service.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
+            //create a yes vote against the bill
+            var vote = await publicVoteClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
             Console.WriteLine(
                 $"created vote[{vote.Id}] for bill[{vote.BillId}]. Opinion={vote.Opinion} message={vote.Message}"
             );
 
-            vote = await service.GetVote(vote.Id);
+            //pull the newly created vote from the api.
+            vote = await publicVoteClient.GetVote(vote.Id);
             Console.WriteLine(
                 $"fetched vote[{vote.Id}] {bill.BlockContent} Signed And Verified"
             );

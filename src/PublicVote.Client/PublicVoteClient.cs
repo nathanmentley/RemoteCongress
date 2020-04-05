@@ -24,11 +24,29 @@ using System.Threading.Tasks;
 
 namespace PublicVote.Client
 {
+    /// <summary>
+    /// A client used to interact with the PublicVote api.
+    /// </summary>
     public class PublicVoteClient: IPublicVoteClient
     {
         private readonly IBillRepository _billRepository;
         private readonly IVoteRepository _voteRepository;
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="billRepository">
+        /// An <see cref="IBillRepository"/> instance to use to interact with <see cref="Bill"/>s.
+        /// </param>
+        /// <param name="voteRepository">
+        /// An <see cref="IVoteRepository"/> instance to use to interact with <see cref="Vote"/>s.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="billRepository"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="voteRepository"/> is null.
+        /// </exception>
         public PublicVoteClient(
             IBillRepository billRepository,
             IVoteRepository voteRepository
@@ -41,6 +59,25 @@ namespace PublicVote.Client
                 throw new ArgumentNullException(nameof(voteRepository));
         }
 
+        /// <summary>
+        /// Creates, signs, and persists a <see cref="Bill"/> instance.
+        /// </summary>
+        /// <param name="privateKey">
+        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Bill"/>.
+        /// </param>
+        /// <param name="publicKey">
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to
+        ///     the producing individual.
+        /// </param>
+        /// <param name="title">
+        /// The title of the <see cref="Bill"/>.
+        /// </param>
+        /// <param name="content">
+        /// The content of the <see cref="Bill"/>.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Bill"/>.
+        /// </returns>
         public async Task<Bill> CreateBill(
             string privateKey,
             string publicKey,
@@ -64,9 +101,40 @@ namespace PublicVote.Client
             return await _billRepository.Create(bill);
         }
 
+        /// <summary>
+        /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/>.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Bill"/>.
+        /// </returns>
         public async Task<Bill> GetBill(string id) =>
             await _billRepository.Fetch(id);
 
+        /// <summary>
+        /// Creates, signs, and persists a <see cref="Vote"/> instance.
+        /// </summary>
+        /// <param name="privateKey">
+        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Vote"/>.
+        /// </param>
+        /// <param name="publicKey">
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to
+        ///     the producing individual.
+        /// </param>
+        /// <param name="billId">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/> related to the <see cref="Vote"/>.
+        /// </param>
+        /// <param name="opinion">
+        /// The opinion in the <see cref="Vote"/>.
+        /// </param>
+        /// <param name="message">
+        /// The optional message attached to the <see cref="Vote"/>.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Vote"/>.
+        /// </returns>
         public async Task<Vote> CreateVote(
             string privateKey,
             string publicKey,
@@ -92,6 +160,15 @@ namespace PublicVote.Client
             return await _voteRepository.Create(vote);
         }
 
+        /// <summary>
+        /// Fetches a signed, and verified <see cref="Vote"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/>.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Vote"/>.
+        /// </returns>
         public async Task<Vote> GetVote(string id) =>
             await _voteRepository.Fetch(id);
     }

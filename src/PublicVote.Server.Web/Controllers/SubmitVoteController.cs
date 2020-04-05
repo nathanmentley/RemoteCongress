@@ -15,15 +15,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace PublicVote.Controllers
 {
+    /// <summary>
+    /// Exposes an endpoint to persist <see cref="Vote"/>s.
+    /// </summary>
     [ApiController]
     [Route("vote")]
     public class SubmitVoteController
@@ -31,6 +34,21 @@ namespace PublicVote.Controllers
         private readonly ILogger<SubmitVoteController> _logger;
         private readonly IVoteRepository _voteRepository;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger{SubmitVoteController}"/> instance.
+        /// </param>
+        /// <param name="voteRepository">
+        /// An <see cref="IVoteRepository"/> instance.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="voteRepository"/> is null.
+        /// </exception>
         public SubmitVoteController(
             ILogger<SubmitVoteController> logger,
             IVoteRepository voteRepository
@@ -43,6 +61,15 @@ namespace PublicVote.Controllers
                 throw new ArgumentNullException(nameof(voteRepository));
         }
 
+        /// <summary>
+        /// Persists a <see cref="Vote"/>.
+        /// </summary>
+        /// <param name="bill">
+        /// The <see cref="Vote"/> to persist.
+        /// </param>
+        /// <returns>
+        /// The persisted, signed, and validiated <see cref="Vote"/>.
+        /// </returns>
         [HttpPost]
         public async Task<Vote> Post([FromBody] Vote vote) =>
             await _voteRepository.Create(vote);

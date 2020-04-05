@@ -27,9 +27,18 @@ using System.Threading.Tasks;
 
 namespace PublicVote.Server.Web.Formatters
 {
+    /// <summary>
+    /// Validates a signed <see cref="BaseBlockModel"/> and writes it to the http response <see cref="Stream"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A type that inherits from <see cref="BaseBlockModel"/>.
+    /// </typeparam>
     public abstract class BaseOutputFormatter<T>: TextOutputFormatter
-        where T: ISignedData
+        where T: BaseBlockModel
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BaseOutputFormatter()
         {
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
@@ -37,6 +46,15 @@ namespace PublicVote.Server.Web.Formatters
             SupportedEncodings.Add(Encoding.UTF8);
         }
 
+        /// <summary>
+        /// Writes the signed and validated <see cref="BaseBlockModel"/> to the http response <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="context">
+        /// The <see cref="OutputFormatterWriteContext"/>.
+        /// </param>
+        /// <param name="selectedEncoding">
+        /// The selected <see cref="Encoding"/>.
+        /// </param>
         public override async Task WriteResponseBodyAsync(
             OutputFormatterWriteContext context,
             Encoding selectedEncoding
@@ -47,7 +65,7 @@ namespace PublicVote.Server.Web.Formatters
                     $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(T)}."
                 );
 
-            if (!signedData.IsValid)
+            if (!(signedData as ISignedData).IsValid)
                 throw new InvalidBlockSignatureException(
                     $"Invalid signature[{signedData.Signature}] for content[{signedData.BlockContent}] " +
                         $"using public key[{signedData.PublicKey}]"
@@ -58,6 +76,15 @@ namespace PublicVote.Server.Web.Formatters
             );
         }
 
+        /// <summary>
+        /// Checks if a <see cref="Type"/> can be handled by this <see cref="TextOutputFormatter"/>.
+        /// </summary>
+        /// <param name="type">
+        /// The <see cref="Type"/> to test.
+        /// </param>
+        /// <returns>
+        /// True if <paramref name="type"/> can be handled by this <see cref="TextOutputFormatter"/>.
+        /// </returns>
         protected override bool CanWriteType(Type type) =>
             type.Equals(typeof(T));
     }

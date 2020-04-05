@@ -15,15 +15,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace PublicVote.Controllers
 {
+    /// <summary>
+    /// Exposes an endpoint to fetch a <see cref="Vote"/>.
+    /// </summary>
     [ApiController]
     [Route("vote/{id}")]
     public class FetchVoteController
@@ -31,6 +34,21 @@ namespace PublicVote.Controllers
         private readonly ILogger<FetchVoteController> _logger;
         private readonly IVoteRepository _voteRepository;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger{FetchVoteController}"/> instance.
+        /// </param>
+        /// <param name="voteRepository">
+        /// An <see cref="IVoteRepository"/> instance.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="voteRepository"/> is null.
+        /// </exception>
         public FetchVoteController(
             ILogger<FetchVoteController> logger,
             IVoteRepository voteRepository
@@ -43,6 +61,15 @@ namespace PublicVote.Controllers
                 throw new ArgumentNullException(nameof(voteRepository));
         }
 
+        /// <summary>
+        /// Fetches a <see cref="Vote"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/> to fetch.
+        /// </param>
+        /// <returns>
+        /// The persisted, signed, and validiated <see cref="Vote"/>.
+        /// </returns>
         [HttpGet]
         public async Task<Vote> Get([FromRoute] string id) =>
             await _voteRepository.Fetch(id);

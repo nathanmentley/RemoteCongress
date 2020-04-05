@@ -19,12 +19,33 @@ using System;
 
 namespace PublicVote.Client
 {
+    /// <summary>
+    /// Configuration data defining how to connect to the PublicVote api server.
+    /// </summary>
     public class ClientConfig
     {
+        /// <summary>
+        /// The hostname of the server running the PublicVote Api
+        /// </summary>
         public string ServerHostName { get; }
+        /// <summary>
+        /// Protocol to use to connect to the Api.
+        /// </summary>
+        /// <remarks>
+        /// Currently it's hardcoded to https.
+        /// </remarks>
         public string Protocol =>
             "https";
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="serverHostName">
+        /// The hostname of the server running the PublicVote Api
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="serverHostName"/> is null.
+        /// </exception>
         public ClientConfig(string serverHostName)
         {
             if (string.IsNullOrWhiteSpace(serverHostName))

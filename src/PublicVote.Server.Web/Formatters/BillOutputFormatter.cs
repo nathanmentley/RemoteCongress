@@ -19,8 +19,14 @@ using PublicVote.Common;
 
 namespace PublicVote.Server.Web.Formatters
 {
+    /// <summary>
+    /// Validates a signed <see cref="Bill"/> and writes it to the http response <see cref="Stream"/>.
+    /// </summary>
     public class BillOutputFormatter: BaseOutputFormatter<Bill>
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BillOutputFormatter(): base() {}
     }
 }

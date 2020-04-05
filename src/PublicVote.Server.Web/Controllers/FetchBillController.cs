@@ -15,15 +15,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace PublicVote.Controllers
 {
+    /// <summary>
+    /// Exposes an endpoint to fetch a <see cref="Bill"/>.
+    /// </summary>
     [ApiController]
     [Route("bill/{id}")]
     public class FetchBillController
@@ -31,6 +34,21 @@ namespace PublicVote.Controllers
         private readonly ILogger<FetchBillController> _logger;
         private readonly IBillRepository _billRepository;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger{FetchBillController}"/> instance.
+        /// </param>
+        /// <param name="billRepository">
+        /// An <see cref="IBillRepository"/> instance.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="billRepository"/> is null.
+        /// </exception>
         public FetchBillController(
             ILogger<FetchBillController> logger,
             IBillRepository billRepository
@@ -43,6 +61,15 @@ namespace PublicVote.Controllers
                 throw new ArgumentNullException(nameof(billRepository));
         }
 
+        /// <summary>
+        /// Fetches a <see cref="Bill"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/> to fetch.
+        /// </param>
+        /// <returns>
+        /// The persisted, signed, and validiated <see cref="Bill"/>.
+        /// </returns>
         [HttpGet]
         public async Task<Bill> Get([FromRoute] string id) =>
             await _billRepository.Fetch(id);

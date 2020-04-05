@@ -19,10 +19,25 @@ using PublicVote.Common;
 
 namespace PublicVote.Server.Web.Formatters
 {
+    /// <summary>
+    /// Reads and validates a signed <see cref="Bill"/> from the input.
+    /// </summary>
     public class BillInputFormatter: BaseInputFormatter<Bill>
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BillInputFormatter(): base() {}
 
+        /// <summary>
+        /// Converts from a <see cref="SignedData"/> to a <see cref="Bill"/>.
+        /// </summary>
+        /// <param name="data">
+        /// The <see cref="SignedData"/> containing the data to convert.
+        /// </param>
+        /// <returns>
+        /// The validated, and signed <see cref="Bill"/>.
+        /// </returns>
         protected override Bill FromSignedData(SignedData data) => new Bill(data);
     }
 }

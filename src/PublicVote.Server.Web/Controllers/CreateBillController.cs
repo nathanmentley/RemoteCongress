@@ -15,15 +15,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace PublicVote.Controllers
 {
+    /// <summary>
+    /// Exposes an endpoint to persist <see cref="Bill"/>s.
+    /// </summary>
     [ApiController]
     [Route("bill")]
     public class CreateBillController
@@ -31,6 +34,21 @@ namespace PublicVote.Controllers
         private readonly ILogger<CreateBillController> _logger;
         private readonly IBillRepository _billRepository;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger{CreateBillController}"/> instance.
+        /// </param>
+        /// <param name="billRepository">
+        /// An <see cref="IBillRepository"/> instance.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="billRepository"/> is null.
+        /// </exception>
         public CreateBillController(
             ILogger<CreateBillController> logger,
             IBillRepository billRepository
@@ -43,6 +61,15 @@ namespace PublicVote.Controllers
                 throw new ArgumentNullException(nameof(billRepository));
         }
 
+        /// <summary>
+        /// Persists a <see cref="Bill"/>.
+        /// </summary>
+        /// <param name="bill">
+        /// The <see cref="Bill"/> to persist.
+        /// </param>
+        /// <returns>
+        /// The persisted, signed, and validiated <see cref="Bill"/>.
+        /// </returns>
         [HttpPost]
         public async Task<Bill> Post([FromBody] Bill bill) =>
             await _billRepository.Create(bill);
