@@ -16,7 +16,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
 using System;
@@ -31,15 +30,11 @@ namespace PublicVote.Controllers
     [Route("vote/{id}")]
     public class FetchVoteController
     {
-        private readonly ILogger<FetchVoteController> _logger;
         private readonly IVoteRepository _voteRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="logger">
-        /// An <see cref="ILogger{FetchVoteController}"/> instance.
-        /// </param>
         /// <param name="voteRepository">
         /// An <see cref="IVoteRepository"/> instance.
         /// </param>
@@ -50,13 +45,9 @@ namespace PublicVote.Controllers
         /// Thrown if <paramref name="voteRepository"/> is null.
         /// </exception>
         public FetchVoteController(
-            ILogger<FetchVoteController> logger,
             IVoteRepository voteRepository
         )
         {
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
-
             _voteRepository = voteRepository ??
                 throw new ArgumentNullException(nameof(voteRepository));
         }

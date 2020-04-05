@@ -16,7 +16,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
 using System;
@@ -31,32 +30,21 @@ namespace PublicVote.Controllers
     [Route("vote")]
     public class SubmitVoteController
     {
-        private readonly ILogger<SubmitVoteController> _logger;
         private readonly IVoteRepository _voteRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="logger">
-        /// An <see cref="ILogger{SubmitVoteController}"/> instance.
-        /// </param>
         /// <param name="voteRepository">
         /// An <see cref="IVoteRepository"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="logger"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="voteRepository"/> is null.
         /// </exception>
         public SubmitVoteController(
-            ILogger<SubmitVoteController> logger,
             IVoteRepository voteRepository
         )
         {
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
-
             _voteRepository = voteRepository ??
                 throw new ArgumentNullException(nameof(voteRepository));
         }

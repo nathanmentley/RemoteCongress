@@ -16,7 +16,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PublicVote.Common;
 using PublicVote.Common.Repositories;
 using System;
@@ -31,32 +30,21 @@ namespace PublicVote.Controllers
     [Route("bill/{id}")]
     public class FetchBillController
     {
-        private readonly ILogger<FetchBillController> _logger;
         private readonly IBillRepository _billRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="logger">
-        /// An <see cref="ILogger{FetchBillController}"/> instance.
-        /// </param>
         /// <param name="billRepository">
         /// An <see cref="IBillRepository"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="logger"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="billRepository"/> is null.
         /// </exception>
         public FetchBillController(
-            ILogger<FetchBillController> logger,
             IBillRepository billRepository
         )
         {
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
-
             _billRepository = billRepository ??
                 throw new ArgumentNullException(nameof(billRepository));
         }
