@@ -23,14 +23,14 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PublicVote.Server.DAL.IPFS
+namespace PublicVote.Server.DAL.Ipfs
 {
-    public class IPFSClient: IBlockchainClient, IDisposable
+    public class IpfsBlockchainClient: IBlockchainClient, IDisposable
     {
-        private readonly IPFSConfig _config;
+        private readonly IpfsConfig _config;
         private readonly IpfsClient _client;
 
-        public IPFSClient(IPFSConfig config)
+        public IpfsBlockchainClient(IpfsConfig config)
         {
             _config = config ??
                 throw new ArgumentNullException(nameof(config));

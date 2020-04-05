@@ -22,7 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PublicVote.Common.Repositories;
 using PublicVote.Server.DAL;
-using PublicVote.Server.DAL.IPFS;
+using PublicVote.Server.DAL.Ipfs;
 using PublicVote.Server.Web.Formatters;
 using System.Net.Http;
 
@@ -50,13 +50,13 @@ namespace PublicVote.Server.Web
                     return new HttpClient(handler);
                 })
 
-                .AddSingleton<IPFSConfig>(
-                    new IPFSConfig()
+                .AddSingleton<IpfsConfig>(
+                    new IpfsConfig()
                     {
                         Url = "http://localhost:2001/",
                     }
                 )
-                .AddSingleton<IBlockchainClient, IPFSClient>()
+                .AddSingleton<IBlockchainClient, IpfsBlockchainClient>()
 
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()

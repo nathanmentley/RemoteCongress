@@ -16,10 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace PublicVote.Server.DAL.IPFS
+namespace PublicVote.Server.DAL.Ipfs
 {
-    public class IPFSConfig
+    public class IpfsConfig
     {
         public string Url { get; set; }
+
+        public string InitialBlockId { get; set; }
     }
 }
