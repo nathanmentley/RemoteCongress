@@ -23,7 +23,6 @@ namespace PublicVote.Server.Web.Formatters
     {
         public VoteInputFormatter(): base() {}
 
-        protected override Vote FromSignedData(SignedData data) =>
-            new Vote(data);
+        protected override Vote FromSignedData(SignedData data) => new Vote(data);
     }
 }

@@ -18,6 +18,7 @@
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using PublicVote.Common;
+using PublicVote.Common.Exceptions;
 using System;
 using System.Text;
 using System.Text.Json;
@@ -40,11 +41,22 @@ namespace PublicVote.Server.Web.Formatters
             Encoding encoding
         )
         {
-            var signedData = await JsonSerializer.DeserializeAsync(context.HttpContext.Request.Body, typeof(SignedData));
+            var signedData = await JsonSerializer.DeserializeAsync(
+                context.HttpContext.Request.Body,
+                typeof(SignedData)
+            ) as SignedData;
 
-            return await InputFormatterResult.SuccessAsync(
-                FromSignedData(signedData as SignedData)
-            );
+            if (signedData is null)
+                throw new Exception("TODO: Get a better exception for this.");
+
+            var result = FromSignedData(signedData);
+            if (!result.IsValid)
+                throw new InvalidBlockSignatureException(
+                    $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
+                        $"using public key[{result.PublicKey}]"
+                );
+
+            return await InputFormatterResult.SuccessAsync(result);
         }
 
         protected abstract T FromSignedData(SignedData data);

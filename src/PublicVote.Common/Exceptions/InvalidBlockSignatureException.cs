@@ -19,21 +19,44 @@ using System;
 
 namespace PublicVote.Common.Exceptions
 {
+    /// <summary>
+    /// An <see cref="Exception"/> to throw when a <see cref="ISignedData"/>'s <see cref="ISignedData.Signature"/> isn't
+    ///     valid for it's <see cref="ISignedData.PublicKey"/> and <see cref="ISignedData.BlockContent"/>.
+    ///
+    /// This indicates that either:
+    ///     * The block was tampered with.
+    ///     * Is being sent by someone claming to be someone else.
+    ///     * Was corrupted over the network.
+    /// 
+    /// In any case this is an exception, because our system only operates on immutabe, valid, and signed data.
+    /// </summary>
     public class InvalidBlockSignatureException : Exception
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        /// <param name="innerException">
+        /// Another exception that brought this exception to light.
+        /// </param>
         public InvalidBlockSignatureException(string message, Exception innerException):
-            base(message, innerException)
-        {
-        }
+            base(message, innerException) {}
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
         public InvalidBlockSignatureException(string message):
-            base(message)
-        {
-        }
+            base(message) {}
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public InvalidBlockSignatureException():
-            base()
-        {
-        }
+            base() {}
     }
 }

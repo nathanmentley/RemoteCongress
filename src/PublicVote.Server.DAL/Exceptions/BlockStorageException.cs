@@ -19,19 +19,36 @@ using System;
 
 namespace PublicVote.Server.DAL.Exceptions
 {
+    /// <summary>
+    /// An <see cref="Exception"/> that all block storage related exceptions should inherit fromm.
+    /// </summary>
     public class BlockStorageException: Exception
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        /// <param name="innerException">
+        /// Another exception that brought this exception to light.
+        /// </param>
+        public BlockStorageException(string message, Exception innerException):
+            base(message, innerException) {}
 
-        public BlockStorageException(string message, Exception innerException): base(message, innerException)
-        {
-        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        public BlockStorageException(string message):
+            base(message) {}
 
-        public BlockStorageException(string message): base(message)
-        {
-        }
-
-        public BlockStorageException(): base()
-        {
-        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BlockStorageException():
+            base() {}
     }
 }

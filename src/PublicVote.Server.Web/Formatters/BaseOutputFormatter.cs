@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using PublicVote.Common;
+using PublicVote.Common.Exceptions;
 using System;
 using System.Text;
 using System.Text.Json;
@@ -26,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace PublicVote.Server.Web.Formatters
 {
-    public class BaseOutputFormatter<T>: TextOutputFormatter
+    public abstract class BaseOutputFormatter<T>: TextOutputFormatter
         where T: ISignedData
     {
         public BaseOutputFormatter()
@@ -44,6 +45,12 @@ namespace PublicVote.Server.Web.Formatters
             if (!(context.Object is T signedData))
                 throw new InvalidOperationException(
                     $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(T)}."
+                );
+
+            if (!signedData.IsValid)
+                throw new InvalidBlockSignatureException(
+                    $"Invalid signature[{signedData.Signature}] for content[{signedData.BlockContent}] " +
+                        $"using public key[{signedData.PublicKey}]"
                 );
 
             await context.HttpContext.Response.WriteAsync(

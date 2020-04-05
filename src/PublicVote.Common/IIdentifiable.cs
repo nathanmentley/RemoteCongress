@@ -17,8 +17,14 @@
 */
 namespace PublicVote.Common
 {
+    /// <summary>
+    /// An interface describing an identifiable strucutre.
+    /// </summary>
     public interface IIdentifiable
     {
+        /// <summary>
+        /// The unique identifier of the implementing structure.
+        /// </summary>
         string Id { get; }
     }
 }

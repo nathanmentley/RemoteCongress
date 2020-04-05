@@ -19,19 +19,36 @@ using System;
 
 namespace PublicVote.Server.DAL.Exceptions
 {
+    /// <summary>
+    /// An <see cref="Exception"/> to throw when a block is unexpected not found.
+    /// </summary>
     public class BlockNotFoundException: BlockStorageException
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        /// <param name="innerException">
+        /// Another exception that brought this exception to light.
+        /// </param>
+        public BlockNotFoundException(string message, Exception innerException):
+            base(message, innerException) {}
 
-        public BlockNotFoundException(string message, Exception innerException): base(message, innerException)
-        {
-        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        public BlockNotFoundException(string message):
+            base(message) {}
 
-        public BlockNotFoundException(string message): base(message)
-        {
-        }
-
-        public BlockNotFoundException(): base()
-        {
-        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BlockNotFoundException():
+            base() {}
     }
 }

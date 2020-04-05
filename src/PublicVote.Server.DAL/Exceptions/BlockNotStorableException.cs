@@ -19,19 +19,36 @@ using System;
 
 namespace PublicVote.Server.DAL.Exceptions
 {
+    /// <summary>
+    /// An <see cref="Exception"/> to throw when a block is unexpected cannot be persisted.
+    /// </summary>
     public class BlockNotStorableException: BlockStorageException
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        /// <param name="innerException">
+        /// Another exception that brought this exception to light.
+        /// </param>
+        public BlockNotStorableException(string message, Exception innerException):
+            base(message, innerException) {}
 
-        public BlockNotStorableException(string message, Exception innerException): base(message, innerException)
-        {
-        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        public BlockNotStorableException(string message):
+            base(message) {}
 
-        public BlockNotStorableException(string message): base(message)
-        {
-        }
-
-        public BlockNotStorableException(): base()
-        {
-        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BlockNotStorableException():
+            base() {}
     }
 }

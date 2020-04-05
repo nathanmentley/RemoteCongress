@@ -20,10 +20,31 @@ using System.Threading.Tasks;
 
 namespace PublicVote.Server.DAL
 {
+    /// <summary>
+    /// An interface to abstract the persistence layer.
+    /// </summary>
     public interface IBlockchainClient
     {
+        /// <summary>
+        /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
+        /// </summary>
+        /// <param name="data">
+        /// The signed and verified data structure to store in the blockchain.
+        /// </param>
+        /// <returns>
+        /// The unique id of the stored block.
+        /// </returns>
         Task<string> AppendToChain(ISignedData data);
 
+        /// <summary>
+        /// Fetches the verified data in the form of <see cref="ISignedData"/> from the blockchain by block id.
+        /// </summary>
+        /// <param name="id">
+        /// The unique block id to pull verified data from.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ISignedData"/> instance containing the block data.
+        /// </returns>
         Task<ISignedData> FetchFromChain(string id);
     }
 }

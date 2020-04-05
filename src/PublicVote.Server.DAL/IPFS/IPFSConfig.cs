@@ -18,10 +18,18 @@
 
 namespace PublicVote.Server.DAL.Ipfs
 {
+    /// <summary>
+    /// Configuration data for Ipfs.
+    /// </summary>
     public class IpfsConfig
     {
-        public string Url { get; set; }
-
-        public string InitialBlockId { get; set; }
+        /// <summary>
+        /// The url used to connect to Ipfs.
+        /// </summary>
+        /// <remarks>
+        /// This will default to http://localhost:5001/
+        /// </remarks>
+        public string Url { get; set; } =
+            "http://localhost:5001/";
     }
 }

@@ -17,7 +17,8 @@
 */
 namespace PublicVote.Common.Repositories
 {
-    public interface IVoteRepository: IImmutableDataRepository<Vote>
-    {
-    }
+    /// <summary>
+    /// An interface that defines an abstraction for fetchinig an creating <see cref="Vote"/> instances.
+    /// </summary>
+    public interface IVoteRepository: IImmutableDataRepository<Vote> {}
 }

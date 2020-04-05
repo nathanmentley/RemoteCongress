@@ -21,8 +21,34 @@ using System.Text;
 
 namespace PublicVote.Common.Encryption
 {
+    /// <summary>
+    /// A simple utility class to handle RSA Signing and Verification
+    /// </summary>
     public static class RsaUtils
     {
+        /// <summary>
+        /// Generates an rsa signature hash with a private key that can be verified with the public key.
+        /// </summary>
+        /// <param name="privateKey">
+        /// A rsa private key to use to generate a signature hash.
+        /// </param>
+        /// <param name="message">
+        /// The message to generate the signature for.
+        /// </param>
+        /// <returns>
+        /// A <see cref="byte[]"/> containing the signature.
+        /// </returns>
+        /// <remarks>
+        /// We're using this signature hash to ensure the message that is signed is tied to who created it, and 
+        ///  so we can make this message immutable. If any of the content of <paramref name="message"/> changes
+        ///  later on, the signature verification will fail.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">
+        /// Throw if <paramref name="privateKey"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throw if <paramref name="message"/> is null.
+        /// </exception>
         public static byte[] GenerateSignature(string privateKey, string message)
         {
             if (string.IsNullOrWhiteSpace(privateKey))
@@ -45,6 +71,35 @@ namespace PublicVote.Common.Encryption
             );
         }
 
+        /// <summary>
+        /// Validates that a signature matches the passed message, and is sent from who is being claimed by the public key.
+        /// </summary>
+        /// <param name="publicKey">
+        /// A rsa public key to match the signature against.
+        /// </param>
+        /// <param name="message">
+        /// The message content to ensure is valid and unmutated since signed.
+        /// </param>
+        /// <param name="signatureBytes">
+        /// The signature to test against <paramref name="publicKey"/> and <paramref name="message"/>.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> if <paramref name="signatureBytes"/> is a valid signature for <paramref name="publicKey"/>
+        ///     and <paramref name="message"/>.
+        /// </returns>
+        /// <remarks>
+        /// We're using this verification to know that our signed data content is coming from the individual who is
+        ///  represnted by <paramref name="publicKey"/> and that their <paramref name="message"/> isn't tampered with.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">
+        /// Throw if <paramref name="publicKey"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throw if <paramref name="message"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throw if <paramref name="signatureBytes"/> is null.
+        /// </exception>
         public static bool VerifySignature(string publicKey, string message, byte[] signatureBytes)
         {
             if (string.IsNullOrWhiteSpace(publicKey))
@@ -71,13 +126,40 @@ namespace PublicVote.Common.Encryption
             );
         }
 
+        /// <summary>
+        /// Fetches a common Hashing Algorithm to used throughout this class.
+        /// </summary>
+        /// <returns>
+        /// <see cref="HashAlgorithmName.SHA512"/>
+        /// </returns>
+        /// <remarks>
+        /// In a production version of this platform this should be dynamic.
+        /// </remarks>
         private static HashAlgorithmName GetAlgorithmName() =>
             HashAlgorithmName.SHA512;
 
+        /// <summary>
+        /// Fetches a common signature padding configuration to use through out this class.
+        /// </summary>
+        /// <returns>
+        /// <see cref="RSASignaturePadding.Pkcs1"/>
+        /// </returns>
+        /// <remarks>
+        /// In a production version of this platform this should be dynamic.
+        /// </remarks>
         private static RSASignaturePadding GetPadding() =>
             RSASignaturePadding.Pkcs1;
 
+        /// <summary>
+        /// Fetches a common <see cref="Encoding"/> to use throughout this class.
+        /// </summary>
+        /// <returns>
+        /// <see cref="Encoding.Unicode"/>
+        /// </returns>
+        /// <remarks>
+        /// In a production version of this platform this should be dynamic.
+        /// </remarks>
         private static Encoding GetEncoding() =>
-            new UnicodeEncoding();
+            Encoding.Unicode;
     }
 }

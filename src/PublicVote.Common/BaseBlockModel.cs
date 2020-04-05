@@ -22,15 +22,73 @@ using System.Linq;
 
 namespace PublicVote.Common
 {
+    /// <summary>
+    /// A model that contains the base logic for generating immutable and verified data models.
+    /// </summary>
+    /// <remarks>
+    /// To ensure inherited classes are immutable and signed:
+    /// * Inheriting classes must only have properties that have private setters or no setters at all.
+    /// * The only decoding from the <see cref="BlockContent"/> data for inheriting classes must be done in the
+    ///     abstract <see cref="Decode"/> method.
+    /// * Inheriting classes must be sealed.
+    /// 
+    /// If those rules are followed you can be pretty confident that your models are verified and immutable.
+    ///   You can also be sure the data coming in from api calls, and up from the data storage layer are
+    ///   untampered with and signed.
+    /// </remarks>
     public abstract class BaseBlockModel: IIdentifiable, ISignedData
     {
+        /// <summary>
+        /// The unique Identifier of the persisted version.
+        /// </summary>
+        /// <remarks>
+        /// If this data isn't persisted this will be <see cref="string.Empty"/>.
+        /// </remarks>
         public string Id { get; } =
             string.Empty;
 
+        /// <summary>
+        /// The string representation of the data producer's public key.
+        /// </summary>
         public string PublicKey { get; }
+        /// <summary>
+        /// The content of the model.
+        /// </summary>
+        /// <remarks>
+        /// Currently in this proof of concept this needs to be json, but in a more built out version
+        ///  I'd expect this to be any number of formats, and we'd have a way to handle different
+        ///  formats.
+        /// </remarks>
         public string BlockContent { get; }
+        /// <summary>
+        /// The signature of the <see cref="BlockContent"/> that can be verified with <see cref="PublicKey"/>.
+        /// </summary>
         public byte[] Signature { get; }
 
+        /// <summary>
+        /// Constructor for a persisted version of the data.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="Id"/> of the persisted data.
+        /// </param>
+        /// <param name="data">
+        /// The <see cref="ISignedData"/> data to use to construct the <see cref="BaseBlockModel"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="id"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidBlockSignatureException">
+        /// Thrown if <see cref="Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
+        /// </exception>
+        /// <remarks>
+        /// This will populate <see cref="PublicKey"/>, <see cref="BlockContent"/>, and <see cref="Signature"/>
+        ///     from <paramref name="data"/>, and check if the signature is valid.
+        /// It'll then call the abstract method <see cref="Decode"/> to populate any properties from the
+        ///     <see cref="BlockContent"/> data for the specific implementation of <see cref="BaseBlockModel"/>.
+        /// </remarks>
         protected BaseBlockModel(string id, ISignedData data): this(data)
         {
             if(string.IsNullOrWhiteSpace(id))
@@ -39,6 +97,24 @@ namespace PublicVote.Common
             Id = id;
         }
 
+        /// <summary>
+        /// Constructor for a non-persisted version of the data.
+        /// </summary>
+        /// <param name="data">
+        /// The <see cref="ISignedData"/> data to use to construct the <see cref="BaseBlockModel"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidBlockSignatureException">
+        /// Thrown if <see cref="Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
+        /// </exception>
+        /// <remarks>
+        /// This will populate <see cref="PublicKey"/>, <see cref="BlockContent"/>, and <see cref="Signature"/>
+        ///     from <paramref name="data"/>, and check if the signature is valid.
+        /// It'll then call the abstract method <see cref="Decode"/> to populate any properties from the
+        ///     <see cref="BlockContent"/> data for the specific implementation of <see cref="BaseBlockModel"/>.
+        /// </remarks>
         protected BaseBlockModel(ISignedData data)
         {
             if (data is null)
@@ -60,8 +136,12 @@ namespace PublicVote.Common
             Decode(JToken.Parse(BlockContent));
         }
 
-        //TODO: this ties the content to a single format / version
-        //  setup a system to dynamically decode BlockContent for multiple formats. Not just json.
+        /// <summary>
+        /// Populates properties on the instance from the <see cref="BlockContent"/> data.
+        /// </summary>
+        /// <param name="token">
+        /// The <see cref="BlockContent"/> json data that has been tokenized.
+        /// </param>
         protected abstract void Decode(JToken token);
     }
 }

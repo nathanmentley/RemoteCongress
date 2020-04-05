@@ -17,7 +17,8 @@
 */
 namespace PublicVote.Common.Repositories
 {
-    public interface IBillRepository: IImmutableDataRepository<Bill>
-    {
-    }
+    /// <summary>
+    /// An interface that defines an abstraction for fetchinig an creating <see cref="Bill"/> instances.
+    /// </summary>
+    public interface IBillRepository: IImmutableDataRepository<Bill> {}
 }

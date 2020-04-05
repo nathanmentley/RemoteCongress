@@ -23,7 +23,6 @@ namespace PublicVote.Server.Web.Formatters
     {
         public BillInputFormatter(): base() {}
 
-        protected override Bill FromSignedData(SignedData data) =>
-            new Bill(data);
+        protected override Bill FromSignedData(SignedData data) => new Bill(data);
     }
 }

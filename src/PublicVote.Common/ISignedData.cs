@@ -19,12 +19,30 @@ using PublicVote.Common.Encryption;
 
 namespace PublicVote.Common
 {
+    /// <summary>
+    /// An interface defining structures that contain verifiable data.
+    /// </summary>
     public interface ISignedData
     {
+        /// <summary>
+        /// The string representation of the data producer's public key.
+        /// </summary>
         string PublicKey { get; }
+        /// <summary>
+        /// The content of the data.
+        /// </summary>
         string BlockContent { get; }
+        /// <summary>
+        /// The signature of the <see cref="BlockContent"/> that can be verified with <see cref="PublicKey"/>.
+        /// </summary>
         byte[] Signature { get; }
 
+        /// <summary>
+        /// A flag to indicate that the contained signed data is valid, and untampered with.
+        /// </summary>
+        /// <returns>
+        /// True if the contained data is valid, and not tampered with.
+        /// </returns>
         bool IsValid =>
             RsaUtils.VerifySignature(PublicKey, BlockContent, Signature);
     }
