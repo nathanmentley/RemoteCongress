@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ipfs.Http.Client" Version="0.33.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PublicVote.Common\PublicVote.Common.csproj" />
   </ItemGroup>
 </Project>

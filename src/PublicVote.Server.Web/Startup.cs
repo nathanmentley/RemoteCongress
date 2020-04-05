@@ -22,7 +22,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PublicVote.Common.Repositories;
 using PublicVote.Server.DAL;
+using PublicVote.Server.DAL.IPFS;
 using PublicVote.Server.Web.Formatters;
+using System.Net.Http;
 
 namespace PublicVote.Server.Web
 {
@@ -39,7 +41,22 @@ namespace PublicVote.Server.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddSingleton<IBlockchainClient, InMemoryBlockchainClient>()
+                .AddSingleton<HttpClient>(_ => {
+                    var handler = new HttpClientHandler();
+                    handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                    handler.ServerCertificateCustomValidationCallback = 
+                        (httpRequestMessage, cert, cetChain, policyErrors) => true;
+
+                    return new HttpClient(handler);
+                })
+
+                .AddSingleton<IPFSConfig>(
+                    new IPFSConfig()
+                    {
+                        Url = "http://localhost:2001/",
+                    }
+                )
+                .AddSingleton<IBlockchainClient, IPFSClient>()
 
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()
