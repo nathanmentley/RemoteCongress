@@ -44,9 +44,9 @@ If you want to see the proof of concept in action you'll need some software inst
 
 
 To run the platform you currently need these installed:
-    [docker](https://www.docker.com/)
-    [docker compose](https://docs.docker.com/compose/)
-    [dotnet sdk 3.1](https://docs.microsoft.com/en-us/dotnet/core/install/sdk)
+* [docker](https://www.docker.com/)
+* [docker compose](https://docs.docker.com/compose/)
+* [dotnet sdk 3.1](https://docs.microsoft.com/en-us/dotnet/core/install/sdk)
 
 Quick Start:
 In a terminal session cd to the git root directory run:
