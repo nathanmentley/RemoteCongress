@@ -1,4 +1,4 @@
-# PublicVote
+# RemoteCongress
 
 A platform for conducting small scale public voting remotely and securely.
 
@@ -6,7 +6,7 @@ A platform for conducting small scale public voting remotely and securely.
 
 This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes.
 
-We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no execuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time.
+We have proven technology that allows safe, transparent, Remote Congresss to be held remotely, and there is currently no execuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time.
 
 This project aims to build a simple proof of concept system that shows a working functional and safe system for holding remote votes. Ultimately this proof of concept will hopefully start conversation on how we modernize our government's ability to function at the most critical times.
 
@@ -20,7 +20,7 @@ Currently, this is a technical proof of concept that allows individuals to:
 All of this signed, immutable data can be retreived by anyone, and be validated by anyone.
 Using this signed validated data we can know that a specific person voted a specific way, and we can know that data hasn't been altered.
 
-With this proof of concept we're able to show a system that'll allow representives who make public votes to do so remotely in a way we can verify their vote, and ensure their vote isn't tampered with.
+With this proof of concept we're able to show a system that'll allow representives who make Remote Congresss to do so remotely in a way we can verify their vote, and ensure their vote isn't tampered with.
 
 ## Design
 

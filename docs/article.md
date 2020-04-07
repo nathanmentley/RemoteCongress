@@ -10,9 +10,9 @@ Unfortunately, for some archaic reason The United States Congress is meeting and
 If either or both branches of congress can no longer meet, and they still don't have a system to hold remote votes our nation could be in a place where it can no longer react to the realities that this pandemic is placing on our country.
 
 # Explain the project
-Luckily, we actually already have proven solutions to make remote public voting for bodies like The United States Congress safe, transparent, and accurate. Unfortunately, these solutions heavily rely on technology and computer science concepts. Which are topics our congress tends to have a low level of understand of.
+Luckily, we actually already have proven solutions to make remote voting for groups like The United States Congress secure, and transparent. Unfortunately, these solutions heavily rely on technology and computer science concepts. Which are topics our congress tends to have a low level of understand of.
 
-In this article I'll attempt to explain a possible solution for a remote voting system that could be used by Congress to hold votes securely and transparently using proven technologies. I'll then explain how those technologies are used in a proof of concept system I've already developed.
+In this article I'll attempt to explain a possible solution for a remote voting system that could be used by Congress to hold votes securely and transparently using proven technologies, and I'll then explain how those technologies are used in a proof of concept system I've already developed.
 
 ## Describe the high level technical problems
 The most obvious problem faced when designing a remote voting system for a body like congress is that you want to know you're able to trust the results of the vote. In other words, we don't want people to be able to hack votes taking place in Congress.
@@ -36,7 +36,7 @@ That would mean if we can validate the signature using the vote content's hash, 
 Finally, we need to ensure once the vote is placed that it never gets lost or modified. If you're familiar with the concept of Bitcoin there is a technology that Bitcoin runs on top of. It's called Blockchain, and in our solution for remote congress voting we'll be storing votes made by members of congress in a Blockchain. We're doing that for a few reasons, but the biggest reason is that the data stored in a Blockchain is immutable and distributed. So we can be pretty confident that the data of congressional votes will never change once it's stored and because the system is stored in a distributed way we can be pretty sure the content will never be deleted.
 
 ## Describe the proof of concept that has been built
-With those three design concepts we should be able to setup a system that can track votes and ensure the content is valid, untampered with, and comes from who it claims, and I've done just [that](https://github.com/nathanmentley/PublicVote).
+With those three design concepts we should be able to setup a system that can track votes and ensure the content is valid, untampered with, and comes from who it claims, and I've done just [that](https://github.com/nathanmentley/RemoteCongress).
 It's an open source proof of concept, and isn't read to be run in a production setting, but it proves the using these technologies together can result in a functional system that we can trust to handle congressional voting.
 
 The project has a two parts:
