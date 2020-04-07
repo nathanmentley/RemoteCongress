@@ -25,32 +25,36 @@ namespace RemoteCongress.Client
     public class ClientConfig
     {
         /// <summary>
+        /// Protocol to use to connect to the Api.
+        /// </summary>
+        public string Protocol { get; }
+
+        /// <summary>
         /// The hostname of the server running the RemoteCongress Api
         /// </summary>
         public string ServerHostName { get; }
-        /// <summary>
-        /// Protocol to use to connect to the Api.
-        /// </summary>
-        /// <remarks>
-        /// Currently it's hardcoded to https.
-        /// </remarks>
-        public string Protocol =>
-            "https";
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="protocol">
+        /// The protocol to connect to the server with. Example: http or https
+        /// </param>
         /// <param name="serverHostName">
         /// The hostname of the server running the RemoteCongress Api
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="serverHostName"/> is null.
         /// </exception>
-        public ClientConfig(string serverHostName)
+        public ClientConfig(string protocol, string serverHostName)
         {
+            if (string.IsNullOrWhiteSpace(protocol))
+                throw new ArgumentNullException(nameof(protocol));
+
             if (string.IsNullOrWhiteSpace(serverHostName))
                 throw new ArgumentNullException(nameof(serverHostName));
 
+            Protocol = protocol;
             ServerHostName = serverHostName;
         }
     }

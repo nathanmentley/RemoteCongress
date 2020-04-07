@@ -53,23 +53,14 @@ In a terminal session cd to the git root directory run:
 
     docker-compose up
 
-This will spin up an instance of Ipfs. Which we'll use for decentralized immutable data storage.
-
-In another terminal session cd to the git root and run:
-
-    dotnet build
-
-    dotnet run --project src/RemoteCongress.Server.Web/RemoteCongress.Server.Web.csproj
-
-This will run the Api Server we'll use to connect to Ipfs.
-
+This will spin up:
+* An instance of Ipfs.
+* The remote congress api server.
 
 In another terminal session cd to the git root and run:
 
     dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj
 
 This will run a simple command line tool that'll connect to our api server.
-
-
 
 After running the final command you'll see that command line tool will connect to the api project and generate immutable bills and votes. The created bill and vote are immutable, and have a signature and public key attached to them that can be used to prove the that they were created by a specific individual attached to the private / public key pair.

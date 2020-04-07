@@ -51,7 +51,8 @@ FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
 FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
-        private static string HostName = "localhost:5001";
+        private static string HostName = "localhost:8000";
+        private static string Protocol = "http";
 
         public static async Task Main(string[] args)
         {
@@ -97,7 +98,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
                     return new HttpClient(handler);
                 })
                 .AddSingleton<ClientConfig>(
-                    new ClientConfig(HostName)
+                    new ClientConfig(Protocol, HostName)
                 )
 
                 .AddSingleton<IBillRepository, BillRepository>()

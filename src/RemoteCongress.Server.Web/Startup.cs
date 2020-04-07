@@ -53,7 +53,7 @@ namespace RemoteCongress.Server.Web
                 .AddSingleton<IpfsConfig>(
                     new IpfsConfig()
                     {
-                        Url = "http://localhost:2001/",
+                        Url = "http://ipfs:5001/",
                     }
                 )
                 .AddSingleton<IBlockchainClient, IpfsBlockchainClient>()
@@ -79,8 +79,6 @@ namespace RemoteCongress.Server.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

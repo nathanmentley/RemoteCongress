@@ -7,6 +7,14 @@ services:
     - "./data/export:/export"
     - "./data/ipfs:/data/ipfs"
     ports:
-    - "2001:5001"
+    - "5001:5001"
     - "4001:4001"
     - "8080:8080"
+  api:
+    build:
+      context: .
+      dockerfile: dockerfile
+    depends_on:
+      - ipfs
+    ports:
+    - "8000:8000"
