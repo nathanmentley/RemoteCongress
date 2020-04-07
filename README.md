@@ -44,9 +44,9 @@ If you want to see the proof of concept in action you'll need some software inst
 
 
 To run the platform you currently need these installed:
-    Docker
-    Docker Compose
-    dotnet sdk 3.0
+    [docker](https://www.docker.com/)
+    [docker compose](https://docs.docker.com/compose/)
+    [dotnet sdk 3.1](https://docs.microsoft.com/en-us/dotnet/core/install/sdk)
 
 Quick Start:
 In a terminal session cd to the git root directory run:
@@ -55,17 +55,18 @@ In a terminal session cd to the git root directory run:
 
 This will spin up an instance of Ipfs. Which we'll use for decentralized immutable data storage.
 
-
 In another terminal session cd to the git root and run:
 
-    dotnet run --project src/PublicApi.Server.Web/PublicApi.Server.Web.csproj
+    dotnet build
+
+    dotnet run --project src/RemoteCongress.Server.Web/RemoteCongress.Server.Web.csproj
 
 This will run the Api Server we'll use to connect to Ipfs.
 
 
 In another terminal session cd to the git root and run:
 
-    dotnet run --project src/PublicApi.CliTool/PublicApi.CliTool.csproj
+    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj
 
 This will run a simple command line tool that'll connect to our api server.
 
