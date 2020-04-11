@@ -1,3 +1,7 @@
+** This is currently an unedited and unformatted brain dump. **
+
+It'l some day hopefully become something closer to an article about hwo to build and design a system like this.
+
 Building A Secure Remote Voting System For Congress
 
 # Define The Problem
