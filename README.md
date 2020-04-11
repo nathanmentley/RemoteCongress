@@ -38,13 +38,14 @@ Using the public key we can decrypt the hash, and verify that hash still matches
 If you want to see the proof of concept in action you'll need some software installed to run it.
 
 To run the platform you currently need these installed:
+* [git](https://git-scm.com/)
 * [docker](https://www.docker.com/)
 * [docker compose](https://docs.docker.com/compose/)
 
 Quick Start:
 
 Clone the git repository:
-
+    git clone https://github.com/nathanmentley/RemoteCongress.git
 
 In a terminal session cd to the git root directory run:
 
@@ -63,6 +64,10 @@ This will run a simple example test that will:
 * Send them over the network to the server to persist them in the immutable storage
 * Load the saved votes and bills from the api server
 * Finally, verify that the stored votes and bills are valid, and untampered with.
+
+Optionally, if you want to interact with the RemoteCongress platform in a more dynamic way you can use a command line tool included with the project.
+
+There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
 
 ## Using RemoteCongress.Client
 
