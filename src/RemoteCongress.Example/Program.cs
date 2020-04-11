@@ -65,8 +65,10 @@ kwMRyHisc6diIMoNAgMBAAE=";
             //create a bill
             var bill = await RemoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content");
             Console.WriteLine(
-                $"created bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
+                $"created bill[{bill.Id}] {bill.BlockContent}"
             );
+
+            Console.WriteLine(string.Empty);
 
             //pull the bill from the api
             bill = await RemoteCongressClient.GetBill(bill.Id);
@@ -74,17 +76,23 @@ kwMRyHisc6diIMoNAgMBAAE=";
                 $"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
             );
 
+            Console.WriteLine(string.Empty);
+
             //create a yes vote against the bill
             var vote = await RemoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
             Console.WriteLine(
-                $"created vote[{vote.Id}] for bill[{vote.BillId}]. Opinion={vote.Opinion} message={vote.Message}"
+                $"created vote[{vote.Id}] {vote.BlockContent}"
             );
+
+            Console.WriteLine(string.Empty);
 
             //pull the newly created vote from the api.
             vote = await RemoteCongressClient.GetVote(vote.Id);
             Console.WriteLine(
-                $"fetched vote[{vote.Id}] {bill.BlockContent} Signed And Verified"
+                $"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified"
             );
+
+            Console.WriteLine(string.Empty);
         }
 
         private static ServiceProvider GetServiceProvider() =>

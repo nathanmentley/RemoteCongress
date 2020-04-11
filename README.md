@@ -65,6 +65,36 @@ This will run a simple example test that will:
 * Load the saved votes and bills from the api server
 * Finally, verify that the stored votes and bills are valid, and untampered with.
 
+You should see an output that looks something like this:
+
+    created bill[0c455768-e900-43a6-970b-f4a271cc7b27] {
+      "title": "title",
+      "content": "content"
+    }
+
+    fetched bill[0c455768-e900-43a6-970b-f4a271cc7b27] {
+      "title": "title",
+      "content": "content"
+    } Signed And Verified
+
+    created vote[4477b671-8f82-48a6-b260-f2bd993a946d] {
+      "billId": "0c455768-e900-43a6-970b-f4a271cc7b27",
+      "opinion": true,
+      "message": "message"
+    }
+
+    fetched vote[4477b671-8f82-48a6-b260-f2bd993a946d] {
+      "billId": "0c455768-e900-43a6-970b-f4a271cc7b27",
+      "opinion": true,
+      "message": "message"
+    } Signed And Verified
+
+That shows a bill was submitted with the title: "title", and the content: "content".
+After submission that vote was fetched from the platform and was verified.
+
+Then then a yes vote was cast on the bill with a message of "message".
+After that vote was cast it was fetched from the platform and was verified.
+
 Optionally, if you want to interact with the RemoteCongress platform in a more dynamic way you can use a command line tool included with the project.
 
 There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
