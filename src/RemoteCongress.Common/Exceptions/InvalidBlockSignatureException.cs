@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Common.Exceptions
 {
@@ -30,6 +31,7 @@ namespace RemoteCongress.Common.Exceptions
     /// 
     /// In any case this is an exception, because our system only operates on immutabe, valid, and signed data.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class InvalidBlockSignatureException : Exception
     {
         /// <summary>

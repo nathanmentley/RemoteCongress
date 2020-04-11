@@ -1,20 +1,9 @@
 version: "3"
 services:
-  ipfs:
-    image: ipfs/go-ipfs:latest
-    hostname: ipfs_host1
-    volumes:
-    - "./data/export:/export"
-    - "./data/ipfs:/data/ipfs"
-    ports:
-    - "5001:5001"
-    - "4001:4001"
-    - "8080:8080"
   api:
+    image: remote-congress/api:latest
     build:
       context: .
       dockerfile: dockerfile
-    depends_on:
-      - ipfs
     ports:
     - "8000:8000"

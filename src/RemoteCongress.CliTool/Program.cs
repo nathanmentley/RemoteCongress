@@ -19,75 +19,181 @@ using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.CliTool
 {
     class Program
     {
-        /// <remarks>
-        /// Throw away private / pub key
-        /// </remarks>
-        private static string PrivateKey = @"MIICWgIBAAKBgGiz/dPcdEo6G6b/+zf8VN65fgSUFTwpq3tjtOwR6jj9zzWG6o3S
-d6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40FKdqbPS9sqAz1op32vOHHvB1
-rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkwkwMRyHisc6diIMoNAgMBAAEC
-gYAi/1buxBeS4A1yKso8EnoD4JjAywa2D2+kVNWauvpBhoUGbUxlj14y0XopBGDQ
-CdmK3hVCurHN2/pgHv5d4aGQ3E394Nslog33uiz/Ianlt0mWQV/s9JolHJymI+na
-njP+gMZafqVIePvlHWheJaqhdAF80yU44JJV9E/1RwQg+QJBAMGM0TFwJSOWgkZs
-lMshTa8yQUjPtyXjQeqaZFwDF6ZdZLoQQ48ZNrXHz2Kxnkf22s5eovRAORJAPIf5
-xvdcld8CQQCKfHA6j62ea2E9FzzDo4FAbaOZ1ZzHfiZJkP5V02g5PvqDa9pL5o2i
-Q9MApt3UVzj2KtXZMx5yHSK0nao0YqWTAkAmt7qpPxvO0K7i05m4QMM/hrgUjqi+
-hYWMHrJwzZWPjCM4LUS2fX66Qmwz/AADuVfv7HKAldBU3FC/irHIjdbVAkBjYHrU
-u0f2t822nhc/uPRGfKb6/Hwd+BuXjRHGGwfelKAGcP3cm5ylhZBEFnp3JwQ8Om7t
-By7g6qF+BOof3247AkAkBiZ5okAVl8BGBG4m4RPoUgVzi+ZKwFSxWko4hoo8tMKV
-1YvXub7/GoRzqUdnxmo6F3qHl1+uT2CnSJuvkcqI";
-
-        /// <remarks>
-        /// Throw away private / pub key
-        /// </remarks>
-        private static string PublicKey = @"MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGiz/dPcdEo6G6b/+zf8VN65fgSU
-FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
-FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
-kwMRyHisc6diIMoNAgMBAAE=";
-
-        private static string HostName = "localhost:8000";
-        private static string Protocol = "http";
-
-        public static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
-            //Setup client in DI
-            using var serviceProvider = GetServiceProvider();
-            
-            // pull out the client
-            var RemoteCongressClient = serviceProvider.GetService<IRemoteCongressClient>();
+            var castVoteCommand = new Command("cast-vote", "cast a vote")
+            {
+                Handler = CommandHandler.Create<string, string, string>(
+                    async (protocol, hostname, key) => {
+                        var client = SetupApp(protocol, hostname);
+                        var (privateKey, publicKey) = await SetupKeys(key);
 
-            //create a bill
-            var bill = await RemoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content");
-            Console.WriteLine(
-                $"created bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
+                        var vote = await client.CreateVote(privateKey, publicKey, "billId", true, "message");
+
+                        Console.WriteLine($"cast a new vote with id: {vote.Id}.");
+                    }
+                )
+            };
+
+            var submitBillCommand = new Command("submit-bill", "submit a bill")
+            {
+                Handler = CommandHandler.Create<string, string, string>(
+                    async (protocol, hostname, key) => {
+                        var client = SetupApp(protocol, hostname);
+                        var (privateKey, publicKey) = await SetupKeys(key);
+
+                        var bill = await client.CreateBill(privateKey, publicKey, "title", "content");
+
+                        Console.WriteLine($"A new bill was submitted with id: {bill.Id}.");
+                    }
+                )
+            };
+
+            var viewBillCommand = new Command("view-bill", "view an already submitted bill")
+            {
+                Handler = CommandHandler.Create<string, string, string>(
+                    async (protocol, hostname, id) => {
+                        var client = SetupApp(protocol, hostname);
+
+                        var bill = await client.GetBill(id);
+
+                        Console.WriteLine($"found a bill with id: {bill.Id}");
+                    }
+                )
+            };
+
+            var viewVoteCommand = new Command("view-vote", "view an already cast vote")
+            {
+                Handler = CommandHandler.Create<string, string, string>(
+                    async (protocol, hostname, id) => {
+                        var client = SetupApp(protocol, hostname);
+
+                        var vote = await client.GetVote(id);
+
+                        Console.WriteLine($"found a vote with id: {vote.Id}");
+                    }
+                )
+            };
+
+            castVoteCommand.AddOption(
+                new Option<string>(
+                    "--key",
+                    "A file path to the public / private key pair files to use to sign content."
+                )
             );
 
-            //pull the bill from the api
-            bill = await RemoteCongressClient.GetBill(bill.Id);
-            Console.WriteLine(
-                $"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
+            submitBillCommand.AddOption(
+                new Option<string>(
+                    "--key",
+                    "A file path to the public / private key pair files to use to sign content."
+                )
             );
 
-            //create a yes vote against the bill
-            var vote = await RemoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
-            Console.WriteLine(
-                $"created vote[{vote.Id}] for bill[{vote.BillId}]. Opinion={vote.Opinion} message={vote.Message}"
+            viewBillCommand.AddOption(
+                new Option<string>(
+                    "--id",
+                    "The unique id to pull the bill by."
+                )
             );
 
-            //pull the newly created vote from the api.
-            vote = await RemoteCongressClient.GetVote(vote.Id);
-            Console.WriteLine(
-                $"fetched vote[{vote.Id}] {bill.BlockContent} Signed And Verified"
+            viewVoteCommand.AddOption(
+                new Option<string>(
+                    "--id",
+                    "The unique id to pull the vote by."
+                )
             );
+
+            var rootCommand = new RootCommand
+            {
+                castVoteCommand,
+                submitBillCommand,
+                viewBillCommand,
+                viewVoteCommand
+            };
+
+            /*rootCommand.AddGlobalOption(
+                new Option<string>(
+                    "--key",
+                    "A file path to the public / private key pair files to use to sign content."
+                )
+            );*/
+            rootCommand.AddGlobalOption(
+                new Option<string>(
+                    "--protocol",
+                    () => "http",
+                    "The protocol to use to connect to the remote congress server."
+                )
+            );
+            rootCommand.AddGlobalOption(
+                new Option<string>(
+                    "--hostname",
+                    () => "localhost:8000",
+                    "The hostname of the remote congress server."
+                )
+            );
+
+            rootCommand.Description = "Remote Congress CLI Tool";
+
+            rootCommand.Handler = CommandHandler.Create(() => {
+                Console.WriteLine("display help message");
+            });
+
+            return await rootCommand.InvokeAsync(args);
         }
 
-        private static ServiceProvider GetServiceProvider() =>
+        public static IRemoteCongressClient SetupApp(string protocol, string hostname)
+        {
+            // Setup client in DI
+            var serviceProvider = GetServiceProvider(new ClientConfig(protocol, hostname));
+                //TODO: set service provider up somewhere to dispose
+            
+            // pull out the client
+            return serviceProvider.GetService<IRemoteCongressClient>();
+        }
+
+        public static async Task<(string privateKey, string publicKey)> SetupKeys(string key)
+        {
+            // load keys
+            var privateKeyFile = key;
+            var publicKeyFile = $"{key}.pub";
+            var (privateKey, publicKey) = await ReadKeys(privateKeyFile, publicKeyFile);
+
+            return (privateKey, publicKey);
+        }
+
+        private static async Task<(string, string)> ReadKeys(string privateKeyFile, string publicKeyFile)
+        {
+            var privateKeyData = await File.ReadAllTextAsync(privateKeyFile, Encoding.UTF8);
+            var publicKeyData = await File.ReadAllTextAsync(publicKeyFile, Encoding.UTF8);
+
+            return (TrimKey(privateKeyData), TrimKey(publicKeyData));
+        }
+
+        private static string TrimKey(string key)
+        {
+            //TODO: This is hacky. We should detect the key type. Verify, and then clean it up.
+            key = key.Trim();
+            key = key.Substring(key.IndexOf(Environment.NewLine));
+            key = key.Substring(0, key.LastIndexOf(Environment.NewLine));
+            key = key.Trim();
+            key = key.Replace("\n", string.Empty);
+            key = key.Replace("\r", string.Empty);
+
+            return key;
+        }
+
+        private static ServiceProvider GetServiceProvider(ClientConfig config) =>
             new ServiceCollection()
                 .AddSingleton<HttpClient>(_ => {
                     var handler = new HttpClientHandler();
@@ -97,9 +203,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
 
                     return new HttpClient(handler);
                 })
-                .AddSingleton<ClientConfig>(
-                    new ClientConfig(Protocol, HostName)
-                )
+                .AddSingleton<ClientConfig>(config)
 
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()

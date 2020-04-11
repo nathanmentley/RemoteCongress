@@ -22,7 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL;
-using RemoteCongress.Server.DAL.Ipfs;
+using RemoteCongress.Server.DAL.InMemory;
 using RemoteCongress.Server.Web.Formatters;
 using System.Net.Http;
 
@@ -50,13 +50,7 @@ namespace RemoteCongress.Server.Web
                     return new HttpClient(handler);
                 })
 
-                .AddSingleton<IpfsConfig>(
-                    new IpfsConfig()
-                    {
-                        Url = "http://ipfs:5001/",
-                    }
-                )
-                .AddSingleton<IBlockchainClient, IpfsBlockchainClient>()
+                .AddSingleton<IBlockchainClient, InMemoryBlockchainClient>()
 
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()

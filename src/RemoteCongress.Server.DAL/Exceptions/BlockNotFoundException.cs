@@ -16,12 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.DAL.Exceptions
 {
     /// <summary>
     /// An <see cref="Exception"/> to throw when a block is unexpected not found.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class BlockNotFoundException: BlockStorageException
     {
         /// <summary>

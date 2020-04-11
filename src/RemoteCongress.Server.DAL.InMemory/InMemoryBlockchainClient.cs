@@ -15,10 +15,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Server.DAL.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.InMemory
@@ -27,13 +26,17 @@ namespace RemoteCongress.Server.DAL.InMemory
     /// An In Memory implementation of <see cref="IBlockchainClient"/> for testing.
     /// </summary>
     /// <remarks>
-    /// This data store is not a blockchain, and the data is not immutable.
+    /// This data store is not distributed, and since it's in memory it's also not immutable.
     ///     It is only useful for testing code and validating the layers above this.
+    ///     It should not be used for a production version.
+    /// 
+    ///     This implementation is also pretty naive. It's not thread-safe, and it's using
+    ///         a true linked-list. So after a point it'll become wildly too slow.
     /// </remarks>
     public class InMemoryBlockchainClient: IBlockchainClient
     {
-        private readonly IDictionary<string, ISignedData> _data =
-            new Dictionary<string, ISignedData>();
+        private readonly InMemoryBlockchain _blockchain =
+            new InMemoryBlockchain();
 
         /// <summary>
         /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
@@ -46,19 +49,9 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// </returns>
         public Task<string> AppendToChain(ISignedData data)
         {
-            // generate a new id for our in memory test data store
-            var id = Guid.NewGuid().ToString();
+            var block = _blockchain.AppendToChain(FromSignedData(data));
 
-            // in the near impossible event we have a guid collision, throw an exception.
-            if (_data.ContainsKey(id))
-                throw new BlockNotStorableException(
-                    $"Could not store a block with the id[{id}] in {nameof(InMemoryBlockchainClient)} " +
-                        $"because there is already a block with that id."
-                );
-
-            //if the id is valid, store the data, and return the id.
-            _data[id] = data;
-            return Task.FromResult(id);
+            return Task.FromResult(block.Id);
         }
 
         /// <summary>
@@ -72,14 +65,38 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// </returns>
         public Task<ISignedData> FetchFromChain(string id)
         {
-            //fetch the data from our in memory store if it exists, and return it.
-            if (_data.TryGetValue(id, out ISignedData data))
-                return Task.FromResult(data);
+            var block = _blockchain.FetchFromChain(id);
 
-            // if the data for that id doesn't exist, throw an exception.
-            throw new BlockNotFoundException(
-                $"Could not fetch block with id[{id}] from {nameof(InMemoryBlockchainClient)}"
-            );
+            if (block is null)
+                throw new BlockNotFoundException(
+                    $"Could not fetch block with id[{id}] from {nameof(InMemoryBlockchainClient)}"
+                );
+
+            return Task.FromResult(FromString(block.Content));
         }
+
+        /// <summary>
+        /// Transforms a <see cref="string"/> into a <see cref="ISignedData"/>.
+        /// </summary>
+        /// <param name="data">
+        /// The <see cref="string"/> to transform.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISignedData"/> representation.
+        /// </returns>
+        private static ISignedData FromString(string data) => 
+            JsonConvert.DeserializeObject<SignedData>(data);
+
+        /// <summary>
+        /// Transforms a <see cref="ISignedData"/> into a <see cref="string"/>.
+        /// </summary>
+        /// <param name="data">
+        /// The <see cref="ISignedData"/> to transform.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/> representation.
+        /// </returns>
+        private static string FromSignedData(ISignedData data) => 
+            JsonConvert.SerializeObject(new SignedData(data));
     }
 }

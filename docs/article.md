@@ -1,27 +1,23 @@
-WIP Article / Still mostly a brain dump => Congress needs to be able to hold Votes online
+Building A Secure Remote Voting System For Congress
 
 # Define The Problem
 
 ## Describe the problem
-While the entire nation is currently trying to stay six feet apart and reduce face to face interactions as much as possible to slow the spread of Covid19 our Congress is hard at work trying to pass legislation to keep our society from collapsing.
+While the entire nation is currently trying to stay six feet apart and reduce face to face interactions as much as possible to slow the spread of Covid19 our Congress is meeting in person to keep our nation functioning. While Speaker Pelosi released a letter on April 6th outling new protocols to reduce face to face interaction of members of the House Of Representatives, members of congress are still required to vote in person.
 
-## Describe why the problem is a big deal
-Unfortunately, for some archaic reason The United States Congress is meeting and voting in person. With an average age of nearly 63 in the US Senate we're putting the leaders of our nation, and a critical group that's required to push forward nation saving legislation at risk. It's not unreasonable to think that our government is at an unacceptable risk of becoming dysfunction because of the affects Covid19 could place on either the Senate and House of Representatives.
-If either or both branches of congress can no longer meet, and they still don't have a system to hold remote votes our nation could be in a place where it can no longer react to the realities that this pandemic is placing on our country.
+With an average age of nearly 62 in the US Senate and 58 in the House Of Representatives we're putting the leaders of our nation, and a critical group that's required to push forward nation saving legislation at risk. Our government is currently at an unacceptable risk of becoming dysfunction. If the coronavirus was able to spread to enough members of the Senate or the House Of Represenatives we will have no way to react to the rapidly changing world that the COVID-19 pandemic has caused. It's critical at this time we setup a system to enable congress to work fully remotely. Including allowing members of congress to vote remotely.
 
 # Explain the project
-Luckily, we actually already have proven solutions to make remote voting for groups like The United States Congress secure, and transparent. Unfortunately, these solutions heavily rely on technology and computer science concepts. Which are topics our congress tends to have a low level of understand of.
-
-In this article I'll attempt to explain a possible solution for a remote voting system that could be used by Congress to hold votes securely and transparently using proven technologies, and I'll then explain how those technologies are used in a proof of concept system I've already developed.
+Luckily, we actually already have proven solutions to make remote voting for groups like Congress secure, and transparent. Unfortunately, these solutions heavily rely on technology and computer science concepts. Which are topics our congress tends to have a low level of understand of. In this article I'll attempt to outline and explain a possible solution for a remote voting system that could be used by Congress to hold votes securely and transparently using proven technologies. I'll then explain how those technologies are used in a proof of concept system I've already developed.
 
 ## Describe the high level technical problems
-The most obvious problem faced when designing a remote voting system for a body like congress is that you want to know you're able to trust the results of the vote. In other words, we don't want people to be able to hack votes taking place in Congress.
+The most obvious problem faced when designing a remote voting system for a body like congress is that you want to know you're able to trust the results of the vote. In other words, we don't want people to be able to alter votes taking place in Congress, or place votes they're not authorized to.
 
 There are three key points we need to make sure we cover in our design of this remote voting system in order to setup a system where we can be confident that we can track who voted which way, and that their votes haven't been tampered with.
 
 A. If a Senator or Representative is voting from an Internet connected device we want to be sure that we have no doubts that the vote came from the member of congress, and nobody else.
 B. We need to know that the way the member of congress voted hasn't been changed in any way.
-C. That storage of that voting data must be permanent, and immutable. Or in other words. We must be sure that data cannot be changed.
+C. That storage of that voting data must be permanent, and immutable. Or in other words. We must be sure that data cannot ever be changed.
 
 ## Describe the existing technology that can be used to solve it
 We can use some proven technology to design a system that meets those three points.

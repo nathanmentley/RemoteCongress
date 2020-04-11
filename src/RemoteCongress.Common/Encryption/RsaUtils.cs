@@ -111,11 +111,11 @@ namespace RemoteCongress.Common.Encryption
             if (signatureBytes is null)
                 throw new ArgumentNullException(nameof(signatureBytes));
 
-            var converter = GetEncoding();
+            Encoding encoding = GetEncoding();
             byte[] publicKeyBytes = Convert.FromBase64String(publicKey);
-            byte[] messageBytes = converter.GetBytes(message);
+            byte[] messageBytes = encoding.GetBytes(message);
 
-            using var rsa = RSA.Create();
+            using RSA rsa = RSA.Create();
             rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
 
             return rsa.VerifyData(
@@ -154,12 +154,12 @@ namespace RemoteCongress.Common.Encryption
         /// Fetches a common <see cref="Encoding"/> to use throughout this class.
         /// </summary>
         /// <returns>
-        /// <see cref="Encoding.Unicode"/>
+        /// <see cref="Encoding.UTF8"/>
         /// </returns>
         /// <remarks>
         /// In a production version of this platform this should be dynamic.
         /// </remarks>
         private static Encoding GetEncoding() =>
-            Encoding.Unicode;
+            Encoding.UTF8;
     }
 }

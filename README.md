@@ -46,7 +46,6 @@ If you want to see the proof of concept in action you'll need some software inst
 To run the platform you currently need these installed:
 * [docker](https://www.docker.com/)
 * [docker compose](https://docs.docker.com/compose/)
-* [dotnet sdk 3.1](https://docs.microsoft.com/en-us/dotnet/core/install/sdk)
 
 Quick Start:
 In a terminal session cd to the git root directory run:
@@ -57,10 +56,14 @@ This will spin up:
 * An instance of Ipfs.
 * The remote congress api server.
 
-In another terminal session cd to the git root and run:
+In another terminal session run:
 
-    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj
+    docker run --entrypoint /app/RemoteCongress.Example --net=host remote-congress/api
 
 This will run a simple command line tool that'll connect to our api server.
 
 After running the final command you'll see that command line tool will connect to the api project and generate immutable bills and votes. The created bill and vote are immutable, and have a signature and public key attached to them that can be used to prove the that they were created by a specific individual attached to the private / public key pair.
+
+## Using RemoteCongress.Client
+
+You can use the client assembly to program against 
