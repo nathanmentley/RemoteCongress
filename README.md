@@ -33,7 +33,7 @@ When the member of congress votes, the data that makes up their vote will be sig
 
 Using the public key we can decrypt the hash, and verify that hash still matches the vote data. If the hash still matches the vote data we can know that the vote wasn't tampered with, and was cast by the private key that matches the public key shipped with the vote. In other words, we can be sure the member of congress cast that vote, and their vote wasn't altered.
 
-## Startup
+## Running the Proof Of Concept
 
 If you want to see the proof of concept in action you'll need some software installed to run it.
 
@@ -42,7 +42,7 @@ To run the platform you currently need these installed:
 * [docker](https://www.docker.com/)
 * [docker compose](https://docs.docker.com/compose/)
 
-Quick Start:
+### Quick Start
 
 Clone the git repository:
     git clone https://github.com/nathanmentley/RemoteCongress.git
@@ -95,12 +95,18 @@ After submission that vote was fetched from the platform and was verified.
 Then then a yes vote was cast on the bill with a message of "message".
 After that vote was cast it was fetched from the platform and was verified.
 
+### Using a cli interface to interact with the platform
+
 Optionally, if you want to interact with the RemoteCongress platform in a more dynamic way you can use a command line tool included with the project.
 
 There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
 
-## Using RemoteCongress.Client
+### Using RemoteCongress.Client to programmically interact with the platform
 
-You can use the client assembly project to build tools to fetch and create votes using this platform.
+You can use the client assembly project to build tools to fetch and create votes using this platform using code.
 
-Having an open api and an easy way to integrate with this platform will be critical to ensure that votes are transparent and the public has access and visibility on how their representatives are voting.
+Right now there isn't much documentation outside of code, but for an example you should be able to look at:
+    src/RemoteCongress.Example/Program.cs
+
+You can also view the library source code in:
+    src/RemoteCongress.Client/
