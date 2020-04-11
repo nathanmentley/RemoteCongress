@@ -6,7 +6,7 @@ A platform for conducting small scale public voting remotely and securely.
 
 This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes.
 
-We have proven technology that allows safe, transparent, Remote Congresss to be held remotely, and there is currently no execuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time.
+We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no execuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time.
 
 This project aims to build a simple proof of concept system that shows a working functional and safe system for holding remote votes. Ultimately this proof of concept will hopefully start conversation on how we modernize our government's ability to function at the most critical times.
 
@@ -16,54 +16,56 @@ Currently, this is a technical proof of concept that allows individuals to:
 * Produce signed and immutable data (bills and votes on bills).
 * Send that data to a server where it'll remained signed, get verified, and remain in an immutable state.
 * Have that data persited in an immutable and decentralized storage system so it can't be lost or tampered with.
+* Pull any stored bills or votes, and ensure they're valid, and untampered with.
 
-All of this signed, immutable data can be retreived by anyone, and be validated by anyone.
-Using this signed validated data we can know that a specific person voted a specific way, and we can know that data hasn't been altered.
-
-With this proof of concept we're able to show a system that'll allow representives who make Remote Congresss to do so remotely in a way we can verify their vote, and ensure their vote isn't tampered with.
+With this proof of concept we're able to show a system that'll allow representives who cast votes publicly to do so remotely, and that anyone is able to verify the cast votes, and ensure they aren't tampered with.
 
 ## Design
 
-This platform was design to ensure we know who is creating data and that the data cannot be tampered with.
+This platform was designed to ensure we know who is creating data and that the data cannot be tampered with.
 
-At a high level this is acomplished by using immutable and decentralized data storage, and asymmetric encryption to sign data. These concepts are extremely similar to the core ideas of blockchain, and in a non proof of concept state this project would be using a true blockchain to store data instead of using Ipfs.
+At a high level this is acomplished by using an immutable and decentralized data storage through a blockchain, and asymmetric encryption to sign and verify votes. 
 
 The current design of this platform would give every member of congress a [public private key pair](https://en.wikipedia.org/wiki/Public-key_cryptography).
-The member's public key would be publically known while their private key would never be shared or sent over any network.
+The member's public key would be publicly known while their private key would never be shared or sent over any network. You can think of the public key almost as the member's username.
 
-When the member of congress votes, the data that makes up their vote will be signed with a hash generated from their private key and the vote data. This vote data is then packaged with the member's public key, and the signed hash. That package is sent to the server to be stored and persisted.
+When the member of congress votes, the data that makes up their vote will be signed with an encrypted [hash](https://en.wikipedia.org/wiki/Hash_function) generated from the vote data, and then encrytped with the private key. This vote data is then packaged with the member's public key, and the encrypted hash. That package is sent to the server to be stored and persisted.
 
-Using the public key we can tell who made the vote, since ever member of congress' public key is public.
-
-Using the Hash and the public key we can verify that the voting data hasn't be changed, and it truely came from the owner of the public key's private pair. This gives us a high level of confidence who made the vote, and the vote is being recorded correctly.
-
+Using the public key we can decrypt the hash, and verify that hash still matches the vote data. If the hash still matches the vote data we can know that the vote wasn't tampered with, and was cast by the private key that matches the public key shipped with the vote. In other words, we can be sure the member of congress cast that vote, and their vote wasn't altered.
 
 ## Startup
 
 If you want to see the proof of concept in action you'll need some software installed to run it.
-
 
 To run the platform you currently need these installed:
 * [docker](https://www.docker.com/)
 * [docker compose](https://docs.docker.com/compose/)
 
 Quick Start:
+
+Clone the git repository:
+
+
 In a terminal session cd to the git root directory run:
 
     docker-compose up
 
 This will spin up:
-* An instance of Ipfs.
 * The remote congress api server.
 
 In another terminal session run:
 
     docker run --entrypoint /app/RemoteCongress.Example --net=host remote-congress/api
 
-This will run a simple command line tool that'll connect to our api server.
-
-After running the final command you'll see that command line tool will connect to the api project and generate immutable bills and votes. The created bill and vote are immutable, and have a signature and public key attached to them that can be used to prove the that they were created by a specific individual attached to the private / public key pair.
+This will run a simple example test that will:
+* Create votes and bills
+* Sign them
+* Send them over the network to the server to persist them in the immutable storage
+* Load the saved votes and bills from the api server
+* Finally, verify that the stored votes and bills are valid, and untampered with.
 
 ## Using RemoteCongress.Client
 
-You can use the client assembly to program against 
+You can use the client assembly project to build tools to fetch and create votes using this platform.
+
+Having an open api and an easy way to integrate with this platform will be critical to ensure that votes are transparent and the public has access and visibility on how their representatives are voting.

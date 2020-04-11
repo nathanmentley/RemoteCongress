@@ -122,12 +122,6 @@ namespace RemoteCongress.CliTool
                 viewVoteCommand
             };
 
-            /*rootCommand.AddGlobalOption(
-                new Option<string>(
-                    "--key",
-                    "A file path to the public / private key pair files to use to sign content."
-                )
-            );*/
             rootCommand.AddGlobalOption(
                 new Option<string>(
                     "--protocol",
