@@ -32,7 +32,7 @@ namespace RemoteCongress.Common.Exceptions
     /// In any case this is an exception, because our system only operates on immutabe, valid, and signed data.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class InvalidBlockSignatureException : Exception
+    public class InvalidBlockSignatureException: Exception
     {
         /// <summary>
         /// Constructor

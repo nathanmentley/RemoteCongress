@@ -17,6 +17,7 @@ using System;
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using RemoteCongress.Common.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace RemoteCongress.Common
@@ -32,6 +33,7 @@ namespace RemoteCongress.Common
     /// This class is meant to be used to pull raw data from the persistence layer or to pull data
     ///     from the api. It should be transfered to a verifiable, and immutable type right away.
     /// </remarks>
+    [ExcludeFromCodeCoverage]
     public class SignedData: ISignedData, IIdentifiable
     {
         /// <summary>

@@ -4,6 +4,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Nito.AsyncEx.Context" Version="5.0.0" />
+    <PackageReference Include="Ipfs.Engine" Version="0.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RemoteCongress.Server.DAL\RemoteCongress.Server.DAL.csproj" />
   </ItemGroup>
 </Project>

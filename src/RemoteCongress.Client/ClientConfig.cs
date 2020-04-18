@@ -16,12 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Client
 {
     /// <summary>
     /// Configuration data defining how to connect to the RemoteCongress api server.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ClientConfig
     {
         /// <summary>

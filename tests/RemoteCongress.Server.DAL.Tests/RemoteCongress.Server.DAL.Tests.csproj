@@ -6,15 +6,24 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Moq" Version="4.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RemoteCongress.TestData\RemoteCongress.TestData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RemoteCongress.Server.DAL\RemoteCongress.Server.DAL.csproj" />
   </ItemGroup>
 
 </Project>

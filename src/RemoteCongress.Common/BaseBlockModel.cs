@@ -18,6 +18,7 @@
 using Newtonsoft.Json.Linq;
 using RemoteCongress.Common.Exceptions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace RemoteCongress.Common
@@ -36,6 +37,7 @@ namespace RemoteCongress.Common
     ///   You can also be sure the data coming in from api calls, and up from the data storage layer are
     ///   untampered with and signed.
     /// </remarks>
+    [ExcludeFromCodeCoverage]
     public abstract class BaseBlockModel: IIdentifiable, ISignedData
     {
         /// <summary>

@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Common
 {
@@ -36,6 +37,7 @@ namespace RemoteCongress.Common
     ///   been tampered with, and at the end of the day we can always verify block in the blockchain against their
     ///   stored signature.
     /// </remarks>
+    [ExcludeFromCodeCoverage]
     public sealed class Vote: BaseBlockModel
     {
         /// <summary>

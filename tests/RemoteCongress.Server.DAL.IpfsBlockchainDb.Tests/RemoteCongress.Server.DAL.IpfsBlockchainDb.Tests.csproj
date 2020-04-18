@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RemoteCongress.Server.DAL.InMemory\RemoteCongress.Server.DAL.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\RemoteCongress.Server.DAL.IpfsBlockchainDb\RemoteCongress.Server.DAL.IpfsBlockchainDb.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,12 +3,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\RemoteCongress.Server.DAL\RemoteCongress.Server.DAL.csproj" />
     <ProjectReference Include="..\RemoteCongress.Server.DAL.InMemory\RemoteCongress.Server.DAL.InMemory.csproj" />
+    <ProjectReference Include="..\RemoteCongress.Server.DAL.IpfsBlockchainDb\RemoteCongress.Server.DAL.IpfsBlockchainDb.csproj" />
   </ItemGroup>
 </Project>

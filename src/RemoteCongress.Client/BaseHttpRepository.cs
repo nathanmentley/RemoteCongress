@@ -1,5 +1,5 @@
 /*
-    RemoteCongress - A platform for conducting small secure internal elections
+    RemoteCongress - A platform for conducting small secure public elections
     Copyright (C) 2020  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 */
 using Newtonsoft.Json;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -27,42 +28,93 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Client
 {
     /// <summary>
-    /// A Http Repository that can be used to easily interact with the RemoteCongress api.
+    /// An abstraction layer implementing <see cref="IBillRepository"/> that fetches and creates
+    ///     <see cref="Bill"/> instances.
     /// </summary>
     /// <remarks>
-    /// This doesn't validate data. Repositories that use this should be doing that.
-    ///     In theory, they're operating on <see cref="Bill"/>s, <see cref="Votes"/>,
-    ///     or another they that inherits correctly from <see cref="BaseBlockModel"/>
-    ///     and we're getting validation when converting <see cref="SignedData"/> to
-    ///     one of those types.
+    /// This implementation of <see cref="IBillRepository"/> of the repository is built for connecting over an http
+    ///     conntection. It's expecting to send <see cref="SignedData"/> instances to a web server.
     /// </remarks>
-    internal class HttpRepository
+    public abstract class BaseHttpRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
     {
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
+        private readonly Func<string, ISignedData, T> _creator;
+
+        /// <summary>
+        /// The endpoint to hit with the repository.
+        /// </summary>
+        protected abstract string Endpoint { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="config">
-        /// The PublicApi connection configuration data.
+        /// A <see cref="ClientConfig"/> instance that holds configuration data on connecting to the server.
         /// </param>
         /// <param name="httpClient">
-        /// The <see cref="HttpClient"/> to connect to the RemoteCongress API.
+        /// A <see cref="HttpClient"/> instance to use to communicate with the server.
+        /// </param>
+        /// <param name="creator">
+        /// Injected logic to construct an instance of <typeparamref name="T"/> from an Id, and <see cref="ISignedData"/>.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="config"/> is null.
-        /// </exception>
+        /// </excpetion>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="httpClient"/> is null.
-        /// </exception>
-        internal HttpRepository(ClientConfig config, HttpClient httpClient)
+        /// </excpetion>
+        protected BaseHttpRepository(
+            ClientConfig config,
+            HttpClient httpClient,
+            Func<string, ISignedData, T> creator
+        )
         {
             _config = config ??
                 throw new ArgumentNullException(nameof(config));
 
             _httpClient = httpClient ??
                 throw new ArgumentNullException(nameof(httpClient));
+
+            _creator = creator ??
+                throw new ArgumentNullException(nameof(creator));
+        }
+
+        /// <summary>
+        /// Creates and persist the signed and verified <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance">
+        /// A signed and verified instance of type <typeparamref name="T"/> to persist.
+        /// </param>
+        /// <returns>
+        /// The persisted <paramref name="instance"/> model.
+        /// </returns>
+        public async Task<T> Create(T instance)
+        {
+            var signedData = await CreateSignedData(
+                Endpoint,
+                new SignedData(instance)
+            );
+
+            return _creator(signedData.Id, signedData);
+        }
+
+        /// <summary>
+        /// Fetches a persisted instance of <typeparamref name="T"/> that has an <see cref="IIdentifiable.Id"/> that
+        ///     matches <paramref name="id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="T"/> instance to fetch.
+        /// </param>
+        /// <returns>
+        /// The immutable, and verified <typeparamref name="T"/> instance with an <see cref="IIdentifiable.Id"/>
+        ///     of <paramref name="id"/>.
+        /// </returns>
+        public async Task<T> Fetch(string id)
+        {
+            var signedData = await FetchSignedData(Endpoint, id);
+
+            return _creator(id, signedData);
         }
 
         /// <summary>
@@ -77,7 +129,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// An unvalidated <see cref="SignedData"/> that was returned from the server.
         /// </returns>
-        internal async Task<SignedData> CreateSignedData(string endpoint, SignedData content)
+        private async Task<SignedData> CreateSignedData(string endpoint, SignedData content)
         {
             var json = GetJson(content);
             var buffer = Encoding.UTF8.GetBytes(json);
@@ -104,7 +156,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// An unvalidated <see cref="SignedData"/> that was returned from the server.
         /// </returns>
-        internal async Task<SignedData> FetchSignedData(string endpoint, string id)
+        private async Task<SignedData> FetchSignedData(string endpoint, string id)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 $"{_config.Protocol}://{_config.ServerHostName}/{endpoint}/{id}"

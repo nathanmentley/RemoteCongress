@@ -19,11 +19,13 @@ using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Example
 {
+    [ExcludeFromCodeCoverage]
     class Program
     {
         /// <remarks>
