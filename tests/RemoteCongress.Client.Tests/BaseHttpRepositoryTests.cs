@@ -60,6 +60,38 @@ namespace RemoteCongress.Client.Tests
             new SubjectType(_config, _client.Object, _creator);
 
         [TestMethod]
+        public void CtorThrowsWhenCreatorIsNull()
+        {
+            //Arrange
+            Func<SubjectType> action = () =>
+                new SubjectType(_config, _client.Object, null);
+
+            //Act
+            action
+
+            //Assert
+                .Should().Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("creator");
+        }
+
+        [TestMethod]
+        public void CtorThrowsWhenClientIsNull()
+        {
+            //Arrange
+            Func<SubjectType> action = () =>
+                new SubjectType(_config, null, _creator);
+
+            //Act
+            action
+
+            //Assert
+                .Should().Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("httpClient");
+        }
+
+        [TestMethod]
         public void CtorThrowsWhenConfigIsNull()
         {
             //Arrange
