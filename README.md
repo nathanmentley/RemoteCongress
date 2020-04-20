@@ -61,7 +61,7 @@ In another terminal session run:
 This will run a simple example test that will:
 * Create votes and bills
 * Sign them
-* Send them over the network to the server to persist them in the immutable storage
+* Send them over the network to the server to persist them in the immutable storage. (in this proof of concept the server is storing the signed content in a blockchain built on top of IPFS to ensure immutability)
 * Load the saved votes and bills from the api server
 * Finally, verify that the stored votes and bills are valid, and untampered with.
 
