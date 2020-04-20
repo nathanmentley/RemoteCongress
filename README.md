@@ -132,3 +132,13 @@ Right now there isn't much documentation outside of code, but for an example you
 
 You can also view the library source code in:
     src/RemoteCongress.Client/
+
+## Next Steps
+
+This is a proof of concept, and the code is not production ready, and isn't suitable to be used a core of a more built out system in it's current state.
+
+A true system shouldn't be thrown together over a few weekends.
+It shouldn't reivent the wheel as much as this project has done.
+It should have more error handling and testing code than the almost nonexistent amount in this codebase.
+
+This code could possible be used a base to built out those changes, but ultimately building a system like that is premature when the united states congress still hasn't made any real progress to move to a remote environment. If we really want to ensure our government is able to exist during real emergencies we need to urge change.
