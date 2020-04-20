@@ -29,27 +29,27 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <summary>
         /// The unique Identifier from the block.
         /// </summary>
-        internal string Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// </summary>
-        internal string LastBlockId { get; set; }
+        public string LastBlockId { get; set; }
 
         /// <summary>
         /// A UTC timestamp for when the block was created.
         /// </summary>
-        internal DateTime Timestamp { get; } =
+        public DateTime Timestamp { get; set; } =
             DateTime.UtcNow;
 
         /// <summary>
         /// The <see cref="Hash"/> of the previous <see cref="Block"/> in the <see cref="Blockchain"/>.
         /// </summary>
-        internal string LastBlockHash { get; }
+        public string LastBlockHash { get; set; }
         
         /// <summary>
         /// The raw content of the block.
         /// </summary>
-        internal string Content { get; }
+        public string Content { get; set; }
         
         /// <summary>
         /// The SHA256 hash of the concatinated:
@@ -57,7 +57,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         ///     * <see cref="LastBlockHash"/>
         ///     * <see cref="Content"/>
         /// </summary>
-        internal string Hash { get; }
+        public string Hash { get; set; }
 
         /// <summary>
         /// An <see cref="Block"/> is valid if the <see cref="Hash"/> equals the result from <see cref="GenerateHash"/>.

@@ -22,9 +22,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL;
-//using RemoteCongress.Server.DAL.InMemory;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
 using RemoteCongress.Server.Web.Formatters;
+using System;
+using System.IO;
 using System.Net.Http;
 
 namespace RemoteCongress.Server.Web
@@ -53,7 +54,7 @@ namespace RemoteCongress.Server.Web
 
                 .AddSingleton<IBlockchainClient>(
                     new IpfsBlockchainClient(
-                        null
+                        "QmXQCiMarntd6mbYMRzZ9BqQBbv85FGhj9uR1YSJuDznyh"
                     )
                 )
 

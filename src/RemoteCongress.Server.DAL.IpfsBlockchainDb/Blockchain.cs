@@ -16,12 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Ipfs.Engine;
-using Newtonsoft.Json;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
@@ -88,7 +90,10 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         private async Task InitializeIpfs()
         {
             // Set the repository
-            _engine.Options.Repository.Folder = "myapp-ipfs";
+            _engine.Options.Repository.Folder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                ".remote_congress/ipfs"
+            );
 
             // Start the engine.
             await _engine.StartAsync();
@@ -129,6 +134,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         {
             var result = await _engine.FileSystem.ReadAllTextAsync(id);
             var block = FromString(result);
+            block.Id = id;
             _blocks.Insert(0, block);
 
             if(!string.IsNullOrWhiteSpace(block.LastBlockId))
@@ -145,9 +151,10 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         }
 
         private static Block FromString(string data) => 
-            JsonConvert.DeserializeObject<Block>(data);
+            JsonSerializer.Deserialize<Block>(data, new JsonSerializerOptions());
+
 
         private static string FromBlock(Block data) => 
-            JsonConvert.SerializeObject(data);
+            JsonSerializer.Serialize<Block>(data);
     }
 }
