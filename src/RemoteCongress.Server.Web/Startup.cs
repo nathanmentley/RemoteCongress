@@ -53,9 +53,7 @@ namespace RemoteCongress.Server.Web
                 })
 
                 .AddSingleton<IBlockchainClient>(
-                    new IpfsBlockchainClient(
-                        "QmXQCiMarntd6mbYMRzZ9BqQBbv85FGhj9uR1YSJuDznyh"
-                    )
+                    new IpfsBlockchainClient(null)
                 )
 
                 .AddSingleton<IBillRepository, BillRepository>()
