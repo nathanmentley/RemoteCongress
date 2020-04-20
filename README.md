@@ -47,6 +47,7 @@ To run the platform you currently need these installed:
 Using a terminal:
 
 1. Clone the git repository:
+
     git clone https://github.com/nathanmentley/RemoteCongress.git
 
 2. Changed directories into the newly cloned git repo.
