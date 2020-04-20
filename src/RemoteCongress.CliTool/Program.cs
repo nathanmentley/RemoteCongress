@@ -34,12 +34,12 @@ namespace RemoteCongress.CliTool
         {
             var castVoteCommand = new Command("cast-vote", "cast a vote")
             {
-                Handler = CommandHandler.Create<string, string, string>(
-                    async (protocol, hostname, key) => {
+                Handler = CommandHandler.Create<string, string, string, string, bool, string>(
+                    async (protocol, hostname, key, billId, opinion, message) => {
                         var client = SetupApp(protocol, hostname);
                         var (privateKey, publicKey) = await SetupKeys(key);
 
-                        var vote = await client.CreateVote(privateKey, publicKey, "billId", true, "message");
+                        var vote = await client.CreateVote(privateKey, publicKey, billId, opinion, message);
 
                         Console.WriteLine($"cast a new vote with id: {vote.Id}.");
                     }
@@ -48,12 +48,12 @@ namespace RemoteCongress.CliTool
 
             var submitBillCommand = new Command("submit-bill", "submit a bill")
             {
-                Handler = CommandHandler.Create<string, string, string>(
-                    async (protocol, hostname, key) => {
+                Handler = CommandHandler.Create<string, string, string, string, string>(
+                    async (protocol, hostname, key, title, content) => {
                         var client = SetupApp(protocol, hostname);
                         var (privateKey, publicKey) = await SetupKeys(key);
 
-                        var bill = await client.CreateBill(privateKey, publicKey, "title", "content");
+                        var bill = await client.CreateBill(privateKey, publicKey, title, content);
 
                         Console.WriteLine($"A new bill was submitted with id: {bill.Id}.");
                     }
@@ -68,7 +68,7 @@ namespace RemoteCongress.CliTool
 
                         var bill = await client.GetBill(id);
 
-                        Console.WriteLine($"found a bill with id: {bill.Id}");
+                        Console.WriteLine($"found a bill with id: {bill.Id} - Title: {bill.Title}. Content: {bill.Content}");
                     }
                 )
             };
@@ -81,7 +81,7 @@ namespace RemoteCongress.CliTool
 
                         var vote = await client.GetVote(id);
 
-                        Console.WriteLine($"found a vote with id: {vote.Id}");
+                        Console.WriteLine($"found a vote with id: {vote.Id}. For Bill: {vote.BillId}. Opinon: {vote.Opinion}. Message: {vote.Message}.");
                     }
                 )
             };
@@ -93,10 +93,45 @@ namespace RemoteCongress.CliTool
                 )
             );
 
+            castVoteCommand.AddOption(
+                new Option<string>(
+                    "--billId",
+                    "The id of the bill to vote on."
+                )
+            );
+
+            castVoteCommand.AddOption(
+                new Option<bool>(
+                    "--opinion",
+                    "The opinion of the vote."
+                )
+            );
+
+            castVoteCommand.AddOption(
+                new Option<string>(
+                    "--message",
+                    "The message to include with the vote."
+                )
+            );
+
             submitBillCommand.AddOption(
                 new Option<string>(
                     "--key",
                     "A file path to the public / private key pair files to use to sign content."
+                )
+            );
+
+            submitBillCommand.AddOption(
+                new Option<string>(
+                    "--title",
+                    "The title of the bill to create."
+                )
+            );
+
+            submitBillCommand.AddOption(
+                new Option<string>(
+                    "--content",
+                    "The content of the bill to create."
                 )
             );
 

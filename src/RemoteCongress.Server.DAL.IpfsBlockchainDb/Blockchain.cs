@@ -69,12 +69,12 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
             }
         }
 
-        internal Blockchain(string latestBlockAddress) =>
+        internal Blockchain(IpfsBlockchainConfig config) =>
             AsyncContext.Run(async () =>
                 {
                     await InitializeIpfs();
 
-                    if (string.IsNullOrWhiteSpace(latestBlockAddress))
+                    if (string.IsNullOrWhiteSpace(config?.LastBlockId))
                     {
                         var block = await PersistBlock(Block.CreateGenisysBlock());
 
@@ -82,7 +82,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
                     }
                     else
                     {
-                        await LoadPreviousBlock(latestBlockAddress);
+                        await LoadPreviousBlock(config.LastBlockId);
                     }
                 }
             );

@@ -37,9 +37,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     {
         private readonly Blockchain _blockchain;
 
-        public IpfsBlockchainClient(string latestBlock)
+        public IpfsBlockchainClient(IpfsBlockchainConfig config)
         {
-            _blockchain = new Blockchain(latestBlock);
+            _blockchain = new Blockchain(config);
         }
 
         /// <summary>

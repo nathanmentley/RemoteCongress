@@ -24,18 +24,18 @@ With this proof of concept we're able to show a system that'll allow representiv
 
 This platform was designed to ensure we know who is creating data and that the data cannot be tampered with.
 
-At a high level this is acomplished by using an immutable and decentralized data storage through a blockchain, and asymmetric encryption to sign and verify votes. 
+At a high level this is acomplished by using an immutable and decentralized data storage built on a [blockchain](https://en.wikipedia.org/wiki/Blockchain) saved in [IPFS](https://ipfs.io/), and asymmetric encryption to sign and verify votes. 
 
 The current design of this platform would give every member of congress a [public private key pair](https://en.wikipedia.org/wiki/Public-key_cryptography).
 The member's public key would be publicly known while their private key would never be shared or sent over any network. You can think of the public key almost as the member's username.
 
-When the member of congress votes, the data that makes up their vote will be signed with an encrypted [hash](https://en.wikipedia.org/wiki/Hash_function) generated from the vote data, and then encrytped with the private key. This vote data is then packaged with the member's public key, and the encrypted hash. That package is sent to the server to be stored and persisted.
+When the member of congress votes, the data that makes up their vote will be signed with an encrypted [hash](https://en.wikipedia.org/wiki/Hash_function) generated from the vote data, and then encrytped with the private key. This vote data is then packaged with the member's public key, and the encrypted hash. That package is sent to the server to be stored and persisted. It's persisted in a blockchain stored on Ipfs to ensure the data is immutable.
 
 Using the public key we can decrypt the hash, and verify that hash still matches the vote data. If the hash still matches the vote data we can know that the vote wasn't tampered with, and was cast by the private key that matches the public key shipped with the vote. In other words, we can be sure the member of congress cast that vote, and their vote wasn't altered.
 
 ## Running the Proof Of Concept
 
-If you want to see the proof of concept in action you'll need some software installed to run it.
+If you want to see the proof of concept in action you'll need some software installed to run it, and the ability to run a few terminal commands.
 
 To run the platform you currently need these installed:
 * [git](https://git-scm.com/)
@@ -44,17 +44,20 @@ To run the platform you currently need these installed:
 
 ### Quick Start
 
-Clone the git repository:
+Using a terminal:
+
+1. Clone the git repository:
     git clone https://github.com/nathanmentley/RemoteCongress.git
 
-In a terminal session cd to the git root directory run:
+2. Changed directories into the newly cloned git repo.
 
-    docker-compose up
+    cd RemoteCongress
 
-This will spin up:
-* The remote congress api server.
+3. Build and spin up the RemoteCongress server:
 
-In another terminal session run:
+    docker-compose up -d
+
+4. Run the example script to run some test data through the system.
 
     docker run --entrypoint /app/RemoteCongress.Example --net=host remote-congress/api
 
@@ -101,9 +104,27 @@ Optionally, if you want to interact with the RemoteCongress platform in a more d
 
 There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
 
+#### cli tool examples
+
+Creating a new bill:
+
+    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj submit-bill --key keys/example --title "Title of new bill" --content "The content of the new bill."
+
+Voting on a bill:
+
+    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj cast-vote --key keys/example --billId QmXJ7Zwpr2S6rbRb2wSMU6pAhWjU7RH7HHiykgWzWd4bdA --opinion False --message "Some short reason on why a vote was cast the way it was"
+
+Viewing a bill:
+
+    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj view-bill --id QmXJ7Zwpr2S6rbRb2wSMU6pAhWjU7RH7HHiykgWzWd4bdA
+
+Viewing a vote:
+
+    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj view-vote --id QmPnfkTnEYxVotRHtCLS4g3q4otAmAYKvtbtKbWZ34brXF
+
 ### Using RemoteCongress.Client to programmically interact with the platform
 
-You can use the client assembly project to build tools to fetch and create votes using this platform using code.
+You can use the client assembly project to build tools in any .net language to fetch and create votes using this platform using code.
 
 Right now there isn't much documentation outside of code, but for an example you should be able to look at:
     src/RemoteCongress.Example/Program.cs
