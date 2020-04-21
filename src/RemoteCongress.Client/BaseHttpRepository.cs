@@ -96,6 +96,9 @@ namespace RemoteCongress.Client
                 new SignedData(instance)
             );
 
+            //Since the _creator should be calling a ctor of a BaseBlockModel
+            // we can be sure that this model's signature hash is valid against 
+            // the data.
             return _creator(signedData.Id, signedData);
         }
 
@@ -114,6 +117,9 @@ namespace RemoteCongress.Client
         {
             var signedData = await FetchSignedData(Endpoint, id);
 
+            //Since the _creator should be calling a ctor of a BaseBlockModel
+            // we can be sure that this model's signature hash is valid against 
+            // the data.
             return _creator(id, signedData);
         }
 

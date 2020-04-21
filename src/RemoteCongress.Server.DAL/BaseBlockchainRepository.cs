@@ -80,6 +80,9 @@ namespace RemoteCongress.Server.DAL
             if (string.IsNullOrWhiteSpace(id))
                 throw new BlockNotStorableException();
 
+            //Since the _creator should be calling a ctor of a BaseBlockModel
+            // we can be sure that this model's signature hash is valid against 
+            // the data.
             return _creator(id, model);
         }
 
@@ -104,6 +107,9 @@ namespace RemoteCongress.Server.DAL
             if (block is null)
                 throw new BlockNotFoundException();
 
+            //Since the _creator should be calling a ctor of a BaseBlockModel
+            // we can be sure that this model's signature hash is valid against 
+            // the data.
             return _creator(id, block);
         }
     }

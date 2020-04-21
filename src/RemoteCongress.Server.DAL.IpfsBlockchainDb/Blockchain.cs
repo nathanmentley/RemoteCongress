@@ -23,13 +23,17 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
     /// <summary>
-    /// A simple proof of concept in memory blockchain implementation.
+    /// A simple proof of concept blockchain implementation that is persisted in Ipfs.
     /// </summary>
+    /// <remarks>
+    /// This is not production ready code. It's fine for a proof of concept, but it needs to be
+    ///     updating and to be much better thoughtout before it is really ready to be running
+    ///     production level data.
+    /// </remarks>
     internal class Blockchain
     {
         private readonly IpfsEngine _engine =
@@ -75,15 +79,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
                     await InitializeIpfs();
 
                     if (string.IsNullOrWhiteSpace(config?.LastBlockId))
-                    {
-                        var block = await PersistBlock(Block.CreateGenisysBlock());
-
-                        _blocks.Add(block);
-                    }
+                        _blocks.Add(await PersistBlock(Block.CreateGenisysBlock()));
                     else
-                    {
                         await LoadPreviousBlock(config.LastBlockId);
-                    }
                 }
             );
 

@@ -30,8 +30,7 @@ namespace RemoteCongress.Server.DAL.InMemory
     ///     It is only useful for testing code and validating the layers above this.
     ///     It should not be used for a production version.
     /// 
-    ///     This implementation is also pretty naive. It's not thread-safe, and it's using
-    ///         a true linked-list. So after a point it'll become wildly too slow.
+    ///     This implementation is also pretty naive. It's really only useful for development testing.
     /// </remarks>
     public class InMemoryBlockchainClient: IBlockchainClient
     {
