@@ -111,8 +111,24 @@ kwMRyHisc6diIMoNAgMBAAE=";
                     new ClientConfig(Protocol, HostName)
                 )
 
-                .AddSingleton<IBillRepository, BillRepository>()
-                .AddSingleton<IVoteRepository, VoteRepository>()
+                .AddSingleton<IBillRepository, BillRepository>(provider =>
+                    new BillRepository(
+                        new HttpDataClient(
+                            provider.GetRequiredService<ClientConfig>(),
+                            provider.GetRequiredService<HttpClient>(),
+                            "bill"
+                        )
+                    )
+                )
+                .AddSingleton<IVoteRepository, VoteRepository>(provider =>
+                    new VoteRepository(
+                        new HttpDataClient(
+                            provider.GetRequiredService<ClientConfig>(),
+                            provider.GetRequiredService<HttpClient>(),
+                            "vote"
+                        )
+                    )
+                )
 
                 .AddSingleton<IRemoteCongressClient, RemoteCongressClient>()
 

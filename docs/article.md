@@ -67,38 +67,31 @@ So, we can generate a hash of the digital content of a member's vote, and keep t
 
 Let's say a vote's data looked like this:
 
-```
+```json
 {
     billId: "Should we expand medicare to all us residents?",
     opinion: "Yes",
     reason: "Healthcare is a human right"
 }
 ```
-A hash of that might look like this:
-
-```
-eaf64a87da9213212653ec81aebfd645e6eb755f6a27465c689fa984881dedd0
-```
+A hash of that might look like this: `eaf64a87da9213212653ec81aebfd645e6eb755f6a27465c689fa984881dedd0`
 
 If someone was intercepting this data and altering it before sending it to the destination they might change it to this:
 
-```
+```json
 {
     billId: "Should we expand medicare to all us residents?",
     opinion: "No",
     reason: "Healthcare is not a human right"
 }
 ```
-However, the hash for that data is this:
-```
-08c8414e9cc9cc9f117d1d4cacf1ecb38043a7437ae8ddaee15b41650a368c4b
-```
+However, the hash for that data is this: `08c8414e9cc9cc9f117d1d4cacf1ecb38043a7437ae8ddaee15b41650a368c4b`
 
-If we knew the vote was suppose to have a hash of ```eaf64a87da9213212653ec81aebfd645e6eb755f6a27465c689fa984881dedd0```, but that didn't match the content we'd know the vote was tampered with.
+If we knew the vote was suppose to have a hash of `eaf64a87da9213212653ec81aebfd645e6eb755f6a27465c689fa984881dedd0`, but that didn't match the content we'd know the vote was tampered with.
 
 So, we could pass the has with the vote. Like this:
 
-```
+```json
 {
     billId: "Should we expand medicare to all us residents?",
     opinion: "Yes",

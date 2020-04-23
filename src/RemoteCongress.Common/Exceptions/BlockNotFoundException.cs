@@ -18,7 +18,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RemoteCongress.Server.DAL.Exceptions
+namespace RemoteCongress.Common.Exceptions
 {
     /// <summary>
     /// An <see cref="Exception"/> to throw when a block is unexpected not found.

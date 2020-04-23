@@ -4,6 +4,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RemoteCongress.Server.DAL\RemoteCongress.Server.DAL.csproj" />
+    <ProjectReference Include="..\RemoteCongress.Common\RemoteCongress.Common.csproj" />
   </ItemGroup>
 </Project>

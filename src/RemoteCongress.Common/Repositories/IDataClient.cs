@@ -15,15 +15,13 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using RemoteCongress.Common;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Server.DAL
+namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
-    /// An interface to abstract the persistence layer.
     /// </summary>
-    public interface IBlockchainClient
+    public interface IDataClient
     {
         /// <summary>
         /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.

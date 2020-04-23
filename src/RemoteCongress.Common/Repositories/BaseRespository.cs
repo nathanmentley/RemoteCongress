@@ -15,42 +15,36 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using RemoteCongress.Common;
-using RemoteCongress.Common.Repositories;
-using RemoteCongress.Server.DAL.Exceptions;
+using RemoteCongress.Common.Exceptions;
 using System;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Server.DAL
+namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
-    /// An abstraction layer implementing <see cref="IBillRepository"/> that fetches and creates
-    ///     <see cref="Bill"/> instances.
     /// </summary>
-    /// <remarks>
-    /// This implementation of <see cref="IBillRepository"/> of the repository is built for directly connecting to a
-    ///     persistence layer. In this case the passed in <see cref="IBlockchainClient"/> is used for the storage,
-    ///     and this class is mainly just converting <see cref="ISignedData"/> instances to <see cref="Bill"/> instances.
-    /// </remarks>
-    public abstract class BaseBlockchainRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
+    public abstract class BaseRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
     {
-        private readonly IBlockchainClient _client;
+        private readonly IDataClient _client;
         private readonly Func<string, ISignedData, T> _creator;
 
         /// <summary>
-        /// Ctor
+        /// Constructor
         /// </summary>
         /// <param name="client">
-        /// An <see cref="IBlockchainClient"/> implementation to be used to store and fetch <see cref="ISignedData"/>.
+        /// A <see cref="IDataClient"/> instance to use to communicate with the server.
         /// </param>
         /// <param name="creator">
         /// Injected logic to construct an instance of <typeparamref name="T"/> from an Id, and <see cref="ISignedData"/>.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="client"/> is null.
-        /// </exception>
-        protected BaseBlockchainRepository(
-            IBlockchainClient client,
+        /// Thrown if <paramref name="config"/> is null.
+        /// </excpetion>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="httpClient"/> is null.
+        /// </excpetion>
+        protected BaseRepository(
+            IDataClient client,
             Func<string, ISignedData, T> creator
         )
         {

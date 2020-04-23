@@ -4,7 +4,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RemoteCongress.Server.DAL\RemoteCongress.Server.DAL.csproj" />
     <ProjectReference Include="..\RemoteCongress.Server.DAL.IpfsBlockchainDb\RemoteCongress.Server.DAL.IpfsBlockchainDb.csproj" />
   </ItemGroup>
 </Project>

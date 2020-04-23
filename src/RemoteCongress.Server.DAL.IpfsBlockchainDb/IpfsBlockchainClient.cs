@@ -17,7 +17,8 @@
 */
 using Newtonsoft.Json;
 using RemoteCongress.Common;
-using RemoteCongress.Server.DAL.Exceptions;
+using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Repositories;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
@@ -33,7 +34,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     ///     This implementation is also pretty naive. It's not thread-safe, and it's using
     ///         a true linked-list. So after a point it'll become wildly too slow.
     /// </remarks>
-    public class IpfsBlockchainClient: IBlockchainClient
+    public class IpfsBlockchainClient: IDataClient
     {
         private readonly Blockchain _blockchain;
 

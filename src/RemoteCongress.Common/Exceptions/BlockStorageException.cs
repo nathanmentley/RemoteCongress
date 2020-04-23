@@ -18,13 +18,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RemoteCongress.Server.DAL.Exceptions
+namespace RemoteCongress.Common.Exceptions
 {
     /// <summary>
-    /// An <see cref="Exception"/> to throw when a block is unexpected cannot be persisted.
+    /// An <see cref="Exception"/> that all block storage related exceptions should inherit fromm.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class BlockNotStorableException: BlockStorageException
+    public class BlockStorageException: Exception
     {
         /// <summary>
         /// Constructor
@@ -35,7 +35,7 @@ namespace RemoteCongress.Server.DAL.Exceptions
         /// <param name="innerException">
         /// Another exception that brought this exception to light.
         /// </param>
-        public BlockNotStorableException(string message, Exception innerException):
+        public BlockStorageException(string message, Exception innerException):
             base(message, innerException) {}
 
         /// <summary>
@@ -44,13 +44,13 @@ namespace RemoteCongress.Server.DAL.Exceptions
         /// <param name="message">
         /// A message describing the exceptional situation in detail.
         /// </param>
-        public BlockNotStorableException(string message):
+        public BlockStorageException(string message):
             base(message) {}
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public BlockNotStorableException():
+        public BlockStorageException():
             base() {}
     }
 }

@@ -15,17 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using RemoteCongress.Common;
-using RemoteCongress.Common.Repositories;
 using System;
 
-namespace RemoteCongress.Server.DAL
+namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
     /// An abstraction layer implementing <see cref="IVoteRepository"/> that fetches and creates
     ///     <see cref="Vote"/> instances.
     /// </summary>
-    public class VoteRepository: BaseBlockchainRepository<Vote>, IVoteRepository
+    public class VoteRepository: BaseRepository<Vote>, IVoteRepository
     {
         /// <summary>
         /// Ctor
@@ -36,7 +34,7 @@ namespace RemoteCongress.Server.DAL
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="client"/> is null.
         /// </exception>
-        public VoteRepository(IBlockchainClient client):
+        public VoteRepository(IDataClient client):
             base(client, (id, data) => new Vote(id, data)) {}
     }
 }

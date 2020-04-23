@@ -17,7 +17,8 @@
 */
 using Newtonsoft.Json;
 using RemoteCongress.Common;
-using RemoteCongress.Server.DAL.Exceptions;
+using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Repositories;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.InMemory
@@ -32,7 +33,7 @@ namespace RemoteCongress.Server.DAL.InMemory
     /// 
     ///     This implementation is also pretty naive. It's really only useful for development testing.
     /// </remarks>
-    public class InMemoryBlockchainClient: IBlockchainClient
+    public class InMemoryBlockchainClient: IDataClient
     {
         private readonly InMemoryBlockchain _blockchain =
             new InMemoryBlockchain();
