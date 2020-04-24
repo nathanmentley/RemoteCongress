@@ -17,12 +17,10 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
-using RemoteCongress.Common.Repositories;
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 

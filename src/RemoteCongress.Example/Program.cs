@@ -54,12 +54,15 @@ kwMRyHisc6diIMoNAgMBAAE=";
         private static readonly string HostName = "127.0.0.1:8000";
         private static readonly string Protocol = "http";
 
+        /// <summary>
+        /// The program entry point
+        /// </summary>
         public static async Task Main(string[] args)
         {
             //Setup client in DI
             using var serviceProvider = GetServiceProvider();
             
-            // pull out the client
+            // pull out the client from DI
             var remoteCongressClient = GetClient(serviceProvider);
 
             //create a bill
@@ -79,14 +82,29 @@ kwMRyHisc6diIMoNAgMBAAE=";
             Output($"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified");
         }
 
+        /// <summary>
+        /// Builds a <see cref="ServiceProvider"/>
+        /// </summary>
+        /// <returns>
+        /// A <see cref="ServiceProvider"/> with an <see cref="IRemoteCongressClient"/> implementation configured.
+        /// </returns>
         private static ServiceProvider GetServiceProvider() =>
             new ServiceCollection()
                 .AddRemoteCongressClient(new ClientConfig(Protocol, HostName))
                 .BuildServiceProvider();
 
+        /// <summary>
+        /// Fetches an <see cref="IRemoteCongressClient"/> from a configured <see cref="IServiceProvider"/>.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IRemoteCongressClient"/> implementation that is configured in <paramref name="serviceProvider"/>.
+        /// </returns>
         private static IRemoteCongressClient GetClient(IServiceProvider serviceProvider) =>
             serviceProvider.GetService<IRemoteCongressClient>();
 
+        /// <summary>
+        /// <see cref="Console.WriteLine"/> with an extra <see cref="Environment.NewLine"/>.
+        /// </summary>
         private static void Output(string content) =>
             Console.WriteLine($"{content}{Environment.NewLine}");
     }
