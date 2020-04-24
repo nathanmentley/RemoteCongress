@@ -79,18 +79,15 @@ kwMRyHisc6diIMoNAgMBAAE=";
             Output($"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified");
         }
 
-        private static void Output(string content)
-        {
-            Console.WriteLine(content);
-            Console.WriteLine(string.Empty);
-        }
-
-        private static IRemoteCongressClient GetClient(IServiceProvider serviceProvider) =>
-            serviceProvider.GetService<IRemoteCongressClient>();
-
         private static ServiceProvider GetServiceProvider() =>
             new ServiceCollection()
                 .AddRemoteCongressClient(new ClientConfig(Protocol, HostName))
                 .BuildServiceProvider();
+
+        private static IRemoteCongressClient GetClient(IServiceProvider serviceProvider) =>
+            serviceProvider.GetService<IRemoteCongressClient>();
+
+        private static void Output(string content) =>
+            Console.WriteLine($"{content}{Environment.NewLine}");
     }
 }
