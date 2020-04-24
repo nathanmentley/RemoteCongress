@@ -17,10 +17,8 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
-using RemoteCongress.Common.Repositories;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Example
@@ -31,7 +29,7 @@ namespace RemoteCongress.Example
         /// <remarks>
         /// Throw away private / pub key
         /// </remarks>
-        private static string PrivateKey = @"MIICWgIBAAKBgGiz/dPcdEo6G6b/+zf8VN65fgSUFTwpq3tjtOwR6jj9zzWG6o3S
+        private static readonly string PrivateKey = @"MIICWgIBAAKBgGiz/dPcdEo6G6b/+zf8VN65fgSUFTwpq3tjtOwR6jj9zzWG6o3S
 d6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40FKdqbPS9sqAz1op32vOHHvB1
 rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkwkwMRyHisc6diIMoNAgMBAAEC
 gYAi/1buxBeS4A1yKso8EnoD4JjAywa2D2+kVNWauvpBhoUGbUxlj14y0XopBGDQ
@@ -48,13 +46,13 @@ By7g6qF+BOof3247AkAkBiZ5okAVl8BGBG4m4RPoUgVzi+ZKwFSxWko4hoo8tMKV
         /// <remarks>
         /// Throw away private / pub key
         /// </remarks>
-        private static string PublicKey = @"MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGiz/dPcdEo6G6b/+zf8VN65fgSU
+        private static readonly string PublicKey = @"MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGiz/dPcdEo6G6b/+zf8VN65fgSU
 FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
 FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
-        private static string HostName = "127.0.0.1:8000";
-        private static string Protocol = "http";
+        private static readonly string HostName = "127.0.0.1:8000";
+        private static readonly string Protocol = "http";
 
         public static async Task Main(string[] args)
         {
@@ -62,40 +60,33 @@ kwMRyHisc6diIMoNAgMBAAE=";
             using var serviceProvider = GetServiceProvider();
             
             // pull out the client
-            var RemoteCongressClient = serviceProvider.GetService<IRemoteCongressClient>();
+            var remoteCongressClient = GetClient(serviceProvider);
 
             //create a bill
-            var bill = await RemoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content");
-            Console.WriteLine(
-                $"created bill[{bill.Id}] {bill.BlockContent}"
-            );
-
-            Console.WriteLine(string.Empty);
+            var bill = await remoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content");
+            Output($"created bill[{bill.Id}] {bill.BlockContent}");
 
             //pull the bill from the api
-            bill = await RemoteCongressClient.GetBill(bill.Id);
-            Console.WriteLine(
-                $"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified"
-            );
-
-            Console.WriteLine(string.Empty);
+            bill = await remoteCongressClient.GetBill(bill.Id);
+            Output($"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified");
 
             //create a yes vote against the bill
-            var vote = await RemoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
-            Console.WriteLine(
-                $"created vote[{vote.Id}] {vote.BlockContent}"
-            );
-
-            Console.WriteLine(string.Empty);
+            var vote = await remoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
+            Output($"created vote[{vote.Id}] {vote.BlockContent}");
 
             //pull the newly created vote from the api.
-            vote = await RemoteCongressClient.GetVote(vote.Id);
-            Console.WriteLine(
-                $"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified"
-            );
+            vote = await remoteCongressClient.GetVote(vote.Id);
+            Output($"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified");
+        }
 
+        private static void Output(string content)
+        {
+            Console.WriteLine(content);
             Console.WriteLine(string.Empty);
         }
+
+        private static IRemoteCongressClient GetClient(IServiceProvider serviceProvider) =>
+            serviceProvider.GetService<IRemoteCongressClient>();
 
         private static ServiceProvider GetServiceProvider() =>
             new ServiceCollection()
