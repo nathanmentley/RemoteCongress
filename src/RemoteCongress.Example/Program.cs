@@ -99,39 +99,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
 
         private static ServiceProvider GetServiceProvider() =>
             new ServiceCollection()
-                .AddSingleton<HttpClient>(_ => {
-                    var handler = new HttpClientHandler();
-                    handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                    handler.ServerCertificateCustomValidationCallback = 
-                        (httpRequestMessage, cert, cetChain, policyErrors) => true;
-
-                    return new HttpClient(handler);
-                })
-                .AddSingleton<ClientConfig>(
-                    new ClientConfig(Protocol, HostName)
-                )
-
-                .AddSingleton<IBillRepository, BillRepository>(provider =>
-                    new BillRepository(
-                        new HttpDataClient(
-                            provider.GetRequiredService<ClientConfig>(),
-                            provider.GetRequiredService<HttpClient>(),
-                            "bill"
-                        )
-                    )
-                )
-                .AddSingleton<IVoteRepository, VoteRepository>(provider =>
-                    new VoteRepository(
-                        new HttpDataClient(
-                            provider.GetRequiredService<ClientConfig>(),
-                            provider.GetRequiredService<HttpClient>(),
-                            "vote"
-                        )
-                    )
-                )
-
-                .AddSingleton<IRemoteCongressClient, RemoteCongressClient>()
-
+                .AddRemoteCongressClient(new ClientConfig(Protocol, HostName))
                 .BuildServiceProvider();
     }
 }
