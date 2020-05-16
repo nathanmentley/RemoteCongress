@@ -76,12 +76,12 @@ namespace RemoteCongress.Common.Repositories
         /// </exception>
         public async Task<T> Create(T model, CancellationToken cancellationToken)
         {
-            var id = await _client.AppendToChain(model);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var id = await _client.AppendToChain(model, cancellationToken);
 
             if (string.IsNullOrWhiteSpace(id))
                 throw new BlockNotStorableException();
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             //Since the _creator should be calling a ctor of a BaseBlockModel
             // we can be sure that this model's signature hash is valid against 
@@ -111,12 +111,12 @@ namespace RemoteCongress.Common.Repositories
         /// </exception>
         public async Task<T> Fetch(string id, CancellationToken cancellationToken)
         {
-            var block = await _client.FetchFromChain(id);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var block = await _client.FetchFromChain(id, cancellationToken);
 
             if (block is null)
                 throw new BlockNotFoundException();
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             //Since the _creator should be calling a ctor of a BaseBlockModel
             // we can be sure that this model's signature hash is valid against 

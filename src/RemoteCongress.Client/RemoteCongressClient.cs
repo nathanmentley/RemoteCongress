@@ -76,6 +76,9 @@ namespace RemoteCongress.Client
         /// <param name="content">
         /// The content of the <see cref="Bill"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
@@ -87,18 +90,20 @@ namespace RemoteCongress.Client
             CancellationToken cancellationToken
         )
         {
-            var blockContent = JToken.FromObject(new {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            string blockContent = JToken.FromObject(new {
                 title = title,
                 content = content
             }).ToString();
 
-            var signedData = new SignedData(
+            SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(privateKey, blockContent)
             );
 
-            var bill = new Bill(signedData);
+            Bill bill = new Bill(signedData);
 
             return await _billRepository.Create(bill, cancellationToken);
         }
@@ -109,11 +114,18 @@ namespace RemoteCongress.Client
         /// <param name="id">
         /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        public async Task<Bill> GetBill(string id, CancellationToken cancellationToken) =>
-            await _billRepository.Fetch(id, cancellationToken);
+        public async Task<Bill> GetBill(string id, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _billRepository.Fetch(id, cancellationToken);
+        }
 
         /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
@@ -134,6 +146,9 @@ namespace RemoteCongress.Client
         /// <param name="message">
         /// The optional message attached to the <see cref="Vote"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
@@ -146,19 +161,21 @@ namespace RemoteCongress.Client
             CancellationToken cancellationToken
         )
         {
-            var blockContent = JToken.FromObject(new {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            string blockContent = JToken.FromObject(new {
                 billId = billId,
                 opinion = opinion,
                 message = message
             }).ToString();
 
-            var signedData = new SignedData(
+            SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(privateKey, blockContent)
             );
 
-            var vote = new Vote(signedData);
+            Vote vote = new Vote(signedData);
 
             return await _voteRepository.Create(vote, cancellationToken);
         }
@@ -169,10 +186,17 @@ namespace RemoteCongress.Client
         /// <param name="id">
         /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        public async Task<Vote> GetVote(string id, CancellationToken cancellationToken) =>
-            await _voteRepository.Fetch(id, cancellationToken);
+        public async Task<Vote> GetVote(string id, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _voteRepository.Fetch(id, cancellationToken);
+        }
     }
 }

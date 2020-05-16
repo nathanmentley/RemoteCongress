@@ -9,6 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RemoteCongress.Client\RemoteCongress.Client.csproj" />
+    <ProjectReference Include="..\..\src\RemoteCongress.Client\RemoteCongress.Client.csproj" />
   </ItemGroup>
 </Project>

@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.InMemory
@@ -44,11 +45,16 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The unique id of the stored block.
         /// </returns>
-        public Task<string> AppendToChain(ISignedData data)
+        public Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string blockContent = FromSignedData(data);
             InMemoryBlock block = _blockchain.AppendToChain(blockContent);
 
@@ -61,11 +67,16 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <param name="id">
         /// The unique block id to pull verified data from.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        public Task<ISignedData> FetchFromChain(string id)
+        public Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var block = _blockchain.FetchFromChain(id);
 
             if (block is null)

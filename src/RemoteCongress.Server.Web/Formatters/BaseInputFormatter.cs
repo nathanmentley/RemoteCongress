@@ -29,11 +29,11 @@ namespace RemoteCongress.Server.Web.Formatters
     /// <summary>
     /// Reads and validates a signed <see cref="BaseBlockModel"/> from the input.
     /// </summary>
-    /// <typeparam name="T">
+    /// <typeparam name="TSignedData">
     /// A type that inherits from <see cref="BaseBlockModel"/>.
     /// </typeparam>
-    public abstract class BaseInputFormatter<T>: TextInputFormatter
-        where T: BaseBlockModel
+    public abstract class BaseInputFormatter<TSignedData>: TextInputFormatter
+        where TSignedData: BaseBlockModel
     {
         /// <summary>
         /// Constructor
@@ -62,7 +62,7 @@ namespace RemoteCongress.Server.Web.Formatters
             Encoding encoding
         )
         {
-            var signedData = await JsonSerializer.DeserializeAsync(
+            SignedData signedData = await JsonSerializer.DeserializeAsync(
                 context.HttpContext.Request.Body,
                 typeof(SignedData)
             ) as SignedData;
@@ -70,7 +70,7 @@ namespace RemoteCongress.Server.Web.Formatters
             if (signedData is null)
                 throw new Exception("TODO: Get a better exception for this.");
 
-            var result = FromSignedData(signedData);
+            TSignedData result = FromSignedData(signedData);
             if (!(result as ISignedData).IsValid)
                 throw new InvalidBlockSignatureException(
                     $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
@@ -81,7 +81,7 @@ namespace RemoteCongress.Server.Web.Formatters
         }
 
         /// <summary>
-        /// Converts from a <see cref="SignedData"/> to a <typeparamref name="T"/>.
+        /// Converts from a <see cref="SignedData"/> to a <typeparamref name="TSignedData"/>.
         /// </summary>
         /// <param name="data">
         /// The <see cref="SignedData"/> containing the data to convert.
@@ -89,7 +89,7 @@ namespace RemoteCongress.Server.Web.Formatters
         /// <returns>
         /// The validated, and signed <typepramaref name="T"/>.
         /// </returns>
-        protected abstract T FromSignedData(SignedData data);
+        protected abstract TSignedData FromSignedData(SignedData data);
 
         /// <summary>
         /// Checks if a <see cref="Type"/> can be handled by this <see cref="TextInputFormatter"/>.
@@ -101,6 +101,6 @@ namespace RemoteCongress.Server.Web.Formatters
         /// True if <paramref name="type"/> can be handled by this <see cref="TextInputFormatter"/>.
         /// </returns>
         protected override bool CanReadType(Type type) =>
-            type.Equals(typeof(T));
+            type.Equals(typeof(TSignedData));
     }
 }

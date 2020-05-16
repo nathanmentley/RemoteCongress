@@ -34,6 +34,30 @@ kwMRyHisc6diIMoNAgMBAAE=";
 
         /// <summary>
         /// </summary>
+        /// <param name="title">
+        /// </param>
+        /// <param name="content">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static Bill GetBill(string title, string content)
+        {
+            var blockContent = JToken.FromObject(new {
+                title = title,
+                content = content
+            }).ToString();
+
+            var signedData = new SignedData(
+                PublicKey,
+                blockContent,
+                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+            );
+
+            return new Bill(signedData);
+        }
+
+        /// <summary>
+        /// </summary>
         /// <param name="id">
         /// </param>
         /// <param name="title">
@@ -56,6 +80,33 @@ kwMRyHisc6diIMoNAgMBAAE=";
             );
 
             return new Bill(id, signedData);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="billId">
+        /// </param>
+        /// <param name="opinion">
+        /// </param>
+        /// <param name="message">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static Vote GetVote(string billId, bool opinion, string message)
+        {
+            var blockContent = JToken.FromObject(new {
+                billId = billId,
+                opinion = opinion,
+                message = message
+            }).ToString();
+
+            var signedData = new SignedData(
+                PublicKey,
+                blockContent,
+                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+            );
+
+            return new Vote(signedData);
         }
 
         /// <summary>

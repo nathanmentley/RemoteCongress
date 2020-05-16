@@ -30,11 +30,11 @@ namespace RemoteCongress.Server.Web.Formatters
     /// <summary>
     /// Validates a signed <see cref="BaseBlockModel"/> and writes it to the http response <see cref="Stream"/>.
     /// </summary>
-    /// <typeparam name="T">
+    /// <typeparam name="TSignedData">
     /// A type that inherits from <see cref="BaseBlockModel"/>.
     /// </typeparam>
-    public abstract class BaseOutputFormatter<T>: TextOutputFormatter
-        where T: BaseBlockModel
+    public abstract class BaseOutputFormatter<TSignedData>: TextOutputFormatter
+        where TSignedData: BaseBlockModel
     {
         /// <summary>
         /// Constructor
@@ -60,9 +60,9 @@ namespace RemoteCongress.Server.Web.Formatters
             Encoding selectedEncoding
         )
         {
-            if (!(context.Object is T signedData))
+            if (!(context.Object is TSignedData signedData))
                 throw new InvalidOperationException(
-                    $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(T)}."
+                    $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(TSignedData)}."
                 );
 
             if (!(signedData as ISignedData).IsValid)
@@ -86,6 +86,6 @@ namespace RemoteCongress.Server.Web.Formatters
         /// True if <paramref name="type"/> can be handled by this <see cref="TextOutputFormatter"/>.
         /// </returns>
         protected override bool CanWriteType(Type type) =>
-            type.Equals(typeof(T));
+            type.Equals(typeof(TSignedData));
     }
 }

@@ -42,6 +42,9 @@ namespace RemoteCongress.Client
         /// <param name="content">
         /// The content of the <see cref="Bill"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
@@ -52,6 +55,9 @@ namespace RemoteCongress.Client
         /// </summary>
         /// <param name="id">
         /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
         /// The persisted <see cref="Bill"/>.
@@ -77,6 +83,9 @@ namespace RemoteCongress.Client
         /// <param name="message">
         /// The optional message attached to the <see cref="Vote"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
@@ -87,6 +96,9 @@ namespace RemoteCongress.Client
         /// </summary>
         /// <param name="id">
         /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
         /// The persisted <see cref="Vote"/>.

@@ -23,7 +23,6 @@ using Microsoft.Extensions.Hosting;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
 using RemoteCongress.Server.Web.Formatters;
-using System.Net.Http;
 
 namespace RemoteCongress.Server.Web
 {
@@ -44,18 +43,7 @@ namespace RemoteCongress.Server.Web
                 .Get<IpfsBlockchainConfig>();
 
             services
-                .AddSingleton<HttpClient>(_ => {
-                    var handler = new HttpClientHandler();
-                    handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                    handler.ServerCertificateCustomValidationCallback = 
-                        (httpRequestMessage, cert, cetChain, policyErrors) => true;
-
-                    return new HttpClient(handler);
-                })
-
-                .AddSingleton<IDataClient>(
-                    new IpfsBlockchainClient(ipfsConfig)
-                )
+                .AddSingleton<IDataClient>(new IpfsBlockchainClient(ipfsConfig))
 
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()

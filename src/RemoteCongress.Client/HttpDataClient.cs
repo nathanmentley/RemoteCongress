@@ -23,6 +23,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Client
@@ -72,8 +73,10 @@ namespace RemoteCongress.Client
                 throw new ArgumentNullException(nameof(endpoint));
         }
 
-        public async Task<string> AppendToChain(ISignedData data)
+        public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var json = GetJson(new SignedData(data));
             var buffer = Encoding.UTF8.GetBytes(json);
             var byteContent = new ByteArrayContent(buffer);
@@ -81,7 +84,8 @@ namespace RemoteCongress.Client
 
             var response = await _httpClient.PostAsync(
                 $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}",
-                byteContent
+                byteContent,
+                cancellationToken
             );
 
             var result = await GetSignedData(response);
@@ -89,10 +93,13 @@ namespace RemoteCongress.Client
             return result.Id;
         }
 
-        public async Task<ISignedData> FetchFromChain(string id)
+        public async Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             HttpResponseMessage response = await _httpClient.GetAsync(
-                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}/{id}"
+                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}/{id}",
+                cancellationToken
             );
 
             return await GetSignedData(response);

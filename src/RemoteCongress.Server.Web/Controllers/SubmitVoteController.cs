@@ -16,13 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Controllers
+namespace RemoteCongress.Server.Web.Controllers
 {
     /// <summary>
     /// Exposes an endpoint to persist <see cref="Vote"/>s.
@@ -31,6 +32,7 @@ namespace RemoteCongress.Controllers
     [Route("vote")]
     public class SubmitVoteController
     {
+        private readonly ILogger _logger;
         private readonly IVoteRepository _voteRepository;
 
         /// <summary>
@@ -43,10 +45,16 @@ namespace RemoteCongress.Controllers
         /// Thrown if <paramref name="voteRepository"/> is null.
         /// </exception>
         public SubmitVoteController(
+            ILogger<SubmitVoteController> logger,
             IVoteRepository voteRepository
-        ) =>
+        )
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
             _voteRepository = voteRepository ??
                 throw new ArgumentNullException(nameof(voteRepository));
+        }
 
         /// <summary>
         /// Persists a <see cref="Vote"/>.
@@ -58,7 +66,16 @@ namespace RemoteCongress.Controllers
         /// The persisted, signed, and validiated <see cref="Vote"/>.
         /// </returns>
         [HttpPost]
-        public async Task<Vote> Post([FromBody] Vote vote, CancellationToken cancellationToken) =>
-            await _voteRepository.Create(vote, cancellationToken);
+        public async Task<Vote> Post([FromBody] Vote vote, CancellationToken cancellationToken)
+        {
+            _logger.LogTrace(
+                "{controller}.{endpoint} called with {vote}",
+                nameof(SubmitVoteController),
+                nameof(Post),
+                vote
+            );
+
+            return await _voteRepository.Create(vote, cancellationToken);
+        }
     }
 }

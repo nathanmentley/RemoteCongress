@@ -20,6 +20,7 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
@@ -55,11 +56,16 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The unique id of the stored block.
         /// </returns>
-        public async Task<string> AppendToChain(ISignedData data)
+        public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string blockContent = FromSignedData(data);
             Block block = await _blockchain.AppendToChain(blockContent);
 
@@ -72,11 +78,16 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="id">
         /// The unique block id to pull verified data from.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        public Task<ISignedData> FetchFromChain(string id)
+        public Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             Block block = _blockchain.FetchFromChain(id);
 
             if (block is null)

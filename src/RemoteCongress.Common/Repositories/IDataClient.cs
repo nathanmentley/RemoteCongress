@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Repositories
@@ -29,10 +30,13 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The unique id of the stored block.
         /// </returns>
-        Task<string> AppendToChain(ISignedData data);
+        Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken);
 
         /// <summary>
         /// Fetches the verified data in the form of <see cref="ISignedData"/> from the blockchain by block id.
@@ -40,9 +44,12 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="id">
         /// The unique block id to pull verified data from.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        Task<ISignedData> FetchFromChain(string id);
+        Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken);
     }
 }

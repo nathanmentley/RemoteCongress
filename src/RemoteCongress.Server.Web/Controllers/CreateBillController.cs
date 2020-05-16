@@ -16,13 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Controllers
+namespace RemoteCongress.Server.Web.Controllers
 {
     /// <summary>
     /// Exposes an endpoint to persist <see cref="Bill"/>s.
@@ -31,6 +32,7 @@ namespace RemoteCongress.Controllers
     [Route("bill")]
     public class CreateBillController
     {
+        private readonly ILogger _logger;
         private readonly IBillRepository _billRepository;
 
         /// <summary>
@@ -43,10 +45,16 @@ namespace RemoteCongress.Controllers
         /// Thrown if <paramref name="billRepository"/> is null.
         /// </exception>
         public CreateBillController(
+            ILogger<CreateBillController> logger,
             IBillRepository billRepository
-        ) =>
+        )
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
             _billRepository = billRepository ??
                 throw new ArgumentNullException(nameof(billRepository));
+        }
 
         /// <summary>
         /// Persists a <see cref="Bill"/>.
@@ -58,7 +66,16 @@ namespace RemoteCongress.Controllers
         /// The persisted, signed, and validiated <see cref="Bill"/>.
         /// </returns>
         [HttpPost]
-        public async Task<Bill> Post([FromBody] Bill bill, CancellationToken cancellationToken) =>
-            await _billRepository.Create(bill, cancellationToken);
+        public async Task<Bill> Post([FromBody] Bill bill, CancellationToken cancellationToken)
+        {
+            _logger.LogTrace(
+                "{controller}.{endpoint} called with {bill}",
+                nameof(CreateBillController),
+                nameof(Post),
+                bill
+            );
+
+            return await _billRepository.Create(bill, cancellationToken);
+        }
     }
 }
