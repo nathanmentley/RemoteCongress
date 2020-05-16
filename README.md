@@ -1,6 +1,6 @@
 # RemoteCongress
 
-A platform for conducting small scale public voting remotely and securely.
+A proof of concept platform for conducting small scale public voting remotely and securely.
 
 ## Goal
 
@@ -29,7 +29,7 @@ At a high level this is acomplished by using an immutable and decentralized data
 The current design of this platform would give every member of congress a [public private key pair](https://en.wikipedia.org/wiki/Public-key_cryptography).
 The member's public key would be publicly known while their private key would never be shared or sent over any network. You can think of the public key almost as the member's username.
 
-When the member of congress votes, the data that makes up their vote will be signed with an encrypted [hash](https://en.wikipedia.org/wiki/Hash_function) generated from the vote data, and then encrytped with the private key. This vote data is then packaged with the member's public key, and the encrypted hash. That package is sent to the server to be stored and persisted. It's persisted in a blockchain stored on Ipfs to ensure the data is immutable.
+When the member of congress votes, the data that makes up their vote will be signed with a [hash](https://en.wikipedia.org/wiki/Hash_function) generated from the vote data, and then encrytped with the private key. This vote data is then packaged with the member's public key, and the encrypted hash. That package is sent to the server to be stored and persisted. It's persisted in a blockchain stored on Ipfs to ensure the data is immutable.
 
 Using the public key we can decrypt the hash, and verify that hash still matches the vote data. If the hash still matches the vote data we can know that the vote wasn't tampered with, and was cast by the private key that matches the public key shipped with the vote. In other words, we can be sure the member of congress cast that vote, and their vote wasn't altered.
 
@@ -58,7 +58,7 @@ Using a terminal:
 
     docker-compose up -d
 
-4. Run the example script to run some test data through the system.
+4. Run the example app to run some test data through the system.
 
     docker run --entrypoint /app/RemoteCongress.Example --net=host remote-congress/api
 
@@ -128,7 +128,7 @@ Viewing a vote:
 You can use the client assembly project to build tools in any .net language to fetch and create votes using this platform using code.
 
 Right now there isn't much documentation outside of code, but for an example you should be able to look at:
-    src/RemoteCongress.Example/Program.cs
+    examples/RemoteCongress.Example/Program.cs
 
 You can also view the library source code in:
     src/RemoteCongress.Client/
@@ -137,8 +137,6 @@ You can also view the library source code in:
 
 This is a proof of concept, and the code is not production ready, and isn't suitable to be used a core of a more built out system in it's current state.
 
-A true system shouldn't be thrown together over a few weekends.
-It shouldn't reivent the wheel as much as this project has done.
-It should have more error handling and testing code than the almost nonexistent amount in this codebase.
+A true system shouldn't be thrown together over a few weekends, it shouldn't reivent the wheel as much as this project has done, and it should have more error handling and testing code than the almost nonexistent amount in this codebase.
 
-This code could possible be used a base to built out those changes, but ultimately building a system like that is premature when the united states congress still hasn't made any real progress to move to a remote environment. If we really want to ensure our government is able to exist during real emergencies we need to urge change.
+This code could possibly be used as a base to built out those changes, but first we'll need congress and the american public to understand how a system like this would function, what makes it secure, and why it's essential in or out of a crisis.

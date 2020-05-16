@@ -1,0 +1,1 @@
+The keys in this directory are for example and testing use only. Since the private key has been made public this key pair would not be secure to use.
