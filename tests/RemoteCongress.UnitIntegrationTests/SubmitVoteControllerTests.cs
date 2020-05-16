@@ -9,39 +9,40 @@ using System.Threading.Tasks;
 namespace RemoteCongress.UnitIntegrationTests
 {
     [TestClass]
-    public class CreateBillControllerTests
+    public class SubmitVoteControllerTests
     {
         [TestMethod]
-        public async Task CreateBillTests()
+        public async Task SubmitVoteTests()
         {
             // Arrange
             using TestContext context = TestContext.Create();
-            CreateBillController subject = context.GetCreateBillController();
-            Bill bill = TestData.MockData.GetBill("title", "content");
+            SubmitVoteController subject = context.GetSubmitVoteController();
+            Vote vote = TestData.MockData.GetVote("billId", true, "message");
 
             //Act
-            Bill result = await subject.Post(bill, CancellationToken.None);
+            Vote result = await subject.Post(vote, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
             result.Id.Should().NotBeNull();
-            result.Title.Should().Be(bill.Title);
-            result.Content.Should().Be(bill.Content);
+            result.BillId.Should().Be(vote.BillId);
+            result.Opinion.Should().Be(vote.Opinion);
+            result.Message.Should().Be(vote.Message);
         }
 
         [TestMethod]
-        public void CreateBillThrowsOnCancelledToken()
+        public void SubmitVoteThrowsOnCancelledToken()
         {
             // Arrange
             using TestContext context = TestContext.Create();
             using CancellationTokenSource tokenSource = new CancellationTokenSource();
             tokenSource.Cancel();
 
-            CreateBillController subject = context.GetCreateBillController();
-            Bill bill = TestData.MockData.GetBill("title", "content");
+            SubmitVoteController subject = context.GetSubmitVoteController();
+            Vote vote = TestData.MockData.GetVote("billId", true, "message");
 
             Func<Task> action = async () =>
-                await subject.Post(bill, tokenSource.Token);
+                await subject.Post(vote, tokenSource.Token);
 
             //Act
             action
