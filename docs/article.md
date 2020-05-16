@@ -8,7 +8,7 @@
 
 **By [Nathan Mentley](https://www.github.com/nathanmentley)**
 
-While the entire nation, or atleast those privilaged enough to be able to, are currently trying to self isolate, and stay in place to slow the spread of Covid19 our Congress is required to meet in person to keep our nation functioning. While the House Of Representatives recently voted on temporary rule changes to allow for "remote voting", members are still required to send a person as a proxy to vote in their place. The Senate has made pretty much zero progress. As of today, neither body can hold a vote remotely, and work with the agility we'd expect it to during a crisis like this.
+While the entire nation, or atleast those privilaged enough to be able to, are currently trying to self isolate, and stay in place to slow the spread of Covid19 our Congress is required to meet in person to keep our nation functioning. While the House Of Representatives recently voted on temporary rule changes to allow for "remote voting", members are still required to send a person as a proxy to vote in their place. The Senate has made pretty much zero progress towards remote voting. As of today, neither body can hold a vote truly remotely, and as a result cannot work with the agility we'd expect them to during a crisis like this.
 
 Forcing this in person contact is placing our government in an unacceptable risk of becoming dysfunctional. If the coronavirus was able to spread to enough members of the Senate or the House Of Represenatives we will have no way to react to the rapidly changing world that the COVID-19 pandemic has caused. As of now, if there is any dramatic need to pass something with agility our government cannot react the way we should expect it to.
 It's critical at this time we setup a system to enable congress to work fully remotely. Including allowing members of congress to vote remotely. Not just for the Covid19 crisis, but for any future crisis as well.
@@ -31,8 +31,6 @@ We can use some proven technology to design a system that meets those three need
 
 #### How can we trust who sent the vote?
 
-***IMAGE?***
-
 To ensure when a vote is cast it's coming from who it claims to be cast by we can use [Asymmetric Encryption](https://en.wikipedia.org/wiki/Public-key_cryptography). Asymmetric Encryption will allow our system to have members of congress digitially sign votes in a way that's unique to each member, and can only be produced by the individual.
 
 The member of congress will have a device that contains two complicated key files on it. One that is known publicly which can be used to identify the member of congress, and a private key that never leaves their device, never travels on a network, and is only ever known by the member of congress. These two keys are a pair that are related. An encrypted message produced with either one of the keys can only be decrypted using the other.
@@ -44,8 +42,6 @@ In our platform we'll be using the member of congresses private key to generate 
 Asymetric Encryption has kept things like bitcoin wallets safe for years, and will make sure we can track who would be placing votes in this system.
 
 #### How can we trust the vote isn't modified?
-
-***IMAGE?***
 
 In addition to knowing that the vote originated from a specific congress member we also need to ensure that the vote data hasn't been altered by someone else.
 
@@ -114,9 +110,7 @@ Ultimately the vote data will end up looking like this:
 Attaching this encrypted hash would mean we could not only trust the source of the data is the congress memeber it's claiming to be from, but also that the data hasn't be altered.
 
 
-#### Can we trust
-
-***IMAGE?***
+#### Can we trust the votes don't get destroyed?
 
 Finally, we need to ensure once the vote is placed that it never gets lost or modified.
 
@@ -162,18 +156,22 @@ By storing the data in a decentralized structure and replicated, meaning multipl
 
 We can even take this a step farther. Since the data is secure once created, and should be public knowledge we can actually allow anyone to setup servers to host replicated data on this blockchain. That's how systems like Bitcoin operate. The public shared knowlege of the data prevents the alteration of it by bad actors. 
 
-***IMAGES***
+### What exists today?
 
-### Describe the proof of concept that has been built
-
-With those three design concepts I've setup [a proof of concept system](https://www.github.com/nathanmentley) that can track votes, ensure the content is valid, untampered with, and comes from who it claims.
+With those three concepts I've setup [a proof of concept system](https://www.github.com/nathanmentley) that can track votes, ensure the content is valid, untampered with, and comes from who it claims.
 
 The project has a two parts:
 
 1. A client application that mimics what each member of congress would run on a network connected device. That tool will generate votes, sign them with a private key, and publish them.
 1. There is a decentralized server that the client app will publish votes to, this server will validate the votes, and store them in an immutable blockchain data store. 
 
-***DIAGRAM***
+However, this isn't a drop in solution for a body like congress to use, but it does server as a proof of concept of how a system like this could work.
 
+### What should we do from here?
 
-### Explain the next steps
+Going forward it's important for Congress to function under even the most dire situations, and be able to react swiftly in a changing environment. Regardless if it's Covid19, a pandemic 100 years from now, or some other unforseeable disaster we need congress to be able to adapt and function. Setting up a remote voting system is ciritical in making that happen.
+
+That system cannot be built over night, or rushed into existence, but starting now we need Congress, and the general public aswell, to understand how such a system could work, and that it's possible to build it in a secure and transparent way.
+It's important for people to understand that the challenges faced in building it are solvable and manageable, because it's too important of a system to give up on before attempting to build it.
+
+Once there is a general understanding of what this system could be, I think congress would then be ready to start moving on developing it.
