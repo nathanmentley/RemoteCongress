@@ -15,14 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Ipfs;
 using Ipfs.Engine;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
@@ -36,11 +37,21 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     /// </remarks>
     internal class Blockchain
     {
-        private readonly IpfsEngine _engine =
-            new IpfsEngine("pass".ToCharArray());
+        private readonly static string BaseDirectoryPath = 
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-        private readonly IList<Block> _blocks = 
-            new List<Block>();
+        private readonly static string RelativeDataDirectoryPath =
+            ".remote_congress/ipfs";
+
+        private readonly static string AbsoluteDataDirectoryPath =
+            Path.Combine(
+                BaseDirectoryPath,
+                RelativeDataDirectoryPath
+            );
+
+        private readonly IpfsEngine _engine;
+
+        private readonly IList<Block> _blocks;
 
         /// <summary>
         /// A <see cref="Blockchain"/> is valid if:
@@ -52,12 +63,13 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         {
             get
             {
-                foreach(var i in Enumerable.Range(1, _blocks.Count))
+                foreach(int i in Enumerable.Range(1, _blocks.Count))
                 {
-                    var current = _blocks.ElementAt(i);
-                    var previous = _blocks.ElementAt(i - 1);
+                    Block current = _blocks.ElementAt(i);
+                    Block previous = _blocks.ElementAt(i - 1);
 
-                    if (!current.IsValid) return false;
+                    if (!current.IsValid)
+                        return false;
 
                     if (
                         !string.Equals(
@@ -73,28 +85,63 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
             }
         }
 
-        internal Blockchain(IpfsBlockchainConfig config) =>
-            AsyncContext.Run(async () =>
-                {
-                    await InitializeIpfs();
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="config">
+        /// An <see cref="IpfsBlockchainConfig"/> instance to use to configure Ipfs
+        /// </param>
+        internal Blockchain(IpfsBlockchainConfig config)
+        {
+            if (config is null)
+                throw new ArgumentNullException(nameof(config));
 
-                    if (string.IsNullOrWhiteSpace(config?.LastBlockId))
-                        _blocks.Add(await PersistBlock(Block.CreateGenisysBlock()));
-                    else
-                        await LoadPreviousBlock(config.LastBlockId);
-                }
-            );
+            _engine = new IpfsEngine(config.Password.ToCharArray());
+            _blocks = new List<Block>();
 
-        private async Task InitializeIpfs()
+            AsyncContext.Run(async () => await InitializeIpfs(config));
+        }
+
+        /// <summary>
+        /// Sets the absolute path for Ipfs, and starts the the ipfs engine.
+        /// </summary>
+        private async Task InitializeIpfs(IpfsBlockchainConfig config)
         {
             // Set the repository
-            _engine.Options.Repository.Folder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".remote_congress/ipfs"
-            );
+            _engine.Options.Repository.Folder = AbsoluteDataDirectoryPath;
 
             // Start the engine.
             await _engine.StartAsync();
+
+            // Setup blockchain from previous latest in node. or create a new chain.
+            if (string.IsNullOrWhiteSpace(config.LastBlockId))
+            {
+                Block genisysBlock = Block.CreateGenisysBlock();
+                genisysBlock = await PersistBlock(genisysBlock);
+                _blocks.Add(genisysBlock);
+            }
+            else
+            {
+                await LoadPreviousBlockIntoChain(config.LastBlockId);
+            }
+        }
+
+        /// <summary>
+        /// Loads a <see cref="Block"/> into the first position of the <see cref="Blockchain"/> by <paramref name="id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The previous <see cref="Block"/>'s <see cref="Block.Id"/>.
+        /// </param>
+        private async Task LoadPreviousBlockIntoChain(string id)
+        {
+            string result = await _engine.FileSystem.ReadAllTextAsync(id);
+            Block block = FromString(result);
+
+            block.Id = id;
+            _blocks.Insert(0, block);
+
+            if (!string.IsNullOrWhiteSpace(block.LastBlockId))
+                await LoadPreviousBlockIntoChain(block.LastBlockId);
         }
 
         /// <summary>
@@ -108,7 +155,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         internal async Task<Block> AppendToChain(string content)
         {
-            var block = new Block(_blocks.Last(), content);
+            Block block = new Block(_blocks.Last(), content);
             block = await PersistBlock(block);
 
             _blocks.Add(block);
@@ -128,30 +175,41 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         internal Block FetchFromChain(string id) =>
             _blocks.FirstOrDefault(block => block.Id.Equals(id));
 
-        private async Task LoadPreviousBlock(string id)
-        {
-            var result = await _engine.FileSystem.ReadAllTextAsync(id);
-            var block = FromString(result);
-            block.Id = id;
-            _blocks.Insert(0, block);
-
-            if(!string.IsNullOrWhiteSpace(block.LastBlockId))
-                await LoadPreviousBlock(block.LastBlockId);
-        }
-
+        /// <summary>"
+        /// Persists a <see cref="Block"/> inside the <see cref="Blockchain"/>.
+        /// </summary>
+        /// <param name="block">
+        /// The <see cref="Block"/> to persist in the chain
+        /// </param>
+        /// <returns>
+        /// The peristed version of <paramref name="block"/>.
+        /// </returns>
         private async Task<Block> PersistBlock(Block block)
         {
-            var result = await _engine.FileSystem.AddTextAsync(FromBlock(block));
+            string content = FromBlock(block);
+            IFileSystemNode result = await _engine.FileSystem.AddTextAsync(content);
 
             block.Id = (string)result.Id;
 
             return block;
         }
 
+        /// <summary>
+        /// Generates a <see cref="Block"/> from a <see cref="string"/>.
+        /// </summary>
+        /// <param name="data">
+        /// </param>
+        /// <returns>
+        /// </returns>
         private static Block FromString(string data) => 
             JsonSerializer.Deserialize<Block>(data, new JsonSerializerOptions());
 
-
+        /// <summary>
+        /// </summary>
+        /// <param name="data">
+        /// </param>
+        /// <returns>
+        /// </returns>
         private static string FromBlock(Block data) => 
             JsonSerializer.Serialize<Block>(data);
     }

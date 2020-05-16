@@ -22,7 +22,7 @@ using System.Text;
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
     /// <summary>
-    /// A simple class to exist as a block inside a blockchain.
+    /// A block POCO inside a <see cref="Blockchain"/>.
     /// </summary>
     internal class Block
     {
@@ -32,6 +32,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         public string Id { get; set; }
 
         /// <summary>
+        /// The <see cref="Id"/> of the previous <see cref="Block"/> in the <see cref="Blockchain"/>.
         /// </summary>
         public string LastBlockId { get; set; }
 
@@ -62,9 +63,8 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <summary>
         /// An <see cref="Block"/> is valid if the <see cref="Hash"/> equals the result from <see cref="GenerateHash"/>.
         /// </summary>
-        internal bool IsValid =>
+        public bool IsValid =>
             string.Equals(Hash, GenerateHash(), StringComparison.InvariantCulture);
-
 
         /// <summary>
         /// Constructor
@@ -75,7 +75,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="content">
         /// The content to be stored in the <see cref="Block"/>.
         /// </param>
-        internal Block(Block previousBlock, string content)
+        public Block(Block previousBlock, string content)
         {
             if (previousBlock is null)
                 throw new ArgumentNullException(nameof(previousBlock));

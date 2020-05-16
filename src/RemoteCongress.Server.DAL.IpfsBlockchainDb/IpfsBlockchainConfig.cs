@@ -18,11 +18,18 @@
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
     /// <summary>
+    /// Configuration data for 
     /// </summary>
     public class IpfsBlockchainConfig
     {
         /// <summary>
+        /// The ending <see cref="Block.Id"/>  of the <see cref="Blockchain" />
         /// </summary>
         public string LastBlockId { get; set; }
+
+        /// <summary>
+        /// The ipfs node password
+        /// </summary>
+        public string Password { get; set; }
     }
 }

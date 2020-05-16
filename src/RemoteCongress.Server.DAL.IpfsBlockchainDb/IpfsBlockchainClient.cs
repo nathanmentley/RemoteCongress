@@ -19,27 +19,33 @@ using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using System;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
     /// <summary>
-    /// An In Memory implementation of <see cref="IBlockchainClient"/> for testing.
+    /// An Ipfs Blockchain implementation of <see cref="IBlockchainClient"/>.
     /// </summary>
     /// <remarks>
-    /// This data store is not distributed, and since it's in memory it's also not immutable.
-    ///     It is only useful for testing code and validating the layers above this.
-    ///     It should not be used for a production version.
-    /// 
-    ///     This implementation is also pretty naive. It's not thread-safe, and it's using
-    ///         a true linked-list. So after a point it'll become wildly too slow.
+    /// This implementation is also pretty naive. It's really meant for a proof of concept.
     /// </remarks>
     public class IpfsBlockchainClient: IDataClient
     {
         private readonly Blockchain _blockchain;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config">
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
         public IpfsBlockchainClient(IpfsBlockchainConfig config)
         {
+            if (config is null)
+                throw new ArgumentNullException(nameof(config));
+
             _blockchain = new Blockchain(config);
         }
 
@@ -54,7 +60,8 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         public async Task<string> AppendToChain(ISignedData data)
         {
-            var block = await _blockchain.AppendToChain(FromSignedData(data));
+            string blockContent = FromSignedData(data);
+            Block block = await _blockchain.AppendToChain(blockContent);
 
             return block.Id;
         }
@@ -70,14 +77,15 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         public Task<ISignedData> FetchFromChain(string id)
         {
-            var block = _blockchain.FetchFromChain(id);
+            Block block = _blockchain.FetchFromChain(id);
 
             if (block is null)
                 throw new BlockNotFoundException(
                     $"Could not fetch block with id[{id}] from {nameof(IpfsBlockchainClient)}"
                 );
 
-            return Task.FromResult(FromString(block.Content));
+            ISignedData result = FromString(block.Content);
+            return Task.FromResult(result);
         }
 
         /// <summary>

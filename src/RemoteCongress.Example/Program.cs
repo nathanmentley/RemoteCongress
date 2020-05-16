@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Example
@@ -66,19 +67,19 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var remoteCongressClient = GetClient(serviceProvider);
 
             //create a bill
-            var bill = await remoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content");
+            var bill = await remoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content", CancellationToken.None);
             Output($"created bill[{bill.Id}] {bill.BlockContent}");
 
             //pull the bill from the api
-            bill = await remoteCongressClient.GetBill(bill.Id);
+            bill = await remoteCongressClient.GetBill(bill.Id, CancellationToken.None);
             Output($"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified");
 
             //create a yes vote against the bill
-            var vote = await remoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message");
+            var vote = await remoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message", CancellationToken.None);
             Output($"created vote[{vote.Id}] {vote.BlockContent}");
 
             //pull the newly created vote from the api.
-            vote = await remoteCongressClient.GetVote(vote.Id);
+            vote = await remoteCongressClient.GetVote(vote.Id, CancellationToken.None);
             Output($"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified");
         }
 

@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using RemoteCongress.Common;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Client
@@ -44,7 +45,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        Task<Bill> CreateBill(string privateKey, string publicKey, string title, string content);
+        Task<Bill> CreateBill(string privateKey, string publicKey, string title, string content, CancellationToken cancellationToken);
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -55,7 +56,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        Task<Bill> GetBill(string id);
+        Task<Bill> GetBill(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
@@ -79,7 +80,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        Task<Vote> CreateVote(string privateKey, string publicKey, string billId, bool? opinon, string message);
+        Task<Vote> CreateVote(string privateKey, string publicKey, string billId, bool? opinon, string message, CancellationToken cancellationToken);
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Vote"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -90,6 +91,6 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        Task<Vote> GetVote(string id);
+        Task<Vote> GetVote(string id, CancellationToken cancellationToken);
     }
 }

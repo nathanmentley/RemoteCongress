@@ -17,13 +17,14 @@
 */
 using RemoteCongress.Common.Exceptions;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
     /// </summary>
-    public abstract class BaseRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
+    public abstract class BaseImmutableDataRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
     {
         private readonly IDataClient _client;
         private readonly Func<string, ISignedData, T> _creator;
@@ -43,7 +44,7 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
-        protected BaseRepository(
+        protected BaseImmutableDataRepository(
             IDataClient client,
             Func<string, ISignedData, T> creator
         )
@@ -61,18 +62,26 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="instance">
         /// A signed and verified instance of type <see cref="Bill"/> to persist.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <paramref name="instance"/> model.
         /// </returns>
         /// <exception cref="BlockNotStorableException">
         /// Thrown if the <paramref name="model"/> cannot be stored.
         /// </exception>
-        public async Task<T> Create(T model)
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
+        /// </exception>
+        public async Task<T> Create(T model, CancellationToken cancellationToken)
         {
             var id = await _client.AppendToChain(model);
 
             if (string.IsNullOrWhiteSpace(id))
                 throw new BlockNotStorableException();
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             //Since the _creator should be calling a ctor of a BaseBlockModel
             // we can be sure that this model's signature hash is valid against 
@@ -87,6 +96,9 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="id">
         /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="T"/> instance to fetch.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The immutable, and verified <see cref="Bill"/> instance with an <see cref="IIdentifiable.Id"/>
         ///     of <paramref name="id"/>.
@@ -94,12 +106,17 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="BlockNotFoundException">
         /// Thrown if a block with an id of <paramref name="id"/> cannot be fetched.
         /// </exception>
-        public async Task<T> Fetch(string id)
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
+        /// </exception>
+        public async Task<T> Fetch(string id, CancellationToken cancellationToken)
         {
             var block = await _client.FetchFromChain(id);
 
             if (block is null)
                 throw new BlockNotFoundException();
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             //Since the _creator should be calling a ctor of a BaseBlockModel
             // we can be sure that this model's signature hash is valid against 

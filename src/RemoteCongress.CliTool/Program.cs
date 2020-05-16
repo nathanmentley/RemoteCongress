@@ -22,6 +22,7 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.CliTool
@@ -37,7 +38,7 @@ namespace RemoteCongress.CliTool
                         var client = SetupApp(protocol, hostname);
                         var (privateKey, publicKey) = await SetupKeys(key);
 
-                        var vote = await client.CreateVote(privateKey, publicKey, billId, opinion, message);
+                        var vote = await client.CreateVote(privateKey, publicKey, billId, opinion, message, CancellationToken.None);
 
                         Console.WriteLine($"cast a new vote with id: {vote.Id}.");
                     }
@@ -51,7 +52,7 @@ namespace RemoteCongress.CliTool
                         var client = SetupApp(protocol, hostname);
                         var (privateKey, publicKey) = await SetupKeys(key);
 
-                        var bill = await client.CreateBill(privateKey, publicKey, title, content);
+                        var bill = await client.CreateBill(privateKey, publicKey, title, content, CancellationToken.None);
 
                         Console.WriteLine($"A new bill was submitted with id: {bill.Id}.");
                     }
@@ -64,7 +65,7 @@ namespace RemoteCongress.CliTool
                     async (protocol, hostname, id) => {
                         var client = SetupApp(protocol, hostname);
 
-                        var bill = await client.GetBill(id);
+                        var bill = await client.GetBill(id, CancellationToken.None);
 
                         Console.WriteLine($"found a bill with id: {bill.Id} - Title: {bill.Title}. Content: {bill.Content}");
                     }
@@ -77,7 +78,7 @@ namespace RemoteCongress.CliTool
                     async (protocol, hostname, id) => {
                         var client = SetupApp(protocol, hostname);
 
-                        var vote = await client.GetVote(id);
+                        var vote = await client.GetVote(id, CancellationToken.None);
 
                         Console.WriteLine($"found a vote with id: {vote.Id}. For Bill: {vote.BillId}. Opinon: {vote.Opinion}. Message: {vote.Message}.");
                     }

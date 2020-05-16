@@ -23,7 +23,7 @@ namespace RemoteCongress.Common.Repositories
     /// An abstraction layer implementing <see cref="IBillRepository"/> that fetches and creates
     ///     <see cref="Bill"/> instances.
     /// </summary>
-    public class BillRepository: BaseRepository<Bill>, IBillRepository
+    public class BillRepository: BaseImmutableDataRepository<Bill>, IBillRepository
     {
         /// <summary>
         /// Ctor

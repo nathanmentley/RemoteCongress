@@ -23,7 +23,7 @@ namespace RemoteCongress.Common.Repositories
     /// An abstraction layer implementing <see cref="IVoteRepository"/> that fetches and creates
     ///     <see cref="Vote"/> instances.
     /// </summary>
-    public class VoteRepository: BaseRepository<Vote>, IVoteRepository
+    public class VoteRepository: BaseImmutableDataRepository<Vote>, IVoteRepository
     {
         /// <summary>
         /// Ctor

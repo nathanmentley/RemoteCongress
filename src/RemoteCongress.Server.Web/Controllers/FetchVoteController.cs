@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Controllers
@@ -46,11 +47,9 @@ namespace RemoteCongress.Controllers
         /// </exception>
         public FetchVoteController(
             IVoteRepository voteRepository
-        )
-        {
+        ) =>
             _voteRepository = voteRepository ??
                 throw new ArgumentNullException(nameof(voteRepository));
-        }
 
         /// <summary>
         /// Fetches a <see cref="Vote"/>.
@@ -62,7 +61,7 @@ namespace RemoteCongress.Controllers
         /// The persisted, signed, and validiated <see cref="Vote"/>.
         /// </returns>
         [HttpGet]
-        public async Task<Vote> Get([FromRoute] string id) =>
-            await _voteRepository.Fetch(id);
+        public async Task<Vote> Get([FromRoute] string id, CancellationToken cancellationToken) =>
+            await _voteRepository.Fetch(id, cancellationToken);
     }
 }

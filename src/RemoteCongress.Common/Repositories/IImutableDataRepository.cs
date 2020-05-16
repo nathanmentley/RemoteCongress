@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Repositories
@@ -34,10 +35,13 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="instance">
         /// A signed and verified instance of type <typeparamref name="T"/> to persist.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The persisted <paramref name="instance"/> model.
         /// </returns>
-        Task<T> Create(T instance);
+        Task<T> Create(T instance, CancellationToken cancellationToken);
 
         /// <summary>
         /// Fetches a persisted instance of <typeparamref name="T"/> that has an <see cref="IIdentifiable.Id"/> that
@@ -46,10 +50,13 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="id">
         /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="T"/> instance to fetch.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
         /// <returns>
         /// The immutable, and verified <typeparamref name="T"/> instance with an <see cref="IIdentifiable.Id"/>
         ///     of <paramref name="id"/>.
         /// </returns>
-        Task<T> Fetch(string id);
+        Task<T> Fetch(string id, CancellationToken cancellationToken);
     }
 }

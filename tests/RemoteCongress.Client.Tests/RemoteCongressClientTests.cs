@@ -22,6 +22,7 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.TestData;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Client.Tests
@@ -90,17 +91,17 @@ namespace RemoteCongress.Client.Tests
             var bill = MockData.GetBill(id, "title", "content");
 
             _billRepositoryMock.Setup(
-                repository => repository.Fetch(id)
+                repository => repository.Fetch(id, CancellationToken.None)
             ).ReturnsAsync(bill);
 
             //Act
-            var result = await subject.GetBill(id);
+            var result = await subject.GetBill(id, CancellationToken.None);
 
             //Assert
             result.Should().Be(bill);
 
             _billRepositoryMock.Verify(
-                repository => repository.Fetch(id), Times.Once()
+                repository => repository.Fetch(id, CancellationToken.None), Times.Once()
             );
         }
 
@@ -113,17 +114,17 @@ namespace RemoteCongress.Client.Tests
             var vote = MockData.GetVote(id, "bill id", false, "message");
 
             _voteRepositoryMock.Setup(
-                repository => repository.Fetch(id)
+                repository => repository.Fetch(id, CancellationToken.None)
             ).ReturnsAsync(vote);
 
             //Act
-            var result = await subject.GetVote(id);
+            var result = await subject.GetVote(id, CancellationToken.None);
 
             //Assert
             result.Should().Be(vote);
 
             _voteRepositoryMock.Verify(
-                repository => repository.Fetch(id), Times.Once()
+                repository => repository.Fetch(id, CancellationToken.None), Times.Once()
             );
         }
 
@@ -136,13 +137,13 @@ namespace RemoteCongress.Client.Tests
             var content = "content";
 
             //Act
-            await subject.CreateBill(MockData.PrivateKey, MockData.PublicKey, title, content);
+            await subject.CreateBill(MockData.PrivateKey, MockData.PublicKey, title, content, CancellationToken.None);
 
             //Assert
             _billRepositoryMock.Verify(
                 repository => repository.Create(It.Is<Bill>(
                     bill => bill.Title.Equals(title) && bill.Content.Equals(content)
-                ))
+                ), CancellationToken.None)
             );
         }
 
@@ -156,7 +157,7 @@ namespace RemoteCongress.Client.Tests
             var message = "message";
 
             //Act
-            await subject.CreateVote(MockData.PrivateKey, MockData.PublicKey, billId, opinion, message);
+            await subject.CreateVote(MockData.PrivateKey, MockData.PublicKey, billId, opinion, message, CancellationToken.None);
 
             //Assert
             _voteRepositoryMock.Verify(
@@ -164,7 +165,7 @@ namespace RemoteCongress.Client.Tests
                     vote => vote.BillId.Equals(billId) &&
                         vote.Opinion.Equals(opinion) &&
                         vote.Message.Equals(message)
-                ))
+                ), CancellationToken.None)
             );
         }
     }

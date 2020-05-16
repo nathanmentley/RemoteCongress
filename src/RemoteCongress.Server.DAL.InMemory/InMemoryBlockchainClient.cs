@@ -49,7 +49,8 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// </returns>
         public Task<string> AppendToChain(ISignedData data)
         {
-            var block = _blockchain.AppendToChain(FromSignedData(data));
+            string blockContent = FromSignedData(data);
+            InMemoryBlock block = _blockchain.AppendToChain(blockContent);
 
             return Task.FromResult(block.Id);
         }

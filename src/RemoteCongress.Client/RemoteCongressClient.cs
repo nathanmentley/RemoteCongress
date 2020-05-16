@@ -20,6 +20,7 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Client
@@ -82,7 +83,8 @@ namespace RemoteCongress.Client
             string privateKey,
             string publicKey,
             string title,
-            string content
+            string content,
+            CancellationToken cancellationToken
         )
         {
             var blockContent = JToken.FromObject(new {
@@ -98,7 +100,7 @@ namespace RemoteCongress.Client
 
             var bill = new Bill(signedData);
 
-            return await _billRepository.Create(bill);
+            return await _billRepository.Create(bill, cancellationToken);
         }
 
         /// <summary>
@@ -110,8 +112,8 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        public async Task<Bill> GetBill(string id) =>
-            await _billRepository.Fetch(id);
+        public async Task<Bill> GetBill(string id, CancellationToken cancellationToken) =>
+            await _billRepository.Fetch(id, cancellationToken);
 
         /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
@@ -140,7 +142,8 @@ namespace RemoteCongress.Client
             string publicKey,
             string billId,
             bool? opinion,
-            string message
+            string message,
+            CancellationToken cancellationToken
         )
         {
             var blockContent = JToken.FromObject(new {
@@ -157,7 +160,7 @@ namespace RemoteCongress.Client
 
             var vote = new Vote(signedData);
 
-            return await _voteRepository.Create(vote);
+            return await _voteRepository.Create(vote, cancellationToken);
         }
 
         /// <summary>
@@ -169,7 +172,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        public async Task<Vote> GetVote(string id) =>
-            await _voteRepository.Fetch(id);
+        public async Task<Vote> GetVote(string id, CancellationToken cancellationToken) =>
+            await _voteRepository.Fetch(id, cancellationToken);
     }
 }

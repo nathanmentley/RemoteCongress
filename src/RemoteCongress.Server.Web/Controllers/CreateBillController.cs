@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Controllers
@@ -43,11 +44,9 @@ namespace RemoteCongress.Controllers
         /// </exception>
         public CreateBillController(
             IBillRepository billRepository
-        )
-        {
+        ) =>
             _billRepository = billRepository ??
                 throw new ArgumentNullException(nameof(billRepository));
-        }
 
         /// <summary>
         /// Persists a <see cref="Bill"/>.
@@ -59,7 +58,7 @@ namespace RemoteCongress.Controllers
         /// The persisted, signed, and validiated <see cref="Bill"/>.
         /// </returns>
         [HttpPost]
-        public async Task<Bill> Post([FromBody] Bill bill) =>
-            await _billRepository.Create(bill);
+        public async Task<Bill> Post([FromBody] Bill bill, CancellationToken cancellationToken) =>
+            await _billRepository.Create(bill, cancellationToken);
     }
 }

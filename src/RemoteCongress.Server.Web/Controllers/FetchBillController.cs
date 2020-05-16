@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Controllers
@@ -43,11 +44,9 @@ namespace RemoteCongress.Controllers
         /// </exception>
         public FetchBillController(
             IBillRepository billRepository
-        )
-        {
+        ) =>
             _billRepository = billRepository ??
                 throw new ArgumentNullException(nameof(billRepository));
-        }
 
         /// <summary>
         /// Fetches a <see cref="Bill"/>.
@@ -59,7 +58,7 @@ namespace RemoteCongress.Controllers
         /// The persisted, signed, and validiated <see cref="Bill"/>.
         /// </returns>
         [HttpGet]
-        public async Task<Bill> Get([FromRoute] string id) =>
-            await _billRepository.Fetch(id);
+        public async Task<Bill> Get([FromRoute] string id, CancellationToken cancellationToken) =>
+            await _billRepository.Fetch(id, cancellationToken);
     }
 }
