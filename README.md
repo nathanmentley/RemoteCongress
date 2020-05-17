@@ -1,4 +1,4 @@
-# RemoteCongress
+# RemoteCongress ![Build Status](https://github.com/nathanmentley/RemoteCongress/workflows/Build%20Status/badge.svg?branch=master)
 
 A proof of concept platform for conducting small scale public voting remotely and securely.
 
