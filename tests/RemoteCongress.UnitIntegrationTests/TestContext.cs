@@ -1,8 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
+using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL.InMemory;
 using RemoteCongress.Server.Web.Controllers;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RemoteCongress.UnitIntegrationTests
 {
@@ -41,6 +44,24 @@ namespace RemoteCongress.UnitIntegrationTests
 
         public FetchVoteController GetFetchVoteController() =>
             _provider.GetRequiredService<FetchVoteController>();
+
+        public async Task<string> SeedBill(Bill bill)
+        {
+            CreateBillController controller = GetCreateBillController();
+
+            Bill result = await controller.Post(bill, CancellationToken.None);
+
+            return result.Id;
+        }
+
+        public async Task<string> SeedVote(Vote vote)
+        {
+            SubmitVoteController controller = GetSubmitVoteController();
+
+            Vote result = await controller.Post(vote, CancellationToken.None);
+
+            return result.Id;
+        }
 
         public void Dispose() => _provider.Dispose();
     }
