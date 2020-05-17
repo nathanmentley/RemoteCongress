@@ -2,7 +2,7 @@
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
 
-namespace RemoteCongress.TestData
+namespace RemoteCongress.Tests
 {
     public class MockData
     {

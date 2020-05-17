@@ -17,7 +17,7 @@ namespace RemoteCongress.UnitIntegrationTests
             // Arrange
             using TestContext context = TestContext.Create();
             CreateBillController subject = context.GetCreateBillController();
-            Bill bill = TestData.MockData.GetBill("title", "content");
+            Bill bill = MockData.GetBill("title", "content");
 
             //Act
             Bill result = await subject.Post(bill, CancellationToken.None);
@@ -38,7 +38,7 @@ namespace RemoteCongress.UnitIntegrationTests
             tokenSource.Cancel();
 
             CreateBillController subject = context.GetCreateBillController();
-            Bill bill = TestData.MockData.GetBill("title", "content");
+            Bill bill = MockData.GetBill("title", "content");
 
             Func<Task> action = async () =>
                 await subject.Post(bill, tokenSource.Token);

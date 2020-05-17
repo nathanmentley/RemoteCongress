@@ -17,7 +17,7 @@ namespace RemoteCongress.UnitIntegrationTests
             // Arrange
             using TestContext context = TestContext.Create();
             SubmitVoteController subject = context.GetSubmitVoteController();
-            Vote vote = TestData.MockData.GetVote("billId", true, "message");
+            Vote vote = MockData.GetVote("billId", true, "message");
 
             //Act
             Vote result = await subject.Post(vote, CancellationToken.None);
@@ -39,7 +39,7 @@ namespace RemoteCongress.UnitIntegrationTests
             tokenSource.Cancel();
 
             SubmitVoteController subject = context.GetSubmitVoteController();
-            Vote vote = TestData.MockData.GetVote("billId", true, "message");
+            Vote vote = MockData.GetVote("billId", true, "message");
 
             Func<Task> action = async () =>
                 await subject.Post(vote, tokenSource.Token);

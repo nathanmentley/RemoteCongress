@@ -15,16 +15,35 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RemoteCongress.Common.Encryption;
 
-namespace RemoteCongress.Server.Web.Tests
+namespace RemoteCongress.Tests.Common.Encyption
 {
     [TestClass]
-    public class UnitTest1
+    public class RsaUtilsTests
     {
+        [DynamicData(
+            nameof(RsaUtilsTestData.EncryptionTests),
+            typeof(RsaUtilsTestData),
+            DynamicDataSourceType.Property
+        )]
         [TestMethod]
-        public void TestMethod1()
+        public void RsaPrivateKeyEncryptionRoundTrip(string privateKey, string publicKey, string message)
         {
+            //Arrange
+            //Act
+            var verification = RsaUtils.VerifySignature(
+                publicKey,
+                message,
+                RsaUtils.GenerateSignature(privateKey, message)
+            );
+
+            //Assert
+            verification
+                .Should()
+                .BeTrue();
         }
     }
 }

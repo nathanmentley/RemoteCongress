@@ -18,14 +18,14 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using RemoteCongress.Client;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
-using RemoteCongress.TestData;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Client.Tests
+namespace RemoteCongress.Tests.Client
 {
     [TestClass]
     public class RemoteCongressClientTests

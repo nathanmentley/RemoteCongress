@@ -17,7 +17,7 @@
 */
 using System.Collections.Generic;
 
-namespace RemoteCongress.Common.Tests.Encyption
+namespace RemoteCongress.Tests.Common.Encyption
 {
     public static class RsaUtilsTestData
     {
