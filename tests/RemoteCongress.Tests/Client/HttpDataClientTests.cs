@@ -18,10 +18,12 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Moq.Protected;
+using Newtonsoft.Json;
 using RemoteCongress.Client;
 using RemoteCongress.Common;
-using RemoteCongress.Common.Repositories;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,17 +33,33 @@ namespace RemoteCongress.Tests.Client
     [TestClass]
     public class HttpDataClientTests
     {
-        /*
-        private readonly Mock<IBillRepository> _billRepositoryMock =
-            new Mock<IBillRepository>();
+        private readonly Mock<HttpMessageHandler> handlerMock =
+            new Mock<HttpMessageHandler>(MockBehavior.Strict);
+ 
+        private HttpClient GetClient(HttpResponseMessage response)
+        {
+            handlerMock
+               .Protected()
+               // Setup the PROTECTED method to mock
+               .Setup<Task<HttpResponseMessage>>(
+                  "SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>()
+               )
+               // prepare the expected response of the mocked http call
+               .ReturnsAsync(response)
+               .Verifiable();
 
-        private readonly Mock<IVoteRepository> _voteRepositoryMock =
-            new Mock<IVoteRepository>();
-        */
-        private HttpDataClient GetSubject() =>
+            return new HttpClient(handlerMock.Object)
+            {
+               BaseAddress = new Uri("http://localhost/"),
+            };
+        }
+
+        private HttpDataClient GetSubject(HttpResponseMessage response) =>
             new HttpDataClient(
                 new ClientConfig("http", "localhost"),
-                new HttpClient(),
+                GetClient(response),
                 "endpoint"
             );
 
@@ -112,7 +130,12 @@ namespace RemoteCongress.Tests.Client
         public void AppendToChainThrowsIfCancelled()
         {
             //arrange
-            HttpDataClient subject = GetSubject();
+            HttpResponseMessage response = new HttpResponseMessage()
+            {
+               StatusCode = HttpStatusCode.OK,
+               Content = new StringContent("[{'id':1,'value':'1'}]"),
+            };
+            HttpDataClient subject = GetSubject(response);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
 
@@ -128,15 +151,41 @@ namespace RemoteCongress.Tests.Client
         }
 
         [TestMethod]
+        public async Task AppendToChainSucess()
+        {
+            //arrange
+            HttpResponseMessage response = new HttpResponseMessage()
+            {
+               StatusCode = HttpStatusCode.OK,
+               Content = new StringContent("{'id':'abc'}"),
+            };
+            HttpDataClient subject = GetSubject(response);
+
+            //act
+            string id = await subject.AppendToChain(
+                MockData.GetBill("title", "content"),
+                CancellationToken.None
+            );
+
+            //assert
+            id.Should().Be("abc");
+        }
+
+        [TestMethod]
         public void FetchFromChainThrowsIfCancelled()
         {
             //arrange
-            HttpDataClient subject = GetSubject();
+            HttpResponseMessage response = new HttpResponseMessage()
+            {
+               StatusCode = HttpStatusCode.OK,
+               Content = new StringContent("{'id':1}"),
+            };
+            HttpDataClient subject = GetSubject(response);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
 
             Func<Task> action = async () =>
-                await subject.FetchFromChain("data", cancellationTokenSource.Token);
+                await subject.FetchFromChain("id", cancellationTokenSource.Token);
 
             //act
             action
@@ -144,6 +193,34 @@ namespace RemoteCongress.Tests.Client
             //assert
                 .Should()
                 .Throw<OperationCanceledException>();
+        }
+
+        [TestMethod]
+        public async Task FetchFromChainSuccess()
+        {
+            //arrange
+            HttpResponseMessage response = new HttpResponseMessage()
+            {
+               StatusCode = HttpStatusCode.OK,
+               Content = new StringContent(
+                    JsonConvert.SerializeObject(
+                        new SignedData(
+                            MockData.GetBill("id", "title", "content")
+                        )
+                    )
+               ),
+            };
+            HttpDataClient subject = GetSubject(response);
+
+            //act
+            ISignedData result = await subject.FetchFromChain("id", CancellationToken.None);
+            Bill bill = new Bill(result);
+
+            //assert
+            bill.Id.Should().Be("id");
+            bill.Title.Should().Be("title");
+            bill.Content.Should().Be("content");
+            result.IsValid.Should().BeTrue();
         }
     }
 }

@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Common.Repositories
 {
@@ -23,6 +24,7 @@ namespace RemoteCongress.Common.Repositories
     /// An abstraction layer implementing <see cref="IVoteRepository"/> that fetches and creates
     ///     <see cref="Vote"/> instances.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class VoteRepository: BaseImmutableDataRepository<Vote>, IVoteRepository
     {
         /// <summary>

@@ -17,12 +17,14 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Common.Repositories;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
 namespace RemoteCongress.Client
 {
     /// <summary>
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class IServiceCollectionExtensions
     {
         private static readonly string BillEndpoint = "bill";
