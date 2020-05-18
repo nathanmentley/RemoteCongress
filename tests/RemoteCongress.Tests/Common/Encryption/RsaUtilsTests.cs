@@ -18,6 +18,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RemoteCongress.Common.Encryption;
+using System;
 
 namespace RemoteCongress.Tests.Common.Encyption
 {
@@ -44,6 +45,109 @@ namespace RemoteCongress.Tests.Common.Encyption
             verification
                 .Should()
                 .BeTrue();
+        }
+
+        [TestMethod]
+        public void GenerateSignatureThrowsNullForNullPublicKey()
+        {
+            //Arrange
+            Func<byte[]> action = () =>
+                RsaUtils.GenerateSignature(
+                    null,
+                    "message"
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                    .Be("privateKey");
+        }
+
+        [TestMethod]
+        public void GenerateSignatureThrowsNullForNullMessage()
+        {
+            //Arrange
+            Func<byte[]> action = () =>
+                RsaUtils.GenerateSignature(
+                    "private key",
+                    null
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                    .Be("message");
+        }
+
+        [TestMethod]
+        public void VerifySignatureThrowsNullForNullPublicKey()
+        {
+            //Arrange
+            Func<bool> action = () =>
+                RsaUtils.VerifySignature(
+                    null,
+                    "message",
+                    new byte[] {}
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                    .Be("publicKey");
+        }
+
+        [TestMethod]
+        public void VerifySignatureThrowsNullForNullMessage()
+        {
+            //Arrange
+            Func<bool> action = () =>
+                RsaUtils.VerifySignature(
+                    "public key",
+                    null,
+                    new byte[] {}
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                    .Be("message");
+        }
+
+        [TestMethod]
+        public void VerifySignatureThrowsNullForNullSignature()
+        {
+            //Arrange
+            Func<bool> action = () =>
+                RsaUtils.VerifySignature(
+                    "public key",
+                    "message",
+                    null
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                    .Be("signatureBytes");
         }
     }
 }
