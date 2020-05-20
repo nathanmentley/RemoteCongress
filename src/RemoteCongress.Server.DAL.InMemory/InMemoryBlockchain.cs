@@ -38,31 +38,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         ///     * Every <see cref="InMemoryBlockchain"/>'s <see cref="InMemoryBlockchain.LastBlockHash"/> matches the
         ///         previous <see cref="InMemoryBlockchain"/>'s <see cref="InMemoryBlockchain.Hash"/>.
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                foreach(var i in Enumerable.Range(1, _blocks.Count))
-                {
-                    var current = _blocks[i];
-                    var previous = _blocks[i - 1];
-
-                    if (!current.IsValid)
-                        return false;
-
-                    if (
-                        !string.Equals(
-                            current.LastBlockHash,
-                            previous.Hash,
-                            StringComparison.InvariantCulture
-                        )
-                    )
-                        return false;
-                }
-
-                return true;
-            }
-        }
+        public bool IsValid => !_blocks.Any(block => !block.IsValid);
 
         /// <summary>
         /// Appends data to the blockchain.

@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,6 +54,9 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// </returns>
         public Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+
             cancellationToken.ThrowIfCancellationRequested();
 
             string blockContent = FromSignedData(data);
@@ -75,6 +79,9 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// </returns>
         public Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+
             cancellationToken.ThrowIfCancellationRequested();
 
             var block = _blockchain.FetchFromChain(id);

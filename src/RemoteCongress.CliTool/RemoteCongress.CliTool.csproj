@@ -13,4 +13,10 @@
   <ItemGroup>
     <ProjectReference Include="..\RemoteCongress.Client\RemoteCongress.Client.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+    <_Parameter1>RemoteCongress.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

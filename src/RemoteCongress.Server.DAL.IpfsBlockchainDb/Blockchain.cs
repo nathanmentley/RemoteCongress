@@ -59,31 +59,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         ///     * Every <see cref="Blockchain"/>'s <see cref="Blockchain.LastBlockHash"/> matches the
         ///         previous <see cref="Blockchain"/>'s <see cref="Blockchain.Hash"/>.
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                foreach(int i in Enumerable.Range(1, _blocks.Count))
-                {
-                    Block current = _blocks.ElementAt(i);
-                    Block previous = _blocks.ElementAt(i - 1);
-
-                    if (!current.IsValid)
-                        return false;
-
-                    if (
-                        !string.Equals(
-                            current.LastBlockHash,
-                            previous.Hash,
-                            StringComparison.InvariantCulture
-                        )
-                    )
-                        return false;
-                }
-
-                return true;
-            }
-        }
+        public bool IsValid => !_blocks.Any(block => !block.IsValid);
 
         /// <summary>
         /// Ctor

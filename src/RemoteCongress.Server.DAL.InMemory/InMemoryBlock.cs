@@ -46,7 +46,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <summary>
         /// The raw content of the block.
         /// </summary>
-        internal string Content { get; }
+        internal string Content { get; private set; }
         
         /// <summary>
         /// The SHA256 hash of the concatinated:
@@ -55,7 +55,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         ///     * <see cref="LastBlockHash"/>
         ///     * <see cref="Content"/>
         /// </summary>
-        internal string Hash { get; }
+        internal string Hash { get; private set; }
 
         /// <summary>
         /// An <see cref="InMemoryBlock"/> is valid if the <see cref="Hash"/> equals the result from <see cref="GenerateHash"/>.
