@@ -16,11 +16,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Ipfs;
-using Ipfs.Engine;
+using Ipfs.CoreApi;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -37,20 +36,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     /// </remarks>
     internal class Blockchain
     {
-        private readonly static string BaseDirectoryPath = 
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-        private readonly static string RelativeDataDirectoryPath =
-            ".remote_congress/ipfs";
-
-        private readonly static string AbsoluteDataDirectoryPath =
-            Path.Combine(
-                BaseDirectoryPath,
-                RelativeDataDirectoryPath
-            );
-
-        private readonly IpfsEngine _engine;
-
+        private readonly ICoreApi _engine;
         private readonly IList<Block> _blocks;
 
         /// <summary>
@@ -67,12 +53,12 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="config">
         /// An <see cref="IpfsBlockchainConfig"/> instance to use to configure Ipfs
         /// </param>
-        internal Blockchain(IpfsBlockchainConfig config)
+        internal Blockchain(ICoreApi coreApi, IpfsBlockchainConfig config)
         {
-            if (config is null)
-                throw new ArgumentNullException(nameof(config));
+            if (coreApi is null)
+                throw new ArgumentNullException(nameof(coreApi));
 
-            _engine = new IpfsEngine(config.Password.ToCharArray());
+            _engine = coreApi;//new IpfsEngine(config.Password.ToCharArray());
             _blocks = new List<Block>();
 
             AsyncContext.Run(async () => await InitializeIpfs(config));
@@ -83,12 +69,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </summary>
         private async Task InitializeIpfs(IpfsBlockchainConfig config)
         {
-            // Set the repository
-            _engine.Options.Repository.Folder = AbsoluteDataDirectoryPath;
-
-            // Start the engine.
-            await _engine.StartAsync();
-
             // Setup blockchain from previous latest in node. or create a new chain.
             if (string.IsNullOrWhiteSpace(config.LastBlockId))
             {

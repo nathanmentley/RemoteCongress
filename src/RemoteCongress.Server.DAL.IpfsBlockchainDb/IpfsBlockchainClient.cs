@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
@@ -42,12 +43,15 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public IpfsBlockchainClient(IpfsBlockchainConfig config)
+        public IpfsBlockchainClient(ICoreApi coreApi, IpfsBlockchainConfig config)
         {
+            if (coreApi is null)
+                throw new ArgumentNullException(nameof(coreApi));
+
             if (config is null)
                 throw new ArgumentNullException(nameof(config));
 
-            _blockchain = new Blockchain(config);
+            _blockchain = new Blockchain(coreApi, config);
         }
 
         /// <summary>

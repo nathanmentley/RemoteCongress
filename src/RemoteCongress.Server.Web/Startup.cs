@@ -15,11 +15,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Ipfs.CoreApi;
+using Ipfs.Engine;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Nito.AsyncEx;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
 using RemoteCongress.Server.Web.Formatters;
@@ -43,7 +46,20 @@ namespace RemoteCongress.Server.Web
                 .Get<IpfsBlockchainConfig>();
 
             services
-                .AddSingleton<IDataClient>(new IpfsBlockchainClient(ipfsConfig))
+                .AddSingleton<IpfsBlockchainConfig>(ipfsConfig)
+                .AddSingleton<ICoreApi>(provider => {
+                    IpfsBlockchainConfig config = provider.GetRequiredService<IpfsBlockchainConfig>();
+                    IpfsEngine engine = new IpfsEngine(config.Password.ToCharArray());
+
+                    AsyncContext.Run(async () => {
+                        engine.Options.Repository.Folder = config.AbsoluteDataDirectoryPath;
+                        await engine.StartAsync();
+                    });
+
+                    return engine;
+                })
+
+                .AddSingleton<IDataClient, IpfsBlockchainClient>()
 
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()

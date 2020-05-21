@@ -15,7 +15,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
@@ -25,6 +27,21 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     [ExcludeFromCodeCoverage]
     public class IpfsBlockchainConfig
     {
+        private readonly static string BaseDirectoryPath = 
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+        private readonly static string RelativeDataDirectoryPath =
+            ".remote_congress/ipfs";
+
+        /// <summary>
+        /// </summary>
+        public readonly string AbsoluteDataDirectoryPath =
+            Path.Combine(
+                BaseDirectoryPath,
+                RelativeDataDirectoryPath
+            );
+
+
         /// <summary>
         /// The ending <see cref="Block.Id"/>  of the <see cref="Blockchain" />
         /// </summary>
