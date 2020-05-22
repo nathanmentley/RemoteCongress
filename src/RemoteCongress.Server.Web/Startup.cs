@@ -26,9 +26,11 @@ using Nito.AsyncEx;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
 using RemoteCongress.Server.Web.Formatters;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IConfiguration _configuration;

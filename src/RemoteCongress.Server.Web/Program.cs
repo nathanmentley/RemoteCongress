@@ -18,9 +18,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         public static void Main(string[] args) =>
