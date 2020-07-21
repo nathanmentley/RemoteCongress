@@ -17,6 +17,7 @@
 */
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 
 namespace RemoteCongress.Common.Repositories
 {
@@ -30,13 +31,16 @@ namespace RemoteCongress.Common.Repositories
         /// <summary>
         /// Ctor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> to use for logging.
+        /// </param>
         /// <param name="client">
         /// An <see cref="IBlockchainClient"/> implementation to be used to store and fetch <see cref="ISignedData"/>.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="client"/> is null.
         /// </exception>
-        public BillRepository(IDataClient client):
-            base(client, (id, data) => new Bill(id, data)) {}
+        public BillRepository(ILogger<BillRepository> logger, IDataClient client):
+            base(logger, client, (id, data) => new Bill(id, data)) {}
     }
 }

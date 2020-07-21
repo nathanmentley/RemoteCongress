@@ -15,19 +15,22 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web.Formatters
 {
     /// <summary>
     /// Reads and validates a signed <see cref="Bill"/> from the input.
     /// </summary>
-    public class BillInputFormatter: BaseInputFormatter<Bill>
+    [ExcludeFromCodeCoverage]
+    public sealed class BillInputFormatter: BaseInputFormatter<Bill>
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        public BillInputFormatter(): base() {}
+        public BillInputFormatter(ILogger<BillInputFormatter> logger): base(logger) {}
 
         /// <summary>
         /// Converts from a <see cref="SignedData"/> to a <see cref="Bill"/>.

@@ -23,17 +23,17 @@ namespace RemoteCongress.Common.Repositories
     /// <summary>
     /// An interface defining what operations can happen for persisted immutable data types.
     /// </summary>
-    /// <typeparam name="T">
+    /// <typeparam name="TBlock">
     /// A type that inherits from <see cref="BaseBlockModel"/>. So we know it's signed, and immutable.
     /// </typeparam>
-    public interface IImmutableDataRepository<T>
-        where T: BaseBlockModel
+    public interface IImmutableDataRepository<TBlock>
+        where TBlock: BaseBlockModel
     {
         /// <summary>
         /// Creates and persist the signed and verified <paramref name="instance"/>.
         /// </summary>
         /// <param name="instance">
-        /// A signed and verified instance of type <typeparamref name="T"/> to persist.
+        /// A signed and verified instance of type <typeparamref name="TBlock"/> to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -41,22 +41,22 @@ namespace RemoteCongress.Common.Repositories
         /// <returns>
         /// The persisted <paramref name="instance"/> model.
         /// </returns>
-        Task<T> Create(T instance, CancellationToken cancellationToken);
+        Task<TBlock> Create(TBlock instance, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Fetches a persisted instance of <typeparamref name="T"/> that has an <see cref="IIdentifiable.Id"/> that
+        /// Fetches a persisted instance of <typeparamref name="TBlock"/> that has an <see cref="IIdentifiable.Id"/> that
         ///     matches <paramref name="id"/>.
         /// </summary>
         /// <param name="id">
-        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="T"/> instance to fetch.
+        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="TBlock"/> instance to fetch.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The immutable, and verified <typeparamref name="T"/> instance with an <see cref="IIdentifiable.Id"/>
+        /// The immutable, and verified <typeparamref name="TBlock"/> instance with an <see cref="IIdentifiable.Id"/>
         ///     of <paramref name="id"/>.
         /// </returns>
-        Task<T> Fetch(string id, CancellationToken cancellationToken);
+        Task<TBlock> Fetch(string id, CancellationToken cancellationToken);
     }
 }

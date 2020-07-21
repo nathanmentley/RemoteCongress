@@ -68,10 +68,13 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+
             cancellationToken.ThrowIfCancellationRequested();
 
             string blockContent = FromSignedData(data);
-            Block block = await _blockchain.AppendToChain(blockContent);
+            Block block = await _blockchain.AppendToChain(blockContent, cancellationToken);
 
             return block.Id;
         }
@@ -90,6 +93,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         public Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+
             cancellationToken.ThrowIfCancellationRequested();
 
             Block block = _blockchain.FetchFromChain(id);

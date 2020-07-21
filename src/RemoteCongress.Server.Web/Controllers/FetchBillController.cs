@@ -18,7 +18,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Server.Web.Exceptions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,7 +55,10 @@ namespace RemoteCongress.Server.Web.Controllers
                 throw new ArgumentNullException(nameof(logger));
 
             _billRepository = billRepository ??
-                throw new ArgumentNullException(nameof(billRepository));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(billRepository))
+                );
         }
 
         /// <summary>
@@ -68,6 +73,8 @@ namespace RemoteCongress.Server.Web.Controllers
         [HttpGet]
         public async Task<Bill> Get([FromRoute] string id, CancellationToken cancellationToken)
         {
+            Validate(id, cancellationToken);
+
             _logger.LogTrace(
                 "{controller}.{endpoint} called with {id}",
                 nameof(FetchBillController),
@@ -76,6 +83,32 @@ namespace RemoteCongress.Server.Web.Controllers
             );
 
             return await _billRepository.Fetch(id, cancellationToken);
+        }
+
+        /// <summary>
+        /// Ensures that a fetch bill request is valid.
+        /// </summary>
+        /// <param name="id">
+        /// An id of a <see cref="Bill"/> to fetch.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="id"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is null.
+        /// </exception>
+        private void Validate(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new MissingPathParameterException()
+                );
+
+            cancellationToken.ThrowIfCancellationRequested();
         }
     }
 }

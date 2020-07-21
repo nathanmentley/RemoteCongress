@@ -15,9 +15,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
 using System;
 using System.Threading;
@@ -30,12 +32,16 @@ namespace RemoteCongress.Client
     /// </summary>
     public class RemoteCongressClient: IRemoteCongressClient
     {
+        private readonly ILogger<RemoteCongressClient> _logger;
         private readonly IBillRepository _billRepository;
         private readonly IVoteRepository _voteRepository;
 
         /// <summary>
         /// Ctor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> to log against.
+        /// </param>
         /// <param name="billRepository">
         /// An <see cref="IBillRepository"/> instance to use to interact with <see cref="Bill"/>s.
         /// </param>
@@ -49,15 +55,25 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="voteRepository"/> is null.
         /// </exception>
         public RemoteCongressClient(
+            ILogger<RemoteCongressClient> logger,
             IBillRepository billRepository,
             IVoteRepository voteRepository
         )
         {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
             _billRepository = billRepository ??
-                throw new ArgumentNullException(nameof(billRepository));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(billRepository))
+                );
 
             _voteRepository = voteRepository ??
-                throw new ArgumentNullException(nameof(voteRepository));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(voteRepository))
+                );
         }
 
         /// <summary>

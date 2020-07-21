@@ -17,6 +17,7 @@
 */
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
@@ -36,11 +37,16 @@ namespace RemoteCongress.Server.Web.Formatters
     public abstract class BaseOutputFormatter<TSignedData>: TextOutputFormatter
         where TSignedData: BaseBlockModel
     {
+        private readonly ILogger _logger;
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseOutputFormatter()
+        public BaseOutputFormatter(ILogger logger)
         {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
 
             SupportedEncodings.Add(Encoding.UTF8);

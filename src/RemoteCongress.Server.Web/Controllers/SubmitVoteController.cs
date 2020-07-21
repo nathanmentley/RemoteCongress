@@ -18,7 +18,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Server.Web.Exceptions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,13 +55,16 @@ namespace RemoteCongress.Server.Web.Controllers
                 throw new ArgumentNullException(nameof(logger));
 
             _voteRepository = voteRepository ??
-                throw new ArgumentNullException(nameof(voteRepository));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(voteRepository))
+                );
         }
 
         /// <summary>
         /// Persists a <see cref="Vote"/>.
         /// </summary>
-        /// <param name="bill">
+        /// <param name="vote">
         /// The <see cref="Vote"/> to persist.
         /// </param>
         /// <returns>
@@ -68,6 +73,8 @@ namespace RemoteCongress.Server.Web.Controllers
         [HttpPost]
         public async Task<Vote> Post([FromBody] Vote vote, CancellationToken cancellationToken)
         {
+            Validate(vote, cancellationToken);
+
             _logger.LogTrace(
                 "{controller}.{endpoint} called with {vote}",
                 nameof(SubmitVoteController),
@@ -76,6 +83,32 @@ namespace RemoteCongress.Server.Web.Controllers
             );
 
             return await _voteRepository.Create(vote, cancellationToken);
+        }
+
+        /// <summary>
+        /// Ensures that a submit vote request is valid.
+        /// </summary>
+        /// <param name="vote">
+        /// A <see cref="Vote"/> to persist.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="vote"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is null.
+        /// </exception>
+        private void Validate(Vote vote, CancellationToken cancellationToken)
+        {
+            if (vote is null)
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new MissingBodyException()
+                );
+
+            cancellationToken.ThrowIfCancellationRequested();
         }
     }
 }

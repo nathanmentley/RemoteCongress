@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
+using RemoteCongress.Common;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -61,13 +62,14 @@ kwMRyHisc6diIMoNAgMBAAE=";
         public static async Task Main(string[] args)
         {
             //Setup client in DI
-            using var serviceProvider = GetServiceProvider();
+            using ServiceProvider serviceProvider = GetServiceProvider();
             
             // pull out the client from DI
-            var remoteCongressClient = GetClient(serviceProvider);
+            IRemoteCongressClient remoteCongressClient =
+                serviceProvider.GetService<IRemoteCongressClient>();
 
             //create a bill
-            var bill = await remoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content", CancellationToken.None);
+            Bill bill = await remoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content", CancellationToken.None);
             Output($"created bill[{bill.Id}] {bill.BlockContent}");
 
             //pull the bill from the api
@@ -75,7 +77,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
             Output($"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified");
 
             //create a yes vote against the bill
-            var vote = await remoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message", CancellationToken.None);
+            Vote vote = await remoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message", CancellationToken.None);
             Output($"created vote[{vote.Id}] {vote.BlockContent}");
 
             //pull the newly created vote from the api.
@@ -93,15 +95,6 @@ kwMRyHisc6diIMoNAgMBAAE=";
             new ServiceCollection()
                 .AddRemoteCongressClient(new ClientConfig(Protocol, HostName))
                 .BuildServiceProvider();
-
-        /// <summary>
-        /// Fetches an <see cref="IRemoteCongressClient"/> from a configured <see cref="IServiceProvider"/>.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="IRemoteCongressClient"/> implementation that is configured in <paramref name="serviceProvider"/>.
-        /// </returns>
-        private static IRemoteCongressClient GetClient(IServiceProvider serviceProvider) =>
-            serviceProvider.GetService<IRemoteCongressClient>();
 
         /// <summary>
         /// <see cref="Console.WriteLine"/> with an extra <see cref="Environment.NewLine"/>.

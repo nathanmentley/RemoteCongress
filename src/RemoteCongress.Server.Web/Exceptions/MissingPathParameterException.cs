@@ -15,32 +15,42 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using Microsoft.Extensions.Logging;
-using RemoteCongress.Common;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RemoteCongress.Server.Web.Formatters
+namespace RemoteCongress.Server.Web.Exceptions
 {
     /// <summary>
-    /// Reads and validates a signed <see cref="Vote"/> from the input.
+    /// An <see cref="Exception"/> to throw when a path parameter is missing.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public sealed class VoteInputFormatter: BaseInputFormatter<Vote>
+    public class MissingPathParameterException: Exception
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        public VoteInputFormatter(ILogger<VoteInputFormatter> logger): base(logger) {}
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        /// <param name="innerException">
+        /// Another exception that brought this exception to light.
+        /// </param>
+        public MissingPathParameterException(string message, Exception innerException):
+            base(message, innerException) {}
 
         /// <summary>
-        /// Converts from a <see cref="SignedData"/> to a <see cref="Vote"/>.
+        /// Constructor
         /// </summary>
-        /// <param name="data">
-        /// The <see cref="SignedData"/> containing the data to convert.
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
         /// </param>
-        /// <returns>
-        /// The validated, and signed <see cref="Vote"/>.
-        /// </returns>
-        protected override Vote FromSignedData(SignedData data) => new Vote(data);
+        public MissingPathParameterException(string message):
+            base(message) {}
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public MissingPathParameterException():
+            base() {}
     }
 }

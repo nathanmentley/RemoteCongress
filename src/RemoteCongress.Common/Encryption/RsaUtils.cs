@@ -57,7 +57,7 @@ namespace RemoteCongress.Common.Encryption
             if (string.IsNullOrWhiteSpace(message))
                 throw new ArgumentNullException(nameof(message));
 
-            var converter = GetEncoding();
+            Encoding converter = GetEncoding();
             byte[] privateKeyBytes = Convert.FromBase64String(privateKey);
             byte[] messageBytes = converter.GetBytes(message);
 

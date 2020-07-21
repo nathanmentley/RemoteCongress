@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
@@ -38,6 +39,7 @@ namespace RemoteCongress.Client
     /// </remarks>
     public class HttpDataClient: IDataClient
     {
+        private readonly ILogger<HttpDataClient> _logger;
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
         private readonly string _endpoint;
@@ -58,11 +60,15 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
         public HttpDataClient(
+            ILogger<HttpDataClient> logger,
             ClientConfig config,
             HttpClient httpClient,
             string endpoint
         )
         {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
             _config = config ??
                 throw new ArgumentNullException(nameof(config));
 
@@ -77,18 +83,18 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var json = GetJson(new SignedData(data));
-            var buffer = Encoding.UTF8.GetBytes(json);
-            var byteContent = new ByteArrayContent(buffer);
+            string json = GetJson(new SignedData(data));
+            byte[] buffer = Encoding.UTF8.GetBytes(json);
+            ByteArrayContent byteContent = new ByteArrayContent(buffer);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var response = await _httpClient.PostAsync(
+            HttpResponseMessage response = await _httpClient.PostAsync(
                 $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}",
                 byteContent,
                 cancellationToken
             );
 
-            var result = await GetSignedData(response);
+            SignedData result = await GetSignedData(response);
 
             return result.Id;
         }
@@ -116,10 +122,10 @@ namespace RemoteCongress.Client
         /// </summary>
         private static async Task<SignedData> GetSignedData(HttpResponseMessage response)
         {
-            using var body = await response.Content.ReadAsStreamAsync();
+            using Stream body = await response.Content.ReadAsStreamAsync();
 
-            using var sr = new StreamReader(body);
-            using var reader = new JsonTextReader(sr);
+            using StreamReader sr = new StreamReader(body);
+            using JsonTextReader reader = new JsonTextReader(sr);
             JsonSerializer serializer = new JsonSerializer();
 
             return serializer.Deserialize<SignedData>(reader);

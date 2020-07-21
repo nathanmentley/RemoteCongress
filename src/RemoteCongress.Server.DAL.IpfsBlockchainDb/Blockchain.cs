@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
@@ -73,12 +74,12 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
             if (string.IsNullOrWhiteSpace(config.LastBlockId))
             {
                 Block genisysBlock = Block.CreateGenisysBlock();
-                genisysBlock = await PersistBlock(genisysBlock);
+                genisysBlock = await PersistBlock(genisysBlock, CancellationToken.None);
                 _blocks.Add(genisysBlock);
             }
             else
             {
-                await LoadPreviousBlockIntoChain(config.LastBlockId);
+                await LoadPreviousBlockIntoChain(config.LastBlockId, CancellationToken.None);
             }
         }
 
@@ -88,16 +89,18 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="id">
         /// The previous <see cref="Block"/>'s <see cref="Block.Id"/>.
         /// </param>
-        private async Task LoadPreviousBlockIntoChain(string id)
+        internal async Task LoadPreviousBlockIntoChain(string id, CancellationToken cancellationToken)
         {
-            string result = await _engine.FileSystem.ReadAllTextAsync(id);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            string result = await _engine.FileSystem.ReadAllTextAsync(id, cancellationToken);
             Block block = FromString(result);
 
             block.Id = id;
             _blocks.Insert(0, block);
 
             if (!string.IsNullOrWhiteSpace(block.LastBlockId))
-                await LoadPreviousBlockIntoChain(block.LastBlockId);
+                await LoadPreviousBlockIntoChain(block.LastBlockId, cancellationToken);
         }
 
         /// <summary>
@@ -109,10 +112,12 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <returns>
         /// The created <see cref="Block"/> that contains <paramref name="content"/>.
         /// </returns>
-        internal async Task<Block> AppendToChain(string content)
+        internal async Task<Block> AppendToChain(string content, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             Block block = new Block(_blocks.Last(), content);
-            block = await PersistBlock(block);
+            block = await PersistBlock(block, cancellationToken);
 
             _blocks.Add(block);
 
@@ -140,10 +145,16 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <returns>
         /// The peristed version of <paramref name="block"/>.
         /// </returns>
-        private async Task<Block> PersistBlock(Block block)
+        private async Task<Block> PersistBlock(Block block, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string content = FromBlock(block);
-            IFileSystemNode result = await _engine.FileSystem.AddTextAsync(content);
+            IFileSystemNode result = await _engine.FileSystem.AddTextAsync(
+                content,
+                null,
+                cancellationToken
+            );
 
             block.Id = (string)result.Id;
 

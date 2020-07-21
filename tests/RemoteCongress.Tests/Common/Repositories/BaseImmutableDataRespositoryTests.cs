@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RemoteCongress.Common;
@@ -32,21 +33,44 @@ namespace RemoteCongress.Tests.Common.Repositories
     {
         private readonly Mock<IDataClient> _mockClient =
             new Mock<IDataClient>();
+        private readonly Mock<ILogger> _mockLogger =
+            new Mock<ILogger>();
 
         private class FakeImmutableDataRepository : BaseImmutableDataRepository<Bill>
         {
             public FakeImmutableDataRepository(
+                ILogger logger,
                 IDataClient client,
                 Func<string, ISignedData, Bill> creator
-            ) : base(client, creator) {}
+            ) : base(logger, client, creator) {}
         }
 
         private FakeImmutableDataRepository GetSubject() =>
             new FakeImmutableDataRepository(
+                _mockLogger.Object,
                 _mockClient.Object,
                 (id, data) => new Bill(id, data)
             );
 
+        [TestMethod]
+        public void CtorThrowsForNullLogger()
+        {
+            //Arrange
+            Func<FakeImmutableDataRepository> action = () =>
+                new FakeImmutableDataRepository(
+                    null,
+                _mockClient.Object,
+                    (id, data) => new Bill(id, data)
+                );
+
+            //act
+            action
+
+            //assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("logger");
+        }
 
         [TestMethod]
         public void CtorThrowsForNullClient()
@@ -54,6 +78,7 @@ namespace RemoteCongress.Tests.Common.Repositories
             //Arrange
             Func<FakeImmutableDataRepository> action = () =>
                 new FakeImmutableDataRepository(
+                    _mockLogger.Object,
                     null,
                     (id, data) => new Bill(id, data)
                 );
@@ -73,6 +98,7 @@ namespace RemoteCongress.Tests.Common.Repositories
             //Arrange
             Func<FakeImmutableDataRepository> action = () =>
                 new FakeImmutableDataRepository(
+                    _mockLogger.Object,
                     _mockClient.Object,
                     null
                 );

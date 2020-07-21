@@ -19,13 +19,14 @@ using Ipfs.CoreApi;
 using Ipfs.Engine;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
-using RemoteCongress.Server.Web.Formatters;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web
@@ -66,15 +67,11 @@ namespace RemoteCongress.Server.Web
                 .AddSingleton<IBillRepository, BillRepository>()
                 .AddSingleton<IVoteRepository, VoteRepository>()
 
-                .AddControllers()
+                .AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>()
 
-                .AddMvcOptions(options => {
-                    options.InputFormatters.Insert(0, new BillInputFormatter());
-                    options.InputFormatters.Insert(0, new VoteInputFormatter());
+                .AddControllers();
 
-                    options.OutputFormatters.Insert(0, new BillOutputFormatter());
-                    options.OutputFormatters.Insert(0, new VoteOutputFormatter());
-                });
+                //.AddMvc()
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

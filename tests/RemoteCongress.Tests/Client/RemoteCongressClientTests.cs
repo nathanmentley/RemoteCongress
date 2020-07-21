@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RemoteCongress.Client;
@@ -30,6 +31,9 @@ namespace RemoteCongress.Tests.Client
     [TestClass]
     public class RemoteCongressClientTests
     {
+        private readonly Mock<ILogger<RemoteCongressClient>> _loggerMock =
+            new Mock<ILogger<RemoteCongressClient>>();
+
         private readonly Mock<IBillRepository> _billRepositoryMock =
             new Mock<IBillRepository>();
 
@@ -38,9 +42,31 @@ namespace RemoteCongress.Tests.Client
 
         private RemoteCongressClient GetSubject() =>
             new RemoteCongressClient(
+                _loggerMock.Object,
                 _billRepositoryMock.Object,
                 _voteRepositoryMock.Object
             );
+
+        [TestMethod]
+        public void CtorNullLoggerThrows()
+        {
+            //Arrange
+            Func<RemoteCongressClient> action = () =>
+                new RemoteCongressClient(
+                    null,
+                    _billRepositoryMock.Object,
+                    _voteRepositoryMock.Object
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("logger");
+        }
 
         [TestMethod]
         public void CtorNullBillRepoThrows()
@@ -48,6 +74,7 @@ namespace RemoteCongress.Tests.Client
             //Arrange
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
+                    _loggerMock.Object,
                     null,
                     _voteRepositoryMock.Object
                 );
@@ -68,6 +95,7 @@ namespace RemoteCongress.Tests.Client
             //Arrange
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
+                    _loggerMock.Object,
                     _billRepositoryMock.Object,
                     null
                 );

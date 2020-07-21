@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RemoteCongress.Common.Repositories;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
@@ -37,8 +38,11 @@ namespace RemoteCongress.Client
             ClientConfig config
         ) =>
             collection
+                .AddLogging()
+
                 .AddSingleton<HttpClient>(_ => {
-                    var handler = new HttpClientHandler();
+                    HttpClientHandler handler = new HttpClientHandler();
+
                     handler.ClientCertificateOptions = ClientCertificateOption.Manual;
                     handler.ServerCertificateCustomValidationCallback = 
                         (httpRequestMessage, cert, cetChain, policyErrors) => true;
@@ -49,7 +53,9 @@ namespace RemoteCongress.Client
 
                 .AddSingleton<IBillRepository, BillRepository>(provider =>
                     new BillRepository(
+                        provider.GetRequiredService<ILogger<BillRepository>>(),
                         new HttpDataClient(
+                            provider.GetRequiredService<ILogger<HttpDataClient>>(),
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
                             BillEndpoint
@@ -58,7 +64,9 @@ namespace RemoteCongress.Client
                 )
                 .AddSingleton<IVoteRepository, VoteRepository>(provider =>
                     new VoteRepository(
+                        provider.GetRequiredService<ILogger<VoteRepository>>(),
                         new HttpDataClient(
+                            provider.GetRequiredService<ILogger<HttpDataClient>>(),
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
                             VoteEndpoint

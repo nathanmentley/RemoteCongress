@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.Protected;
@@ -35,6 +36,9 @@ namespace RemoteCongress.Tests.Client
     {
         private readonly Mock<HttpMessageHandler> handlerMock =
             new Mock<HttpMessageHandler>(MockBehavior.Strict);
+
+        private readonly Mock<ILogger<HttpDataClient>> mockLogger =
+            new Mock<ILogger<HttpDataClient>>();
  
         private HttpClient GetClient(HttpResponseMessage response)
         {
@@ -58,10 +62,33 @@ namespace RemoteCongress.Tests.Client
 
         private HttpDataClient GetSubject(HttpResponseMessage response) =>
             new HttpDataClient(
+                mockLogger.Object,
                 new ClientConfig("http", "localhost"),
                 GetClient(response),
                 "endpoint"
             );
+
+        [TestMethod]
+        public void CtorNullLoggerThrows()
+        {
+            //Arrange
+            Func<HttpDataClient> action = () =>
+                new HttpDataClient(
+                    null,
+                    new ClientConfig("http", "localhost"),
+                    new HttpClient(),
+                    "endpoint"
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("logger");
+        }
 
         [TestMethod]
         public void CtorNullClientConfigThrows()
@@ -69,6 +96,7 @@ namespace RemoteCongress.Tests.Client
             //Arrange
             Func<HttpDataClient> action = () =>
                 new HttpDataClient(
+                    mockLogger.Object,
                     null,
                     new HttpClient(),
                     "endpoint"
@@ -90,6 +118,7 @@ namespace RemoteCongress.Tests.Client
             //Arrange
             Func<HttpDataClient> action = () =>
                 new HttpDataClient(
+                    mockLogger.Object,
                     new ClientConfig("http", "localhost"),
                     null,
                     "endpoint"
@@ -111,6 +140,7 @@ namespace RemoteCongress.Tests.Client
             //Arrange
             Func<HttpDataClient> action = () =>
                 new HttpDataClient(
+                    mockLogger.Object,
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
                     null

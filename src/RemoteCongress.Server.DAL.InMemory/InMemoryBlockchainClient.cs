@@ -84,14 +84,15 @@ namespace RemoteCongress.Server.DAL.InMemory
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var block = _blockchain.FetchFromChain(id);
+            InMemoryBlock block = _blockchain.FetchFromChain(id);
 
             if (block is null)
                 throw new BlockNotFoundException(
                     $"Could not fetch block with id[{id}] from {nameof(InMemoryBlockchainClient)}"
                 );
 
-            return Task.FromResult(FromString(block.Content));
+            ISignedData result = FromString(block.Content);
+            return Task.FromResult(result);
         }
 
         /// <summary>

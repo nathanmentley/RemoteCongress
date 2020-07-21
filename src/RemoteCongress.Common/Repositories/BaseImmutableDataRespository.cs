@@ -15,7 +15,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,12 +28,16 @@ namespace RemoteCongress.Common.Repositories
     /// </summary>
     public abstract class BaseImmutableDataRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
     {
+        private readonly ILogger _logger;
         private readonly IDataClient _client;
         private readonly Func<string, ISignedData, T> _creator;
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
         /// <param name="client">
         /// A <see cref="IDataClient"/> instance to use to communicate with the server.
         /// </param>
@@ -45,15 +51,25 @@ namespace RemoteCongress.Common.Repositories
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
         protected BaseImmutableDataRepository(
+            ILogger logger,
             IDataClient client,
             Func<string, ISignedData, T> creator
         )
         {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
             _client = client ??
-                throw new ArgumentNullException(nameof(client));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(client))
+                );
 
             _creator = creator ??
-                throw new ArgumentNullException(nameof(creator));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(creator))
+                );
         }
 
         /// <summary>
@@ -78,10 +94,13 @@ namespace RemoteCongress.Common.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var id = await _client.AppendToChain(model, cancellationToken);
+            string id = await _client.AppendToChain(model, cancellationToken);
 
             if (string.IsNullOrWhiteSpace(id))
-                throw new BlockNotStorableException();
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new BlockNotStorableException()
+                );
 
             //Since the _creator should be calling a ctor of a BaseBlockModel
             // we can be sure that this model's signature hash is valid against 
@@ -113,10 +132,13 @@ namespace RemoteCongress.Common.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var block = await _client.FetchFromChain(id, cancellationToken);
+            ISignedData block = await _client.FetchFromChain(id, cancellationToken);
 
             if (block is null)
-                throw new BlockNotFoundException();
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new BlockNotFoundException()
+                );
 
             //Since the _creator should be calling a ctor of a BaseBlockModel
             // we can be sure that this model's signature hash is valid against 

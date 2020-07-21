@@ -15,32 +15,42 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using System;
 
-namespace RemoteCongress.Common.Repositories
+namespace RemoteCongress.Common.Logging
 {
     /// <summary>
-    /// An abstraction layer implementing <see cref="IVoteRepository"/> that fetches and creates
-    ///     <see cref="Vote"/> instances.
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public class VoteRepository: BaseImmutableDataRepository<Vote>, IVoteRepository
+    public static class ILoggerExtensions
     {
         /// <summary>
-        /// Ctor
+        /// Logs an exception to an <see cref="ILogger"/>.
         /// </summary>
         /// <param name="logger">
-        /// An <see cref="ILogger"/> to use for logging.
+        /// The <see cref="ILogger"/> to log to.
         /// </param>
-        /// <param name="client">
-        /// An <see cref="IBlockchainClient"/> implementation to be used to store and fetch <see cref="ISignedData"/>.
+        /// <param name="logLevel">
+        /// The <see cref="LogLevel"/> to log the exception at.
         /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="client"/> is null.
-        /// </exception>
-        public VoteRepository(ILogger<VoteRepository> logger, IDataClient client):
-            base(logger, client, (id, data) => new Vote(id, data)) {}
+        /// <param name="exception">
+        /// an exception of <typeparamref name="TException"/> to be logged.
+        /// </param>
+        /// <typeparam name="TException">
+        /// A type of <see cref="Exception"/> to be passed through the method.
+        /// </typeparam>
+        /// <returns>
+        /// The passed in <paramref name="exception"/> reference.
+        /// </returns>
+        public static TException LogException<TException>(
+            this ILogger logger,
+            LogLevel logLevel,
+            TException exception
+        ) where TException: Exception
+        {
+            logger.Log(logLevel, exception, exception.Message);
+
+            return exception;
+        }
     }
 }

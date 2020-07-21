@@ -18,7 +18,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Server.Web.Exceptions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,7 +55,10 @@ namespace RemoteCongress.Server.Web.Controllers
                 throw new ArgumentNullException(nameof(logger));
 
             _billRepository = billRepository ??
-                throw new ArgumentNullException(nameof(billRepository));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(billRepository))
+                );
         }
 
         /// <summary>
@@ -68,6 +73,8 @@ namespace RemoteCongress.Server.Web.Controllers
         [HttpPost]
         public async Task<Bill> Post([FromBody] Bill bill, CancellationToken cancellationToken)
         {
+            Validate(bill, cancellationToken);
+
             _logger.LogTrace(
                 "{controller}.{endpoint} called with {bill}",
                 nameof(CreateBillController),
@@ -76,6 +83,32 @@ namespace RemoteCongress.Server.Web.Controllers
             );
 
             return await _billRepository.Create(bill, cancellationToken);
+        }
+
+        /// <summary>
+        /// Ensures that a create bill request is valid.
+        /// </summary>
+        /// <param name="bill">
+        /// A <see cref="Bill"/> to persist.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="bill"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is null.
+        /// </exception>
+        private void Validate(Bill bill, CancellationToken cancellationToken)
+        {
+            if (bill is null)
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new MissingBodyException()
+                );
+
+            cancellationToken.ThrowIfCancellationRequested();
         }
     }
 }
