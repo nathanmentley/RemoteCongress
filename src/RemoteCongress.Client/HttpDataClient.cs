@@ -79,6 +79,18 @@ namespace RemoteCongress.Client
                 throw new ArgumentNullException(nameof(endpoint));
         }
 
+        /// <summary>
+        /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
+        /// </summary>
+        /// <param name="data">
+        /// The signed and verified data structure to store in the blockchain.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The unique id of the stored block.
+        /// </returns>
         public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -99,6 +111,18 @@ namespace RemoteCongress.Client
             return result.Id;
         }
 
+        /// <summary>
+        /// Fetches the verified data in the form of <see cref="ISignedData"/> from the blockchain by block id.
+        /// </summary>
+        /// <param name="id">
+        /// The unique block id to pull verified data from.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ISignedData"/> instance containing the block data.
+        /// </returns>
         public async Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -114,6 +138,12 @@ namespace RemoteCongress.Client
         /// <summary>
         /// Converts <see cref="SignedData"/> to a json string.
         /// </summary>
+        /// <remarks>
+        /// This is one of many places we serialize or deserialize <see cref="SignedData"/>.
+        /// 
+        /// That logic should be moved to <see cref="RemoteCongress.Common"/> and we should
+        ///  control the representation and version it.
+        /// </remarks>
         private static string GetJson(SignedData signedData) =>
             JsonConvert.SerializeObject(new SignedData(signedData));
 

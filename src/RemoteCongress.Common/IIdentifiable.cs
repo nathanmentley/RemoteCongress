@@ -18,7 +18,7 @@
 namespace RemoteCongress.Common
 {
     /// <summary>
-    /// An interface describing an identifiable strucutre.
+    /// An interface describing an identifiable structure.
     /// </summary>
     public interface IIdentifiable
     {

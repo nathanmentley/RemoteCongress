@@ -18,12 +18,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common.Repositories;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
 namespace RemoteCongress.Client
 {
     /// <summary>
+    /// Extension methods for <see cref="IServiceCollection"/>.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public static class IServiceCollectionExtensions
@@ -32,15 +34,32 @@ namespace RemoteCongress.Client
         private static readonly string VoteEndpoint = "vote";
 
         /// <summary>
+        /// Sets up an <see cref="IRemoteCongressClient"/> implementation in <paramref name="collection"/>.
         /// </summary>
+        /// <param name="collection">
+        /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
+        /// </param>
+        /// <param name="client">
+        /// <see cref="ClientConfig"/> to configure <see cref="IRemoteCongressClient"/> with.
+        /// </param>
+        /// <returns>
+        /// <paramref name="collection"/>
+        /// </returns>
         public static IServiceCollection AddRemoteCongressClient(
             this IServiceCollection collection,
             ClientConfig config
-        ) =>
-            collection
+        )
+        {
+            if (collection is null)
+                throw new ArgumentNullException(nameof(collection));
+
+            if (config is null)
+                throw new ArgumentNullException(nameof(config));
+
+            return collection
                 .AddLogging()
 
-                .AddSingleton<HttpClient>(_ => {
+                .AddSingleton(_ => {
                     HttpClientHandler handler = new HttpClientHandler();
 
                     handler.ClientCertificateOptions = ClientCertificateOption.Manual;
@@ -49,7 +68,7 @@ namespace RemoteCongress.Client
 
                     return new HttpClient(handler);
                 })
-                .AddSingleton<ClientConfig>(config)
+                .AddSingleton(config)
 
                 .AddSingleton<IBillRepository, BillRepository>(provider =>
                     new BillRepository(
@@ -75,5 +94,6 @@ namespace RemoteCongress.Client
                 )
 
                 .AddSingleton<IRemoteCongressClient, RemoteCongressClient>();
+        }
     }
 }

@@ -16,6 +16,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RemoteCongress.Common.Logging;
@@ -55,23 +57,23 @@ namespace RemoteCongress.Server.Web
         {
             _logger.LogTrace("Setting up input formatters.");
 
-            options.InputFormatters.Insert(
-                0,
+            SetupFormatter(
+                options.InputFormatters,
                 new BillInputFormatter(_loggerFactory.CreateLogger<BillInputFormatter>())
             );
-            options.InputFormatters.Insert(
-                0,
+            SetupFormatter(
+                options.InputFormatters,
                 new VoteInputFormatter(_loggerFactory.CreateLogger<VoteInputFormatter>())
             );
 
             _logger.LogTrace("Setting up output formatters.");
 
-            options.OutputFormatters.Insert(
-                0,
+            SetupFormatter(
+                options.OutputFormatters,
                 new BillOutputFormatter(_loggerFactory.CreateLogger<BillOutputFormatter>())
             );
-            options.OutputFormatters.Insert(
-                0,
+            SetupFormatter(
+                options.OutputFormatters,
                 new VoteOutputFormatter(_loggerFactory.CreateLogger<VoteOutputFormatter>())
             );
         }
@@ -80,36 +82,42 @@ namespace RemoteCongress.Server.Web
         {
             _logger.LogTrace("Setting up exception handlers.");
 
-            options.Filters.Insert(
-                0,
+            SetupExceptionHandler(
+                options.Filters,
                 new BlockNotFoundExceptionFilter(
                     _loggerFactory.CreateLogger<BlockNotFoundExceptionFilter>()
                 )
             );
-            options.Filters.Insert(
-                0,
+            SetupExceptionHandler(
+                options.Filters,
                 new BlockNotStorableExceptionFilter(
                     _loggerFactory.CreateLogger<BlockNotStorableExceptionFilter>()
                 )
             );
-            options.Filters.Insert(
-                0,
+            SetupExceptionHandler(
+                options.Filters,
                 new InvalidBlockSignatureExceptionFilter(
                     _loggerFactory.CreateLogger<InvalidBlockSignatureExceptionFilter>()
                 )
             );
-            options.Filters.Insert(
-                0,
+            SetupExceptionHandler(
+                options.Filters,
                 new MissingBodyExceptionFilter(
                     _loggerFactory.CreateLogger<MissingBodyExceptionFilter>()
                 )
             );
-            options.Filters.Insert(
-                0,
+            SetupExceptionHandler(
+                options.Filters,
                 new MissingPathParameterExceptionFilter(
                     _loggerFactory.CreateLogger<MissingPathParameterExceptionFilter>()
                 )
             );
         }
+
+        private void SetupFormatter<T>(FormatterCollection<T> collection, T formatter) =>
+            collection.Insert(0, formatter);
+
+        private void SetupExceptionHandler(FilterCollection filters, IFilterMetadata filter) =>
+            filters.Insert(0, filter);
     }
 }
