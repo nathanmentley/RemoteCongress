@@ -116,7 +116,8 @@ namespace RemoteCongress.Client
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(privateKey, blockContent)
+                RsaUtils.GenerateSignature(privateKey, blockContent),
+                RemoteCongressMediaType.None
             );
 
             Bill bill = new Bill(signedData);
@@ -188,7 +189,8 @@ namespace RemoteCongress.Client
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(privateKey, blockContent)
+                RsaUtils.GenerateSignature(privateKey, blockContent),
+                RemoteCongressMediaType.None
             );
 
             Vote vote = new Vote(signedData);

@@ -57,6 +57,11 @@ namespace RemoteCongress.Common
         public byte[] Signature { get; set; }
 
         /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> of <see cref="BlockContent"/>
+        /// </summary>
+        public RemoteCongressMediaType MediaType { get; set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="publicKey">
@@ -68,6 +73,9 @@ namespace RemoteCongress.Common
         /// <param name="signature">
         /// The signature of the <see cref="BlockContent"/> that can be verified with <see cref="PublicKey"/>.
         /// </param>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> of <see cref="BlockContent"/>.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="publicKey"/> is null.
         /// </exception>
@@ -77,10 +85,18 @@ namespace RemoteCongress.Common
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="signature"/> is null.
         /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="mediaType"/> is null.
+        /// </exception>
         /// <remarks>
         /// The data isn't validated, and could be in an invalid state.
         /// </remarks>
-        public SignedData(string publicKey, string blockContent, byte[] signature)
+        public SignedData(
+            string publicKey,
+            string blockContent,
+            byte[] signature,
+            RemoteCongressMediaType mediaType
+        )
         {
             if(string.IsNullOrWhiteSpace(publicKey))
                 throw new ArgumentNullException(nameof(publicKey));
@@ -91,9 +107,13 @@ namespace RemoteCongress.Common
             if(signature is null)
                 throw new ArgumentNullException(nameof(signature));
 
+            if(mediaType is null)
+                throw new ArgumentNullException(nameof(mediaType));
+
             PublicKey = publicKey;
             BlockContent = blockContent;
             Signature = signature.ToArray();
+            MediaType = mediaType;
         }
 
         /// <summary>
@@ -127,6 +147,7 @@ namespace RemoteCongress.Common
             PublicKey = data.PublicKey;
             BlockContent = data.BlockContent;
             Signature = data.Signature.ToArray();
+            MediaType = data.MediaType;
 
             if (data is IIdentifiable identifiable)
                 Id = identifiable.Id;
@@ -145,6 +166,7 @@ namespace RemoteCongress.Common
             PublicKey = string.Empty;
             BlockContent = string.Empty;
             Signature = new byte[] {};
+            MediaType = RemoteCongressMediaType.None;
         }
     }
 }

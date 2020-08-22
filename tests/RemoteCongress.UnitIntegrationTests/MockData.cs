@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
+using RemoteCongress.Common.Serialization;
 
 namespace RemoteCongress.UnitIntegrationTests
 {
@@ -50,7 +51,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                BillV1JsonCodec.MediaType
             );
 
             return new Bill(signedData);
@@ -76,7 +78,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                BillV1JsonCodec.MediaType
             );
 
             return new Bill(id, signedData);
@@ -103,7 +106,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                VoteV1JsonCodec.MediaType
             );
 
             return new Vote(signedData);
@@ -132,7 +136,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                VoteV1JsonCodec.MediaType
             );
 
             return new Vote(id, signedData);

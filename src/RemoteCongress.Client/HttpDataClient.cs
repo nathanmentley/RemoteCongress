@@ -79,9 +79,9 @@ namespace RemoteCongress.Client
             _endpoint = endpoint ??
                 throw new ArgumentNullException(nameof(endpoint));
 
-            if(!_codec.CanHandle(_codec.PreferredMediaType))
+            if(!_codec.CanHandle(_codec.GetPreferredMediaType()))
                 throw new InvalidOperationException(
-                    $"{_codec.GetType()} cannot handle {_codec.PreferredMediaType} client is misconfigured."
+                    $"{_codec.GetType()} cannot handle {_codec.GetPreferredMediaType()} client is misconfigured."
                 );
         }
 
@@ -102,13 +102,13 @@ namespace RemoteCongress.Client
             cancellationToken.ThrowIfCancellationRequested();
 
             using Stream jsonStream = await _codec.Encode(
-                _codec.PreferredMediaType,
+                _codec.GetPreferredMediaType(),
                 new SignedData(data)
             );
             using StreamContent streamContent = new StreamContent(jsonStream)
             {
                 Headers = {
-                    { "Content-Type", _codec.PreferredMediaType.ToString() }
+                    { "Content-Type", _codec.GetPreferredMediaType().ToString() }
                 }
             };
 
@@ -118,14 +118,14 @@ namespace RemoteCongress.Client
             )
             {
                 Headers = {
-                    { "Accept", _codec.PreferredMediaType.ToString() }
+                    { "Accept", _codec.GetPreferredMediaType().ToString() }
                 },
                 Content = streamContent
             };
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
             using Stream body = await response.Content.ReadAsStreamAsync();
-            SignedData result = await _codec.Decode(_codec.PreferredMediaType, body);
+            SignedData result = await _codec.Decode(_codec.GetPreferredMediaType(), body);
 
             return result.Id;
         }
@@ -152,14 +152,14 @@ namespace RemoteCongress.Client
             )
             {
                 Headers = {
-                    { "Accept", _codec.PreferredMediaType.ToString() }
+                    { "Accept", _codec.GetPreferredMediaType().ToString() }
                 }
             };
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
 
             using Stream body = await response.Content.ReadAsStreamAsync();
-            return await _codec.Decode(_codec.PreferredMediaType, body);
+            return await _codec.Decode(_codec.GetPreferredMediaType(), body);
         }
     }
 }

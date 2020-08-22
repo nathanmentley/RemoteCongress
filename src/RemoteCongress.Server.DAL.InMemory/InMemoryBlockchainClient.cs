@@ -63,7 +63,7 @@ namespace RemoteCongress.Server.DAL.InMemory
             cancellationToken.ThrowIfCancellationRequested();
 
             string blockContent = await _codec.EncodeToString(
-                _codec.PreferredMediaType,
+                _codec.GetPreferredMediaType(),
                 new SignedData(data)
             );
             InMemoryBlock block = _blockchain.AppendToChain(blockContent);
@@ -97,7 +97,7 @@ namespace RemoteCongress.Server.DAL.InMemory
                     $"Could not fetch block with id[{id}] from {nameof(InMemoryBlockchainClient)}"
                 );
 
-            return await _codec.DecodeFromString(_codec.PreferredMediaType, block.Content);
+            return await _codec.DecodeFromString(_codec.GetPreferredMediaType(), block.Content);
         }
     }
 }

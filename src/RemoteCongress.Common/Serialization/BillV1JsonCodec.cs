@@ -16,18 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Serialization
 {
-    public class SignedDataV1JsonCodec: ICodec<SignedData>
+    public class BillV1JsonCodec: ICodec<Bill>
     {
         public readonly static RemoteCongressMediaType MediaType =
-            new RemoteCongressMediaType("application", "json", "remotecongress.signeddata", 1);
+            new RemoteCongressMediaType("application", "json", "remotecongress.bill", 1);
 
         public RemoteCongressMediaType GetPreferredMediaType() =>
             MediaType;
@@ -35,7 +34,7 @@ namespace RemoteCongress.Common.Serialization
         public bool CanHandle(RemoteCongressMediaType mediaType) =>
             MediaType.Equals(mediaType);
 
-        public async Task<SignedData> Decode(RemoteCongressMediaType mediaType, Stream data)
+        public async Task<Bill> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
             using StreamReader sr = new StreamReader(data);
             string json = await sr.ReadToEndAsync();
@@ -46,44 +45,15 @@ namespace RemoteCongress.Common.Serialization
             string publicKey = jObject.Value<string>("publicKey");
             string blockContent = jObject.Value<string>("blockContent");
             string blockMediaType = jObject.Value<string>("mediaType");
-            IList<byte> signature = new List<byte>();
-            JArray signatureJson = jObject["signature"] as JArray;
 
-            if (!(signatureJson is null))
-            {
-                foreach(JToken token in signatureJson)
-                {
-                    signature.Add(token.Value<byte>());
-                }
-            }
-
-            return new SignedData(
-                publicKey,
-                blockContent,
-                signature.ToArray(),
-                RemoteCongressMediaType.Parse(blockMediaType)
-            )
-            {
-                Id = jObject["id"].Value<string>()
-            };
+            throw new NotImplementedException();
         }
 
-        public Task<Stream> Encode(RemoteCongressMediaType mediaType, SignedData data)
+        public Task<Stream> Encode(RemoteCongressMediaType mediaType, Bill data)
         {
-            JArray signature = new JArray();
-
-            foreach(byte signatureByte in data.Signature)
-            {
-                signature.Add(signatureByte);
-            }
-
             JObject jObject = new JObject()
             {
                 ["id"] = data.Id,
-                ["publicKey"] = data.PublicKey,
-                ["blockContent"] = data.BlockContent,
-                ["signature"] = signature,
-                ["mediaType"] = data.MediaType.ToString()
             };
 
             byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());

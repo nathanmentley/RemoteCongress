@@ -51,7 +51,7 @@ namespace RemoteCongress.Server.Web.Formatters
 
             SupportedMediaTypes.Add(
                 MediaTypeHeaderValue.Parse(
-                    _codec.PreferredMediaType.ToString()
+                    _codec.GetPreferredMediaType().ToString()
                 )
             );
 
@@ -76,7 +76,7 @@ namespace RemoteCongress.Server.Web.Formatters
         )
         {
             SignedData signedData = await _codec.Decode(
-                _codec.PreferredMediaType,
+                _codec.GetPreferredMediaType(),
                 context.HttpContext.Request.Body
             );
 

@@ -24,7 +24,7 @@ namespace RemoteCongress.Common.Serialization
 {
     public interface ICodec<T>
     {
-        RemoteCongressMediaType PreferredMediaType { get; }
+        RemoteCongressMediaType GetPreferredMediaType();
 
         bool CanHandle(RemoteCongressMediaType mediaType);
 

@@ -17,6 +17,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RemoteCongress.Common
 {
@@ -72,5 +74,53 @@ namespace RemoteCongress.Common
 
         public override string ToString() =>
             $"{Type}/{SubType}; structure={Structure}; version={Version}";
+
+        public static RemoteCongressMediaType Parse(string mediaType)
+        {
+            if (string.IsNullOrWhiteSpace(mediaType))
+                throw new ArgumentNullException(nameof(mediaType));
+
+            IEnumerable<string> parts = mediaType.Split(";").Select(part => part.Trim());
+
+            IEnumerable<string> typeParts = parts.First().Split("/").Select(part => part.Trim());
+
+            if (typeParts.Count() != 2)
+                throw new ArgumentException(
+                    "invalid media type format",
+                    nameof(mediaType)
+                );
+            
+            string type = typeParts.First();
+            string subtype = typeParts.Last();
+            string structure = string.Empty;
+            int version = 0;
+
+            foreach(string param in parts.Skip(1))
+            {
+                IEnumerable<string> paramParts = param.Split("=").Select(part => part.Trim());
+
+                if (paramParts.Count() != 2)
+                    throw new ArgumentException(
+                        "invalid media type format",
+                        nameof(mediaType)
+                    );
+
+                if (string.Equals(paramParts.First(), "structure", StringComparison.OrdinalIgnoreCase))
+                    structure = paramParts.Last();
+
+                if (string.Equals(paramParts.First(), "version", StringComparison.OrdinalIgnoreCase))
+                    version = Convert.ToInt32(paramParts.Last());
+            }
+
+            return new RemoteCongressMediaType(type, subtype, structure, version);
+        }
+
+        public static RemoteCongressMediaType None =>
+            new RemoteCongressMediaType(
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                0
+            );
     }
 }

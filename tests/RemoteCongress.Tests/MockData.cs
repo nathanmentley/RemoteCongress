@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
+using RemoteCongress.Common.Serialization;
 using System.Linq;
 
 namespace RemoteCongress.Tests
@@ -41,6 +42,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
                 'id': '{block.Id}',
                 'publicKey': '{block.PublicKey}',
                 'blockContent': '{block.BlockContent}',
+                'mediaType': '{block.MediaType.ToString()}',
                 'signature': [{
                     string.Join(
                         ",",
@@ -68,7 +70,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                BillV1JsonCodec.MediaType
             );
 
             return new Bill(signedData);
@@ -94,7 +97,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                BillV1JsonCodec.MediaType
             );
 
             return new Bill(id, signedData);
@@ -121,7 +125,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                VoteV1JsonCodec.MediaType
             );
 
             return new Vote(signedData);
@@ -150,7 +155,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
             var signedData = new SignedData(
                 PublicKey,
                 blockContent,
-                RsaUtils.GenerateSignature(PrivateKey, blockContent)
+                RsaUtils.GenerateSignature(PrivateKey, blockContent),
+                VoteV1JsonCodec.MediaType
             );
 
             return new Vote(id, signedData);

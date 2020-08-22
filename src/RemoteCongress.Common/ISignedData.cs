@@ -38,6 +38,11 @@ namespace RemoteCongress.Common
         byte[] Signature { get; }
 
         /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> of <see cref="BlockContent"/>
+        /// </summary>
+        RemoteCongressMediaType MediaType { get; }
+
+        /// <summary>
         /// A flag to indicate that the contained signed data is valid, and untampered with.
         /// </summary>
         /// <returns>

@@ -120,7 +120,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// The <see cref="ISignedData"/> representation.
         /// </returns>
         private async Task<ISignedData> FromString(string data) => 
-            await _codec.DecodeFromString(_codec.PreferredMediaType, data);
+            await _codec.DecodeFromString(_codec.GetPreferredMediaType(), data);
 
         /// <summary>
         /// Transforms a <see cref="ISignedData"/> into a <see cref="string"/>.
@@ -132,6 +132,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// The <see cref="string"/> representation.
         /// </returns>
         private async Task<string> FromSignedData(ISignedData data) =>
-            await _codec.EncodeToString(_codec.PreferredMediaType, new SignedData(data));
+            await _codec.EncodeToString(_codec.GetPreferredMediaType(), new SignedData(data));
     }
 }

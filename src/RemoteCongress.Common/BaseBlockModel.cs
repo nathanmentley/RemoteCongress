@@ -68,6 +68,11 @@ namespace RemoteCongress.Common
         public byte[] Signature { get; }
 
         /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> of <see cref="BlockContent"/>
+        /// </summary>
+        public RemoteCongressMediaType MediaType { get; }
+
+        /// <summary>
         /// Constructor for a persisted version of the data.
         /// </summary>
         /// <param name="id">
@@ -130,6 +135,7 @@ namespace RemoteCongress.Common
 
             PublicKey = data.PublicKey;
             BlockContent = data.BlockContent;
+            MediaType = data.MediaType;
             Signature = data.Signature.ToArray();
 
             if (data is IIdentifiable identifiable)
