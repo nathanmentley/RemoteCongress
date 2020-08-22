@@ -16,14 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,6 +41,9 @@ namespace RemoteCongress.Client
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
         private readonly string _endpoint;
+
+        private readonly ICodec<SignedData> _codec = 
+            new SignedDataV1JsonCodec();
 
         /// <summary>
         /// Constructor
@@ -77,6 +78,11 @@ namespace RemoteCongress.Client
 
             _endpoint = endpoint ??
                 throw new ArgumentNullException(nameof(endpoint));
+
+            if(!_codec.CanHandle(_codec.PreferredMediaType))
+                throw new InvalidOperationException(
+                    $"{_codec.GetType()} cannot handle {_codec.PreferredMediaType} client is misconfigured."
+                );
         }
 
         /// <summary>
@@ -95,18 +101,31 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string json = GetJson(new SignedData(data));
-            byte[] buffer = Encoding.UTF8.GetBytes(json);
-            ByteArrayContent byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            HttpResponseMessage response = await _httpClient.PostAsync(
-                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}",
-                byteContent,
-                cancellationToken
+            using Stream jsonStream = await _codec.Encode(
+                _codec.PreferredMediaType,
+                new SignedData(data)
             );
+            using StreamContent streamContent = new StreamContent(jsonStream)
+            {
+                Headers = {
+                    { "Content-Type", _codec.PreferredMediaType.ToString() }
+                }
+            };
 
-            SignedData result = await GetSignedData(response);
+            using HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}"
+            )
+            {
+                Headers = {
+                    { "Accept", _codec.PreferredMediaType.ToString() }
+                },
+                Content = streamContent
+            };
+
+            using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+            using Stream body = await response.Content.ReadAsStreamAsync();
+            SignedData result = await _codec.Decode(_codec.PreferredMediaType, body);
 
             return result.Id;
         }
@@ -127,38 +146,20 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            HttpResponseMessage response = await _httpClient.GetAsync(
-                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}/{id}",
-                cancellationToken
-            );
+            using HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}/{id}"
+            )
+            {
+                Headers = {
+                    { "Accept", _codec.PreferredMediaType.ToString() }
+                }
+            };
 
-            return await GetSignedData(response);
-        }
+            using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
 
-        /// <summary>
-        /// Converts <see cref="SignedData"/> to a json string.
-        /// </summary>
-        /// <remarks>
-        /// This is one of many places we serialize or deserialize <see cref="SignedData"/>.
-        /// 
-        /// That logic should be moved to <see cref="RemoteCongress.Common"/> and we should
-        ///  control the representation and version it.
-        /// </remarks>
-        private static string GetJson(SignedData signedData) =>
-            JsonConvert.SerializeObject(new SignedData(signedData));
-
-        /// <summary>
-        /// Pulls a <see cref="SignedData"/> instance from a <see cref="HttpResponseMessage"/>.
-        /// </summary>
-        private static async Task<SignedData> GetSignedData(HttpResponseMessage response)
-        {
             using Stream body = await response.Content.ReadAsStreamAsync();
-
-            using StreamReader sr = new StreamReader(body);
-            using JsonTextReader reader = new JsonTextReader(sr);
-            JsonSerializer serializer = new JsonSerializer();
-
-            return serializer.Deserialize<SignedData>(reader);
+            return await _codec.Decode(_codec.PreferredMediaType, body);
         }
     }
 }

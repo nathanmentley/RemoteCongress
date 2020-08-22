@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
+using System.Linq;
 
 namespace RemoteCongress.Tests
 {
@@ -31,6 +32,23 @@ FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
 FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
+        /// <summary>
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
+        public static string GetJson(BaseBlockModel block) =>
+            $@"{{
+                'id': '{block.Id}',
+                'publicKey': '{block.PublicKey}',
+                'blockContent': '{block.BlockContent}',
+                'signature': [{
+                    string.Join(
+                        ",",
+                        block.Signature
+                            .Select(signatureByte => signatureByte.ToString())
+                    )
+                }]
+            }}";
 
         /// <summary>
         /// </summary>

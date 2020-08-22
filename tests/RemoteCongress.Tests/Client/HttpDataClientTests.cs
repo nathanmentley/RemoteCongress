@@ -20,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
 using RemoteCongress.Client;
 using RemoteCongress.Common;
 using System;
@@ -184,21 +183,22 @@ namespace RemoteCongress.Tests.Client
         public async Task AppendToChainSucess()
         {
             //arrange
+            Bill bill = MockData.GetBill("abc", "title", "content");
             HttpResponseMessage response = new HttpResponseMessage()
             {
                StatusCode = HttpStatusCode.OK,
-               Content = new StringContent("{'id':'abc'}"),
+               Content = new StringContent(MockData.GetJson(bill)),
             };
             HttpDataClient subject = GetSubject(response);
 
             //act
             string id = await subject.AppendToChain(
-                MockData.GetBill("title", "content"),
+                bill,
                 CancellationToken.None
             );
 
             //assert
-            id.Should().Be("abc");
+            id.Should().Be(bill.Id);
         }
 
         [TestMethod]
@@ -229,27 +229,22 @@ namespace RemoteCongress.Tests.Client
         public async Task FetchFromChainSuccess()
         {
             //arrange
+            Bill bill = MockData.GetBill("id", "title", "content");
             HttpResponseMessage response = new HttpResponseMessage()
             {
                StatusCode = HttpStatusCode.OK,
-               Content = new StringContent(
-                    JsonConvert.SerializeObject(
-                        new SignedData(
-                            MockData.GetBill("id", "title", "content")
-                        )
-                    )
-               ),
+               Content = new StringContent(MockData.GetJson(bill))
             };
             HttpDataClient subject = GetSubject(response);
 
             //act
             ISignedData result = await subject.FetchFromChain("id", CancellationToken.None);
-            Bill bill = new Bill(result);
+            Bill resultBill = new Bill(result);
 
             //assert
-            bill.Id.Should().Be("id");
-            bill.Title.Should().Be("title");
-            bill.Content.Should().Be("content");
+            resultBill.Id.Should().Be("id");
+            resultBill.Title.Should().Be("title");
+            resultBill.Content.Should().Be("content");
             result.IsValid.Should().BeTrue();
         }
     }

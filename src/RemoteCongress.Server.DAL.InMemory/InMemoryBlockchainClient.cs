@@ -15,10 +15,10 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +40,9 @@ namespace RemoteCongress.Server.DAL.InMemory
         private readonly InMemoryBlockchain _blockchain =
             new InMemoryBlockchain();
 
+        private readonly ICodec<SignedData> _codec =
+            new SignedDataV1JsonCodec();
+
         /// <summary>
         /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
         /// </summary>
@@ -52,17 +55,20 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <returns>
         /// The unique id of the stored block.
         /// </returns>
-        public Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
+        public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = FromSignedData(data);
+            string blockContent = await _codec.EncodeToString(
+                _codec.PreferredMediaType,
+                new SignedData(data)
+            );
             InMemoryBlock block = _blockchain.AppendToChain(blockContent);
 
-            return Task.FromResult(block.Id);
+            return block.Id;
         }
 
         /// <summary>
@@ -77,7 +83,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        public Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
+        public async Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException(nameof(id));
@@ -91,32 +97,7 @@ namespace RemoteCongress.Server.DAL.InMemory
                     $"Could not fetch block with id[{id}] from {nameof(InMemoryBlockchainClient)}"
                 );
 
-            ISignedData result = FromString(block.Content);
-            return Task.FromResult(result);
+            return await _codec.DecodeFromString(_codec.PreferredMediaType, block.Content);
         }
-
-        /// <summary>
-        /// Transforms a <see cref="string"/> into a <see cref="ISignedData"/>.
-        /// </summary>
-        /// <param name="data">
-        /// The <see cref="string"/> to transform.
-        /// </param>
-        /// <returns>
-        /// The <see cref="ISignedData"/> representation.
-        /// </returns>
-        private static ISignedData FromString(string data) => 
-            JsonConvert.DeserializeObject<SignedData>(data);
-
-        /// <summary>
-        /// Transforms a <see cref="ISignedData"/> into a <see cref="string"/>.
-        /// </summary>
-        /// <param name="data">
-        /// The <see cref="ISignedData"/> to transform.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/> representation.
-        /// </returns>
-        private static string FromSignedData(ISignedData data) => 
-            JsonConvert.SerializeObject(new SignedData(data));
     }
 }

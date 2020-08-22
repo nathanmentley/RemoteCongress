@@ -20,9 +20,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.Web.Formatters
@@ -36,6 +36,9 @@ namespace RemoteCongress.Server.Web.Formatters
     public abstract class BaseInputFormatter<TSignedData>: TextInputFormatter
         where TSignedData: BaseBlockModel
     {
+        private readonly ICodec<SignedData> _codec =
+            new SignedDataV1JsonCodec();
+
         private readonly ILogger _logger;
 
         /// <summary>
@@ -46,7 +49,11 @@ namespace RemoteCongress.Server.Web.Formatters
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
 
-            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
+            SupportedMediaTypes.Add(
+                MediaTypeHeaderValue.Parse(
+                    _codec.PreferredMediaType.ToString()
+                )
+            );
 
             SupportedEncodings.Add(Encoding.UTF8);
         }
@@ -68,10 +75,10 @@ namespace RemoteCongress.Server.Web.Formatters
             Encoding encoding
         )
         {
-            SignedData signedData = await JsonSerializer.DeserializeAsync(
-                context.HttpContext.Request.Body,
-                typeof(SignedData)
-            ) as SignedData;
+            SignedData signedData = await _codec.Decode(
+                _codec.PreferredMediaType,
+                context.HttpContext.Request.Body
+            );
 
             if (signedData is null)
                 throw new Exception("TODO: Get a better exception for this.");

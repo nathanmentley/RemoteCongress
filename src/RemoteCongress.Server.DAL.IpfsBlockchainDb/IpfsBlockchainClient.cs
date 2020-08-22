@@ -16,10 +16,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Ipfs.CoreApi;
-using Newtonsoft.Json;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +35,8 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     public class IpfsBlockchainClient: IDataClient
     {
         private readonly Blockchain _blockchain;
+        private readonly ICodec<SignedData> _codec =
+            new SignedDataV1JsonCodec();
 
         /// <summary>
         /// Constructor
@@ -73,7 +75,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = FromSignedData(data);
+            string blockContent = await FromSignedData(data);
             Block block = await _blockchain.AppendToChain(blockContent, cancellationToken);
 
             return block.Id;
@@ -91,7 +93,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        public Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
+        public async Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException(nameof(id));
@@ -105,8 +107,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
                     $"Could not fetch block with id[{id}] from {nameof(IpfsBlockchainClient)}"
                 );
 
-            ISignedData result = FromString(block.Content);
-            return Task.FromResult(result);
+            return await FromString(block.Content);
         }
 
         /// <summary>
@@ -118,8 +119,8 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <returns>
         /// The <see cref="ISignedData"/> representation.
         /// </returns>
-        private static ISignedData FromString(string data) => 
-            JsonConvert.DeserializeObject<SignedData>(data);
+        private async Task<ISignedData> FromString(string data) => 
+            await _codec.DecodeFromString(_codec.PreferredMediaType, data);
 
         /// <summary>
         /// Transforms a <see cref="ISignedData"/> into a <see cref="string"/>.
@@ -130,7 +131,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <returns>
         /// The <see cref="string"/> representation.
         /// </returns>
-        private static string FromSignedData(ISignedData data) => 
-            JsonConvert.SerializeObject(new SignedData(data));
+        private async Task<string> FromSignedData(ISignedData data) =>
+            await _codec.EncodeToString(_codec.PreferredMediaType, new SignedData(data));
     }
 }
