@@ -30,24 +30,32 @@ namespace RemoteCongress.Server.Web.Formatters
     /// <summary>
     /// Reads and validates a signed <see cref="BaseBlockModel"/> from the input.
     /// </summary>
-    /// <typeparam name="TSignedData">
-    /// A type that inherits from <see cref="BaseBlockModel"/>.
+    /// <typeparam name="TData">
+    /// Verified data model
     /// </typeparam>
-    public abstract class BaseInputFormatter<TSignedData>: TextInputFormatter
-        where TSignedData: BaseBlockModel
+    public class VerifiedDataInputFormatter<TData>: TextInputFormatter
     {
-        private readonly ICodec<SignedData> _codec =
-            new SignedDataV1JsonCodec();
-
+        private readonly ICodec<SignedData> _codec;
+        private readonly ICodec<TData> _dataCodec;
         private readonly ILogger _logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected BaseInputFormatter(ILogger logger)
+        public VerifiedDataInputFormatter(
+            ILogger logger,
+            ICodec<SignedData> codec,
+            ICodec<TData> dataCodec
+        )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
+
+            _codec = codec ??
+                throw new ArgumentNullException(nameof(codec));
+
+            _dataCodec = dataCodec ??
+                throw new ArgumentNullException(nameof(dataCodec));
 
             SupportedMediaTypes.Add(
                 MediaTypeHeaderValue.Parse(
@@ -83,7 +91,15 @@ namespace RemoteCongress.Server.Web.Formatters
             if (signedData is null)
                 throw new Exception("TODO: Get a better exception for this.");
 
-            TSignedData result = FromSignedData(signedData);
+            if(!_dataCodec.CanHandle(signedData.MediaType))
+                throw new InvalidOperationException("TODO: Get a better exception for this.");
+
+            TData model = await _dataCodec.DecodeFromString(signedData.MediaType, signedData.BlockContent);
+
+            if (model is null)
+                throw new Exception("TODO: Get a better exception for this.");
+
+            VerifiedData<TData> result = new VerifiedData<TData>(signedData, model);
             if (!(result as ISignedData).IsValid)
                 throw new InvalidBlockSignatureException(
                     $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
@@ -92,17 +108,6 @@ namespace RemoteCongress.Server.Web.Formatters
 
             return await InputFormatterResult.SuccessAsync(result);
         }
-
-        /// <summary>
-        /// Converts from a <see cref="SignedData"/> to a <typeparamref name="TSignedData"/>.
-        /// </summary>
-        /// <param name="data">
-        /// The <see cref="SignedData"/> containing the data to convert.
-        /// </param>
-        /// <returns>
-        /// The validated, and signed <typepramaref name="T"/>.
-        /// </returns>
-        protected abstract TSignedData FromSignedData(SignedData data);
 
         /// <summary>
         /// Checks if a <see cref="Type"/> can be handled by this <see cref="TextInputFormatter"/>.
@@ -114,6 +119,6 @@ namespace RemoteCongress.Server.Web.Formatters
         /// True if <paramref name="type"/> can be handled by this <see cref="TextInputFormatter"/>.
         /// </returns>
         protected override bool CanReadType(Type type) =>
-            type.Equals(typeof(TSignedData));
+            type.Equals(typeof(VerifiedData<TData>));
     }
 }

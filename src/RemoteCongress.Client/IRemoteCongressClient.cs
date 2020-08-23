@@ -48,7 +48,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        Task<Bill> CreateBill(string privateKey, string publicKey, string title, string content, CancellationToken cancellationToken);
+        Task<VerifiedData<Bill>> CreateBill(
+            string privateKey,
+            string publicKey,
+            Bill data,
+            CancellationToken cancellationToken
+        );
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -62,7 +67,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        Task<Bill> GetBill(string id, CancellationToken cancellationToken);
+        Task<VerifiedData<Bill>> GetBill(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
@@ -89,7 +94,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        Task<Vote> CreateVote(string privateKey, string publicKey, string billId, bool? opinon, string message, CancellationToken cancellationToken);
+        Task<VerifiedData<Vote>> CreateVote(
+            string privateKey,
+            string publicKey,
+            Vote data,
+            CancellationToken cancellationToken
+        );
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Vote"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -103,6 +113,6 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        Task<Vote> GetVote(string id, CancellationToken cancellationToken);
+        Task<VerifiedData<Vote>> GetVote(string id, CancellationToken cancellationToken);
     }
 }

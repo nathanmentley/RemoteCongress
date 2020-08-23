@@ -16,18 +16,18 @@ namespace RemoteCongress.UnitIntegrationTests
         {
             // Arrange
             using TestContext context = TestContext.Create();
-            Bill bill = MockData.GetBill("title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
             string id = await context.SeedBill(bill);
             FetchBillController subject = context.GetFetchBillController();
 
             //Act
-            Bill result = await subject.Get(id, CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Get(id, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
             result.Id.Should().NotBeNull();
-            result.Title.Should().Be(bill.Title);
-            result.Content.Should().Be(bill.Content);
+            result.Data.Title.Should().Be(bill.Data.Title);
+            result.Data.Content.Should().Be(bill.Data.Content);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace RemoteCongress.UnitIntegrationTests
             using TestContext context = TestContext.Create();
             using CancellationTokenSource tokenSource = new CancellationTokenSource();
             tokenSource.Cancel();
-            Bill bill = MockData.GetBill("title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
             string id = await context.SeedBill(bill);
             FetchBillController subject = context.GetFetchBillController();
 

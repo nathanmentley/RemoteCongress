@@ -15,7 +15,6 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using Newtonsoft.Json.Linq;
 using RemoteCongress.Common.Exceptions;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -24,21 +23,10 @@ using System.Linq;
 namespace RemoteCongress.Common
 {
     /// <summary>
-    /// A model that contains the base logic for generating immutable and verified data models.
+    /// A class that contains the base logic for generating immutable and verified data models.
     /// </summary>
-    /// <remarks>
-    /// To ensure inherited classes are immutable and signed:
-    /// * Inheriting classes must only have properties that have private setters or no setters at all.
-    /// * The only decoding from the <see cref="BlockContent"/> data for inheriting classes must be done in the
-    ///     abstract <see cref="Decode"/> method.
-    /// * Inheriting classes must be sealed.
-    /// 
-    /// If those rules are followed you can be pretty confident that your models are verified and immutable.
-    ///   You can also be sure the data coming in from api calls, and up from the data storage layer are
-    ///   untampered with and signed.
-    /// </remarks>
     [ExcludeFromCodeCoverage]
-    public abstract class BaseBlockModel: IIdentifiable, ISignedData
+    public sealed class VerifiedData<TModel>: IIdentifiable, ISignedData
     {
         /// <summary>
         /// The unique Identifier of the persisted version.
@@ -53,6 +41,7 @@ namespace RemoteCongress.Common
         /// The string representation of the data producer's public key.
         /// </summary>
         public string PublicKey { get; }
+
         /// <summary>
         /// The content of the model.
         /// </summary>
@@ -62,6 +51,11 @@ namespace RemoteCongress.Common
         ///  formats.
         /// </remarks>
         public string BlockContent { get; }
+
+        /// <summary>
+        /// </summary>
+        public TModel Data { get; }
+
         /// <summary>
         /// The signature of the <see cref="BlockContent"/> that can be verified with <see cref="PublicKey"/>.
         /// </summary>
@@ -81,11 +75,17 @@ namespace RemoteCongress.Common
         /// <param name="data">
         /// The <see cref="ISignedData"/> data to use to construct the <see cref="BaseBlockModel"/>.
         /// </param>
+        /// <param name="model">
+        /// The <typeparamref name="TModel"/> that contains the <see cref="ISignedData.BlockContent"/>.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="id"/> is null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="model"/> is null.
         /// </exception>
         /// <exception cref="InvalidBlockSignatureException">
         /// Thrown if <see cref="Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
@@ -96,7 +96,7 @@ namespace RemoteCongress.Common
         /// It'll then call the abstract method <see cref="Decode"/> to populate any properties from the
         ///     <see cref="BlockContent"/> data for the specific implementation of <see cref="BaseBlockModel"/>.
         /// </remarks>
-        protected BaseBlockModel(string id, ISignedData data): this(data)
+        public VerifiedData(string id, ISignedData data, TModel model): this(data, model)
         {
             if(string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException(nameof(id));
@@ -110,8 +110,14 @@ namespace RemoteCongress.Common
         /// <param name="data">
         /// The <see cref="ISignedData"/> data to use to construct the <see cref="BaseBlockModel"/>.
         /// </param>
+        /// <param name="model">
+        /// The <typeparamref name="TModel"/> that contains the <see cref="ISignedData.BlockContent"/>.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="model"/> is null.
         /// </exception>
         /// <exception cref="InvalidBlockSignatureException">
         /// Thrown if <see cref="Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
@@ -122,7 +128,7 @@ namespace RemoteCongress.Common
         /// It'll then call the abstract method <see cref="Decode"/> to populate any properties from the
         ///     <see cref="BlockContent"/> data for the specific implementation of <see cref="BaseBlockModel"/>.
         /// </remarks>
-        protected BaseBlockModel(ISignedData data)
+        public VerifiedData(ISignedData data, TModel model)
         {
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
@@ -133,23 +139,17 @@ namespace RemoteCongress.Common
                         $"using public key[{data.PublicKey}]"
                 );
 
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
             PublicKey = data.PublicKey;
             BlockContent = data.BlockContent;
             MediaType = data.MediaType;
             Signature = data.Signature.ToArray();
+            Data = model;
 
             if (data is IIdentifiable identifiable)
                 Id = identifiable.Id;
-
-            Decode(JToken.Parse(BlockContent));
         }
-
-        /// <summary>
-        /// Populates properties on the instance from the <see cref="BlockContent"/> data.
-        /// </summary>
-        /// <param name="token">
-        /// The <see cref="BlockContent"/> json data that has been tokenized.
-        /// </param>
-        protected abstract void Decode(JToken token);
     }
 }

@@ -17,7 +17,9 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
@@ -70,26 +72,38 @@ namespace RemoteCongress.Client
                 })
                 .AddSingleton(config)
 
-                .AddSingleton<IBillRepository, BillRepository>(provider =>
-                    new BillRepository(
-                        provider.GetRequiredService<ILogger<BillRepository>>(),
+                .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
+
+                .AddSingleton<
+                    IImmutableDataRepository<Bill>,
+                    ImmutableDataRepository<Bill>
+                >(provider =>
+                    new ImmutableDataRepository<Bill>(
+                        provider.GetRequiredService<ILogger<ImmutableDataRepository<Bill>>>(),
                         new HttpDataClient(
                             provider.GetRequiredService<ILogger<HttpDataClient>>(),
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
                             BillEndpoint
-                        )
+                        ),
+                        provider.GetRequiredService<ICodec<Bill>>()
                     )
                 )
-                .AddSingleton<IVoteRepository, VoteRepository>(provider =>
-                    new VoteRepository(
-                        provider.GetRequiredService<ILogger<VoteRepository>>(),
+                .AddSingleton<
+                    IImmutableDataRepository<Vote>,
+                    ImmutableDataRepository<Vote>
+                >(provider =>
+                    new ImmutableDataRepository<Vote>(
+                        provider.GetRequiredService<ILogger<ImmutableDataRepository<Vote>>>(),
                         new HttpDataClient(
                             provider.GetRequiredService<ILogger<HttpDataClient>>(),
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
                             VoteEndpoint
-                        )
+                        ),
+                        provider.GetRequiredService<ICodec<Vote>>()
                     )
                 )
 

@@ -22,6 +22,7 @@ using Moq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,27 +30,30 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Tests.Common.Repositories
 {
     [TestClass]
-    public class BaseImmutableDataRepositoryTests
+    public class ImmutableDataRepositoryTests
     {
         private readonly Mock<IDataClient> _mockClient =
             new Mock<IDataClient>();
-        private readonly Mock<ILogger> _mockLogger =
-            new Mock<ILogger>();
+        private readonly Mock<ILogger<ImmutableDataRepository<Bill>>> _mockLogger =
+            new Mock<ILogger<ImmutableDataRepository<Bill>>>();
 
-        private class FakeImmutableDataRepository : BaseImmutableDataRepository<Bill>
+        private readonly ICodec<Bill> _codec =
+            new BillV1JsonCodec();
+
+        private class FakeImmutableDataRepository : ImmutableDataRepository<Bill>
         {
             public FakeImmutableDataRepository(
-                ILogger logger,
+                ILogger<ImmutableDataRepository<Bill>> logger,
                 IDataClient client,
-                Func<string, ISignedData, Bill> creator
-            ) : base(logger, client, creator) {}
+                ICodec<Bill> codec
+            ) : base(logger, client, codec) {}
         }
 
         private FakeImmutableDataRepository GetSubject() =>
             new FakeImmutableDataRepository(
                 _mockLogger.Object,
                 _mockClient.Object,
-                (id, data) => new Bill(id, data)
+                _codec
             );
 
         [TestMethod]
@@ -59,8 +63,8 @@ namespace RemoteCongress.Tests.Common.Repositories
             Func<FakeImmutableDataRepository> action = () =>
                 new FakeImmutableDataRepository(
                     null,
-                _mockClient.Object,
-                    (id, data) => new Bill(id, data)
+                    _mockClient.Object,
+                    _codec
                 );
 
             //act
@@ -80,7 +84,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                 new FakeImmutableDataRepository(
                     _mockLogger.Object,
                     null,
-                    (id, data) => new Bill(id, data)
+                    _codec
                 );
 
             //act
@@ -109,19 +113,20 @@ namespace RemoteCongress.Tests.Common.Repositories
             //assert
                 .Should()
                 .Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("creator");
+                .And.ParamName.Should().Be("codec");
         }
 
         [TestMethod]
-        public void CreateThrowsIfCancelled()
+        public async Task CreateThrowsIfCancelled()
         {
             //arrange
             FakeImmutableDataRepository subject = GetSubject();
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
 
-            Func<Task<Bill>> action = async () =>
-                await subject.Create(MockData.GetBill("title", "content"), cancellationTokenSource.Token);
+            Func<Task<VerifiedData<Bill>>> action = async () =>
+                await subject.Create(bill, cancellationTokenSource.Token);
 
             //act
             action
@@ -132,13 +137,14 @@ namespace RemoteCongress.Tests.Common.Repositories
         }
 
         [TestMethod]
-        public void CreateThrowsIfClientReturnsNull()
+        public async Task CreateThrowsIfClientReturnsNull()
         {
             //arrange
             FakeImmutableDataRepository subject = GetSubject();
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
 
-            Func<Task<Bill>> action = async () =>
-                await subject.Create(MockData.GetBill("title", "content"), CancellationToken.None);
+            Func<Task<VerifiedData<Bill>>> action = async () =>
+                await subject.Create(bill, CancellationToken.None);
 
             //act
             action
@@ -158,11 +164,14 @@ namespace RemoteCongress.Tests.Common.Repositories
                 client.AppendToChain(It.IsAny<ISignedData>(), CancellationToken.None)
             ).ReturnsAsync(id);
 
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
+
             //act
-            Bill result = await subject.Create(MockData.GetBill("title", "content"), CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Create(bill, CancellationToken.None);
 
             //arrange
-            result.Id.Should().Be(id);
+            result.Data.Title.Should().Be(bill.Data.Title);
+            result.Data.Content.Should().Be(bill.Data.Content);
         }
 
         [TestMethod]
@@ -173,7 +182,7 @@ namespace RemoteCongress.Tests.Common.Repositories
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
 
-            Func<Task<Bill>> action = async () =>
+            Func<Task<VerifiedData<Bill>>> action = async () =>
                 await subject.Fetch("id", cancellationTokenSource.Token);
 
             //act
@@ -190,7 +199,7 @@ namespace RemoteCongress.Tests.Common.Repositories
             //arrange
             FakeImmutableDataRepository subject = GetSubject();
 
-            Func<Task<Bill>> action = async () =>
+            Func<Task<VerifiedData<Bill>>> action = async () =>
                 await subject.Fetch("id", CancellationToken.None);
 
             //act
@@ -207,7 +216,8 @@ namespace RemoteCongress.Tests.Common.Repositories
             //arrange
             FakeImmutableDataRepository subject = GetSubject();
 
-            Bill bill = MockData.GetBill("id", "title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("id", "title", "content");
+
             _mockClient.Setup(client =>
                 client.FetchFromChain(
                     "id",
@@ -216,12 +226,12 @@ namespace RemoteCongress.Tests.Common.Repositories
             ).ReturnsAsync(bill);
 
             //act
-            Bill result = await subject.Fetch("id", CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Fetch("id", CancellationToken.None);
 
             //arrange
             result.Id.Should().Be(bill.Id);
-            result.Title.Should().Be(bill.Title);
-            result.Content.Should().Be(bill.Content);
+            result.Data.Title.Should().Be(bill.Data.Title);
+            result.Data.Content.Should().Be(bill.Data.Content);
         }
     }
 }

@@ -22,6 +22,7 @@ using Moq;
 using RemoteCongress.Client;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,15 +35,23 @@ namespace RemoteCongress.Tests.Client
         private readonly Mock<ILogger<RemoteCongressClient>> _loggerMock =
             new Mock<ILogger<RemoteCongressClient>>();
 
-        private readonly Mock<IBillRepository> _billRepositoryMock =
-            new Mock<IBillRepository>();
+        private readonly ICodec<Bill> _billCodec =
+            new BillV1JsonCodec();
 
-        private readonly Mock<IVoteRepository> _voteRepositoryMock =
-            new Mock<IVoteRepository>();
+        private readonly ICodec<Vote> _voteCodec =
+            new VoteV1JsonCodec();
+
+        private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
+            new Mock<IImmutableDataRepository<Bill>>();
+
+        private readonly Mock<IImmutableDataRepository<Vote>> _voteRepositoryMock =
+            new Mock<IImmutableDataRepository<Vote>>();
 
         private RemoteCongressClient GetSubject() =>
             new RemoteCongressClient(
                 _loggerMock.Object,
+                _billCodec,
+                _voteCodec,
                 _billRepositoryMock.Object,
                 _voteRepositoryMock.Object
             );
@@ -54,6 +63,8 @@ namespace RemoteCongress.Tests.Client
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     null,
+                    _billCodec,
+                    _voteCodec,
                     _billRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
@@ -69,12 +80,60 @@ namespace RemoteCongress.Tests.Client
         }
 
         [TestMethod]
+        public void CtorNullBillCodecThrows()
+        {
+            //Arrange
+            Func<RemoteCongressClient> action = () =>
+                new RemoteCongressClient(
+                    _loggerMock.Object,
+                    null,
+                    _voteCodec,
+                    _billRepositoryMock.Object,
+                    _voteRepositoryMock.Object
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("billCodec");
+        }
+
+        [TestMethod]
+        public void CtorNullVoteCodecThrows()
+        {
+            //Arrange
+            Func<RemoteCongressClient> action = () =>
+                new RemoteCongressClient(
+                    _loggerMock.Object,
+                    _billCodec,
+                    null,
+                    _billRepositoryMock.Object,
+                    _voteRepositoryMock.Object
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("voteCodec");
+        }
+
+        [TestMethod]
         public void CtorNullBillRepoThrows()
         {
             //Arrange
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     _loggerMock.Object,
+                    _billCodec,
+                    _voteCodec,
                     null,
                     _voteRepositoryMock.Object
                 );
@@ -96,6 +155,8 @@ namespace RemoteCongress.Tests.Client
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     _loggerMock.Object,
+                    _billCodec,
+                    _voteCodec,
                     _billRepositoryMock.Object,
                     null
                 );
@@ -114,16 +175,16 @@ namespace RemoteCongress.Tests.Client
         public async Task FetchBillCallsRepo()
         {
             //Arrange
-            var subject = GetSubject();
-            var id = "fake_bill_id";
-            var bill = MockData.GetBill(id, "title", "content");
+            RemoteCongressClient subject = GetSubject();
+            string id = "fake_bill_id";
+            VerifiedData<Bill> bill = await MockData.GetBill(id, "title", "content");
 
             _billRepositoryMock.Setup(
                 repository => repository.Fetch(id, CancellationToken.None)
             ).ReturnsAsync(bill);
 
             //Act
-            var result = await subject.GetBill(id, CancellationToken.None);
+            VerifiedData<Bill> result = await subject.GetBill(id, CancellationToken.None);
 
             //Assert
             result.Should().Be(bill);
@@ -137,16 +198,16 @@ namespace RemoteCongress.Tests.Client
         public async Task FetchVoteCallsRepo()
         {
             //Arrange
-            var subject = GetSubject();
-            var id = "fake_vote_id";
-            var vote = MockData.GetVote(id, "bill id", false, "message");
+            RemoteCongressClient subject = GetSubject();
+            string id = "fake_vote_id";
+            VerifiedData<Vote> vote = await MockData.GetVote(id, "bill id", false, "message");
 
             _voteRepositoryMock.Setup(
                 repository => repository.Fetch(id, CancellationToken.None)
             ).ReturnsAsync(vote);
 
             //Act
-            var result = await subject.GetVote(id, CancellationToken.None);
+            VerifiedData<Vote> result = await subject.GetVote(id, CancellationToken.None);
 
             //Assert
             result.Should().Be(vote);
@@ -165,12 +226,21 @@ namespace RemoteCongress.Tests.Client
             var content = "content";
 
             //Act
-            await subject.CreateBill(MockData.PrivateKey, MockData.PublicKey, title, content, CancellationToken.None);
+            await subject.CreateBill(
+                MockData.PrivateKey,
+                MockData.PublicKey,
+                new Bill()
+                {
+                    Title = title,
+                    Content = content
+                },
+                CancellationToken.None
+            );
 
             //Assert
             _billRepositoryMock.Verify(
-                repository => repository.Create(It.Is<Bill>(
-                    bill => bill.Title.Equals(title) && bill.Content.Equals(content)
+                repository => repository.Create(It.Is<VerifiedData<Bill>>(
+                    bill => bill.Data.Title.Equals(title) && bill.Data.Content.Equals(content)
                 ), CancellationToken.None)
             );
         }
@@ -185,14 +255,23 @@ namespace RemoteCongress.Tests.Client
             var message = "message";
 
             //Act
-            await subject.CreateVote(MockData.PrivateKey, MockData.PublicKey, billId, opinion, message, CancellationToken.None);
+            await subject.CreateVote(
+                MockData.PrivateKey,
+                MockData.PublicKey,
+                new Vote(){
+                    BillId = billId,
+                    Opinion = opinion,
+                    Message = message
+                },
+                CancellationToken.None
+            );
 
             //Assert
             _voteRepositoryMock.Verify(
-                repository => repository.Create(It.Is<Vote>(
-                    vote => vote.BillId.Equals(billId) &&
-                        vote.Opinion.Equals(opinion) &&
-                        vote.Message.Equals(message)
+                repository => repository.Create(It.Is<VerifiedData<Vote>>(
+                    vote => vote.Data.BillId.Equals(billId) &&
+                        vote.Data.Opinion.Equals(opinion) &&
+                        vote.Data.Message.Equals(message)
                 ), CancellationToken.None)
             );
         }

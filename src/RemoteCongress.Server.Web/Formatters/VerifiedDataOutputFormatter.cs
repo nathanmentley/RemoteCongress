@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Text;
@@ -31,24 +32,31 @@ namespace RemoteCongress.Server.Web.Formatters
     /// <summary>
     /// Validates a signed <see cref="BaseBlockModel"/> and writes it to the http response <see cref="Stream"/>.
     /// </summary>
-    /// <typeparam name="TSignedData">
-    /// A type that inherits from <see cref="BaseBlockModel"/>.
+    /// <typeparam name="TData">
+    /// Verified data model
     /// </typeparam>
-    public abstract class BaseOutputFormatter<TSignedData>: TextOutputFormatter
-        where TSignedData: BaseBlockModel
+    public class VerifiedDataOutputFormatter<TData>: TextOutputFormatter
     {
-        private readonly ICodec<SignedData> _codec =
-            new SignedDataV1JsonCodec();
+        private readonly ICodec<SignedData> _codec;
 
         private readonly ILogger _logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseOutputFormatter(ILogger logger)
+        public VerifiedDataOutputFormatter(
+            ILogger logger,
+            ICodec<SignedData> codec
+        )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
+
+            _codec = codec ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(logger))
+                );
 
             SupportedMediaTypes.Add(
                 MediaTypeHeaderValue.Parse(
@@ -73,9 +81,9 @@ namespace RemoteCongress.Server.Web.Formatters
             Encoding selectedEncoding
         )
         {
-            if (!(context.Object is TSignedData signedData))
+            if (!(context.Object is VerifiedData<TData> signedData))
                 throw new InvalidOperationException(
-                    $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(TSignedData)}."
+                    $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(VerifiedData<TData>)}."
                 );
 
             if (!(signedData as ISignedData).IsValid)
@@ -102,6 +110,6 @@ namespace RemoteCongress.Server.Web.Formatters
         /// True if <paramref name="type"/> can be handled by this <see cref="TextOutputFormatter"/>.
         /// </returns>
         protected override bool CanWriteType(Type type) =>
-            type.Equals(typeof(TSignedData));
+            type.Equals(typeof(VerifiedData<TData>));
     }
 }

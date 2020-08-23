@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using RemoteCongress.Common;
+﻿using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
 using RemoteCongress.Common.Serialization;
+using System.Threading.Tasks;
 
 namespace RemoteCongress.UnitIntegrationTests
 {
@@ -32,6 +32,11 @@ FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
 FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
+        private static readonly ICodec<Bill> _billDataCodec =
+            new BillV1JsonCodec();
+
+        private static readonly ICodec<Vote> _voteDataCodec =
+            new VoteV1JsonCodec();
 
         /// <summary>
         /// </summary>
@@ -41,21 +46,27 @@ kwMRyHisc6diIMoNAgMBAAE=";
         /// </param>
         /// <returns>
         /// </returns>
-        public static Bill GetBill(string title, string content)
+        public static async Task<VerifiedData<Bill>> GetBill(string title, string content)
         {
-            var blockContent = JToken.FromObject(new {
-                title = title,
-                content = content
-            }).ToString();
+            Bill billData = new Bill()
+            {
+                Title = title,
+                Content = content
+            };
 
-            var signedData = new SignedData(
+            string blockContent = await _billDataCodec.EncodeToString(
+                _billDataCodec.GetPreferredMediaType(),
+                billData
+            );
+
+            SignedData signedData = new SignedData(
                 PublicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(PrivateKey, blockContent),
-                BillV1JsonCodec.MediaType
+                _billDataCodec.GetPreferredMediaType()
             );
 
-            return new Bill(signedData);
+            return new VerifiedData<Bill>(signedData, billData);
         }
 
         /// <summary>
@@ -68,21 +79,27 @@ kwMRyHisc6diIMoNAgMBAAE=";
         /// </param>
         /// <returns>
         /// </returns>
-        public static Bill GetBill(string id, string title, string content)
+        public static async Task<VerifiedData<Bill>> GetBill(string id, string title, string content)
         {
-            var blockContent = JToken.FromObject(new {
-                title = title,
-                content = content
-            }).ToString();
+            Bill billData = new Bill()
+            {
+                Title = title,
+                Content = content
+            };
 
-            var signedData = new SignedData(
+            string blockContent = await _billDataCodec.EncodeToString(
+                _billDataCodec.GetPreferredMediaType(),
+                billData
+            );
+
+            SignedData signedData = new SignedData(
                 PublicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(PrivateKey, blockContent),
-                BillV1JsonCodec.MediaType
+                _billDataCodec.GetPreferredMediaType()
             );
 
-            return new Bill(id, signedData);
+            return new VerifiedData<Bill>(id, signedData, billData);
         }
 
         /// <summary>
@@ -95,22 +112,28 @@ kwMRyHisc6diIMoNAgMBAAE=";
         /// </param>
         /// <returns>
         /// </returns>
-        public static Vote GetVote(string billId, bool opinion, string message)
+        public static async Task<VerifiedData<Vote>> GetVote(string billId, bool opinion, string message)
         {
-            var blockContent = JToken.FromObject(new {
-                billId = billId,
-                opinion = opinion,
-                message = message
-            }).ToString();
+            Vote voteData = new Vote()
+            {
+                BillId = billId,
+                Opinion = opinion,
+                Message = message
+            };
 
-            var signedData = new SignedData(
+            string blockContent = await _voteDataCodec.EncodeToString(
+                _voteDataCodec.GetPreferredMediaType(),
+                voteData
+            );
+
+            SignedData signedData = new SignedData(
                 PublicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(PrivateKey, blockContent),
-                VoteV1JsonCodec.MediaType
+                _voteDataCodec.GetPreferredMediaType()
             );
 
-            return new Vote(signedData);
+            return new VerifiedData<Vote>(signedData, voteData);
         }
 
         /// <summary>
@@ -125,22 +148,28 @@ kwMRyHisc6diIMoNAgMBAAE=";
         /// </param>
         /// <returns>
         /// </returns>
-        public static Vote GetVote(string id, string billId, bool opinion, string message)
+        public static async Task<VerifiedData<Vote>> GetVote(string id, string billId, bool opinion, string message)
         {
-            var blockContent = JToken.FromObject(new {
-                billId = billId,
-                opinion = opinion,
-                message = message
-            }).ToString();
+            Vote voteData = new Vote()
+            {
+                BillId = billId,
+                Opinion = opinion,
+                Message = message
+            };
 
-            var signedData = new SignedData(
+            string blockContent = await _voteDataCodec.EncodeToString(
+                _voteDataCodec.GetPreferredMediaType(),
+                voteData
+            );
+
+            SignedData signedData = new SignedData(
                 PublicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(PrivateKey, blockContent),
-                VoteV1JsonCodec.MediaType
+                _voteDataCodec.GetPreferredMediaType()
             );
 
-            return new Vote(id, signedData);
+            return new VerifiedData<Vote>(id, signedData, voteData);
         }
     }
 }

@@ -42,7 +42,6 @@ namespace RemoteCongress.Common.Serialization
 
             JObject jObject = JObject.Parse(json);
 
-            //TODO: Check media type
             string publicKey = jObject.Value<string>("publicKey");
             string blockContent = jObject.Value<string>("blockContent");
             string blockMediaType = jObject.Value<string>("mediaType");

@@ -35,8 +35,8 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
     {
         private readonly Mock<ILogger<SubmitVoteController>> _loggerMock =
             new Mock<ILogger<SubmitVoteController>>();
-        private readonly Mock<IVoteRepository> _voteRepositoryMock =
-            new Mock<IVoteRepository>();
+        private readonly Mock<IImmutableDataRepository<Vote>> _voteRepositoryMock =
+            new Mock<IImmutableDataRepository<Vote>>();
 
         private SubmitVoteController GetSubject() =>
             new SubmitVoteController(
@@ -94,13 +94,13 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         }
 
         [TestMethod]
-        public void PostShouldThrowCancelledToken()
+        public async Task PostShouldThrowCancelledToken()
         {
             //arrange
             SubmitVoteController subject = GetSubject();
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
-            Vote voteToCreate = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> voteToCreate = await MockData.GetVote("billId", true, "message");
 
             Func<Task> action = async () =>
                 await subject.Post(voteToCreate, cancellationTokenSource.Token);
@@ -118,15 +118,15 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         {
             //arrange
             SubmitVoteController subject = GetSubject();
-            Vote voteToCreate = MockData.GetVote("billId", true, "message");
-            Vote createdVote = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> voteToCreate = await MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> createdVote = await MockData.GetVote("billId", true, "message");
 
             _voteRepositoryMock.Setup(
                 mock => mock.Create(voteToCreate, CancellationToken.None)
             ).ReturnsAsync(createdVote);
 
             //act
-            Vote result = await subject.Post(voteToCreate, CancellationToken.None);
+            VerifiedData<Vote> result = await subject.Post(voteToCreate, CancellationToken.None);
 
             //assert
             result.Should().BeSameAs(createdVote);

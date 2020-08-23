@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.DAL.InMemory;
 using RemoteCongress.Server.Web.Controllers;
 using System;
@@ -18,8 +19,12 @@ namespace RemoteCongress.UnitIntegrationTests
             _provider = new ServiceCollection()
                 .AddSingleton<IDataClient, InMemoryBlockchainClient>()
 
-                .AddSingleton<IBillRepository, BillRepository>()
-                .AddSingleton<IVoteRepository, VoteRepository>()
+                .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
+
+                .AddSingleton<IImmutableDataRepository<Bill>, ImmutableDataRepository<Bill>>()
+                .AddSingleton<IImmutableDataRepository<Vote>, ImmutableDataRepository<Vote>>()
                 
                 .AddSingleton<CreateBillController>()
                 .AddSingleton<FetchBillController>()
@@ -45,20 +50,20 @@ namespace RemoteCongress.UnitIntegrationTests
         public FetchVoteController GetFetchVoteController() =>
             _provider.GetRequiredService<FetchVoteController>();
 
-        public async Task<string> SeedBill(Bill bill)
+        public async Task<string> SeedBill(VerifiedData<Bill> bill)
         {
             CreateBillController controller = GetCreateBillController();
 
-            Bill result = await controller.Post(bill, CancellationToken.None);
+            VerifiedData<Bill> result = await controller.Post(bill, CancellationToken.None);
 
             return result.Id;
         }
 
-        public async Task<string> SeedVote(Vote vote)
+        public async Task<string> SeedVote(VerifiedData<Vote> vote)
         {
             SubmitVoteController controller = GetSubmitVoteController();
 
-            Vote result = await controller.Post(vote, CancellationToken.None);
+            VerifiedData<Vote> result = await controller.Post(vote, CancellationToken.None);
 
             return result.Id;
         }

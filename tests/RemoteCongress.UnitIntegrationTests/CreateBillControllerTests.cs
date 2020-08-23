@@ -17,20 +17,20 @@ namespace RemoteCongress.UnitIntegrationTests
             // Arrange
             using TestContext context = TestContext.Create();
             CreateBillController subject = context.GetCreateBillController();
-            Bill bill = MockData.GetBill("title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
 
             //Act
-            Bill result = await subject.Post(bill, CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Post(bill, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
             result.Id.Should().NotBeNull();
-            result.Title.Should().Be(bill.Title);
-            result.Content.Should().Be(bill.Content);
+            result.Data.Title.Should().Be(bill.Data.Title);
+            result.Data.Content.Should().Be(bill.Data.Content);
         }
 
         [TestMethod]
-        public void CreateBillThrowsOnCancelledToken()
+        public async Task CreateBillThrowsOnCancelledToken()
         {
             // Arrange
             using TestContext context = TestContext.Create();
@@ -38,7 +38,7 @@ namespace RemoteCongress.UnitIntegrationTests
             tokenSource.Cancel();
 
             CreateBillController subject = context.GetCreateBillController();
-            Bill bill = MockData.GetBill("title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("title", "content");
 
             Func<Task> action = async () =>
                 await subject.Post(bill, tokenSource.Token);

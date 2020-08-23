@@ -16,7 +16,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Newtonsoft.Json.Linq;
-using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,19 +40,22 @@ namespace RemoteCongress.Common.Serialization
 
             JObject jObject = JObject.Parse(json);
 
-            //TODO: Check media type
-            string publicKey = jObject.Value<string>("publicKey");
-            string blockContent = jObject.Value<string>("blockContent");
-            string blockMediaType = jObject.Value<string>("mediaType");
+            string title = jObject.Value<string>("title");
+            string content = jObject.Value<string>("content");
 
-            throw new NotImplementedException();
+            return new Bill()
+            {
+                Title = title,
+                Content = content
+            };
         }
 
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, Bill data)
         {
             JObject jObject = new JObject()
             {
-                ["id"] = data.Id,
+                ["title"] = data.Title,
+                ["content"] = data.Content
             };
 
             byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());

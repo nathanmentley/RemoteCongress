@@ -16,11 +16,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
 using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,8 +33,10 @@ namespace RemoteCongress.Client
     public class RemoteCongressClient: IRemoteCongressClient
     {
         private readonly ILogger<RemoteCongressClient> _logger;
-        private readonly IBillRepository _billRepository;
-        private readonly IVoteRepository _voteRepository;
+        private readonly ICodec<Bill> _billCodec;
+        private readonly ICodec<Vote> _voteCodec;
+        private readonly IImmutableDataRepository<Bill> _billRepository;
+        private readonly IImmutableDataRepository<Vote> _voteRepository;
 
         /// <summary>
         /// Ctor
@@ -43,10 +45,10 @@ namespace RemoteCongress.Client
         /// An <see cref="ILogger"/> to log against.
         /// </param>
         /// <param name="billRepository">
-        /// An <see cref="IBillRepository"/> instance to use to interact with <see cref="Bill"/>s.
+        /// An <see cref="IImmutableDataRepository<BillData>"/> instance to use to interact with <see cref="Bill"/>s.
         /// </param>
         /// <param name="voteRepository">
-        /// An <see cref="IVoteRepository"/> instance to use to interact with <see cref="Vote"/>s.
+        /// An <see cref="IImmutableDataRepository<VoteData>"/> instance to use to interact with <see cref="Vote"/>s.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="billRepository"/> is null.
@@ -56,12 +58,26 @@ namespace RemoteCongress.Client
         /// </exception>
         public RemoteCongressClient(
             ILogger<RemoteCongressClient> logger,
-            IBillRepository billRepository,
-            IVoteRepository voteRepository
+            ICodec<Bill> billCodec,
+            ICodec<Vote> voteCodec,
+            IImmutableDataRepository<Bill> billRepository,
+            IImmutableDataRepository<Vote> voteRepository
         )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
+
+            _billCodec = billCodec ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(billCodec))
+                );
+
+            _voteCodec = voteCodec ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(voteCodec))
+                );
 
             _billRepository = billRepository ??
                 throw _logger.LogException(
@@ -98,29 +114,27 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        public async Task<Bill> CreateBill(
+        public async Task<VerifiedData<Bill>> CreateBill(
             string privateKey,
             string publicKey,
-            string title,
-            string content,
+            Bill data,
             CancellationToken cancellationToken
         )
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = JToken.FromObject(new {
-                title = title,
-                content = content
-            }).ToString();
-
+            string blockContent = await _billCodec.EncodeToString(
+                _billCodec.GetPreferredMediaType(),
+                data
+            );
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(privateKey, blockContent),
-                RemoteCongressMediaType.None
+                _billCodec.GetPreferredMediaType()
             );
 
-            Bill bill = new Bill(signedData);
+            VerifiedData<Bill> bill = new VerifiedData<Bill>(signedData, data);
 
             return await _billRepository.Create(bill, cancellationToken);
         }
@@ -137,7 +151,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        public async Task<Bill> GetBill(string id, CancellationToken cancellationToken)
+        public async Task<VerifiedData<Bill>> GetBill(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -169,31 +183,27 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        public async Task<Vote> CreateVote(
+        public async Task<VerifiedData<Vote>> CreateVote(
             string privateKey,
             string publicKey,
-            string billId,
-            bool? opinion,
-            string message,
+            Vote data,
             CancellationToken cancellationToken
         )
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = JToken.FromObject(new {
-                billId = billId,
-                opinion = opinion,
-                message = message
-            }).ToString();
-
+            string blockContent = await _voteCodec.EncodeToString(
+                _voteCodec.GetPreferredMediaType(),
+                data
+            );
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(privateKey, blockContent),
-                RemoteCongressMediaType.None
+                _voteCodec.GetPreferredMediaType()
             );
 
-            Vote vote = new Vote(signedData);
+            VerifiedData<Vote> vote = new VerifiedData<Vote>(signedData, data);
 
             return await _voteRepository.Create(vote, cancellationToken);
         }
@@ -210,7 +220,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        public async Task<Vote> GetVote(string id, CancellationToken cancellationToken)
+        public async Task<VerifiedData<Vote>> GetVote(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

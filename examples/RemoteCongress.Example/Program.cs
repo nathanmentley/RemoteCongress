@@ -69,7 +69,16 @@ kwMRyHisc6diIMoNAgMBAAE=";
                 serviceProvider.GetService<IRemoteCongressClient>();
 
             //create a bill
-            Bill bill = await remoteCongressClient.CreateBill(PrivateKey, PublicKey, "title", "content", CancellationToken.None);
+            VerifiedData<Bill> bill = await remoteCongressClient.CreateBill(
+                PrivateKey,
+                PublicKey,
+                new Bill()
+                {
+                    Title = "title",
+                    Content = "content"
+                },
+                CancellationToken.None
+            );
             Output($"created bill[{bill.Id}] {bill.BlockContent}");
 
             //pull the bill from the api
@@ -77,7 +86,17 @@ kwMRyHisc6diIMoNAgMBAAE=";
             Output($"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified");
 
             //create a yes vote against the bill
-            Vote vote = await remoteCongressClient.CreateVote(PrivateKey, PublicKey, bill.Id, true, "message", CancellationToken.None);
+            VerifiedData<Vote> vote = await remoteCongressClient.CreateVote(
+                PrivateKey,
+                PublicKey,
+                new Vote()
+                {
+                    BillId = bill.Id,
+                    Opinion = true,
+                    Message = "message"
+                },
+                CancellationToken.None
+            );
             Output($"created vote[{vote.Id}] {vote.BlockContent}");
 
             //pull the newly created vote from the api.

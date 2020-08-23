@@ -183,11 +183,11 @@ namespace RemoteCongress.Tests.Client
         public async Task AppendToChainSucess()
         {
             //arrange
-            Bill bill = MockData.GetBill("abc", "title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("abc", "title", "content");
             HttpResponseMessage response = new HttpResponseMessage()
             {
                StatusCode = HttpStatusCode.OK,
-               Content = new StringContent(MockData.GetJson(bill)),
+               Content = new StringContent(await MockData.GetJson(bill)),
             };
             HttpDataClient subject = GetSubject(response);
 
@@ -229,22 +229,19 @@ namespace RemoteCongress.Tests.Client
         public async Task FetchFromChainSuccess()
         {
             //arrange
-            Bill bill = MockData.GetBill("id", "title", "content");
+            VerifiedData<Bill> bill = await MockData.GetBill("id", "title", "content");
             HttpResponseMessage response = new HttpResponseMessage()
             {
                StatusCode = HttpStatusCode.OK,
-               Content = new StringContent(MockData.GetJson(bill))
+               Content = new StringContent(await MockData.GetJson(bill))
             };
             HttpDataClient subject = GetSubject(response);
 
             //act
             ISignedData result = await subject.FetchFromChain("id", CancellationToken.None);
-            Bill resultBill = new Bill(result);
 
             //assert
-            resultBill.Id.Should().Be("id");
-            resultBill.Title.Should().Be("title");
-            resultBill.Content.Should().Be("content");
+            result.BlockContent.Should().Be(bill.BlockContent);
             result.IsValid.Should().BeTrue();
         }
     }

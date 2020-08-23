@@ -18,6 +18,7 @@
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
+using RemoteCongress.Common.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,11 +27,11 @@ namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
     /// </summary>
-    public abstract class BaseImmutableDataRepository<T>: IImmutableDataRepository<T> where T: BaseBlockModel
+    public class ImmutableDataRepository<TData>: IImmutableDataRepository<TData>
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<IImmutableDataRepository<TData>> _logger;
         private readonly IDataClient _client;
-        private readonly Func<string, ISignedData, T> _creator;
+        private readonly ICodec<TData> _codec;
 
         /// <summary>
         /// Constructor
@@ -41,8 +42,8 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="client">
         /// A <see cref="IDataClient"/> instance to use to communicate with the server.
         /// </param>
-        /// <param name="creator">
-        /// Injected logic to construct an instance of <typeparamref name="T"/> from an Id, and <see cref="ISignedData"/>.
+        /// <param name="codec">
+        /// 
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="config"/> is null.
@@ -50,10 +51,13 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
-        protected BaseImmutableDataRepository(
-            ILogger logger,
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="builder"/> is null.
+        /// </excpetion>
+        public ImmutableDataRepository(
+            ILogger<IImmutableDataRepository<TData>> logger,
             IDataClient client,
-            Func<string, ISignedData, T> creator
+            ICodec<TData> codec
         )
         {
             _logger = logger ??
@@ -65,10 +69,10 @@ namespace RemoteCongress.Common.Repositories
                     new ArgumentNullException(nameof(client))
                 );
 
-            _creator = creator ??
+            _codec = codec ??
                 throw _logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(creator))
+                    new ArgumentNullException(nameof(codec))
                 );
         }
 
@@ -90,7 +94,7 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="OperationCanceledException">
         /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
-        public async Task<T> Create(T model, CancellationToken cancellationToken)
+        public async Task<VerifiedData<TData>> Create(VerifiedData<TData> model, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -102,10 +106,7 @@ namespace RemoteCongress.Common.Repositories
                     new BlockNotStorableException()
                 );
 
-            //Since the _creator should be calling a ctor of a BaseBlockModel
-            // we can be sure that this model's signature hash is valid against 
-            // the data.
-            return _creator(id, model);
+            return new VerifiedData<TData>(id, model, model.Data);
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace RemoteCongress.Common.Repositories
         ///     matches <paramref name="id"/>.
         /// </summary>
         /// <param name="id">
-        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="T"/> instance to fetch.
+        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="TBlock"/> instance to fetch.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -128,7 +129,7 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="OperationCanceledException">
         /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
-        public async Task<T> Fetch(string id, CancellationToken cancellationToken)
+        public async Task<VerifiedData<TData>> Fetch(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -140,10 +141,15 @@ namespace RemoteCongress.Common.Repositories
                     new BlockNotFoundException()
                 );
 
-            //Since the _creator should be calling a ctor of a BaseBlockModel
-            // we can be sure that this model's signature hash is valid against 
-            // the data.
-            return _creator(id, block);
+            if (!_codec.CanHandle(block.MediaType))
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnknownBlockMediaTypeException()
+                );
+
+            TData data = await _codec.DecodeFromString(block.MediaType, block.BlockContent);
+
+            return new VerifiedData<TData>(id, block, data);
         }
     }
 }

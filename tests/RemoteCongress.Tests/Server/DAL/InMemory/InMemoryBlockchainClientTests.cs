@@ -60,7 +60,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
 
             Func<Task<string>> action = async () =>
                 await subject.AppendToChain(
-                    MockData.GetBill("title", "content"),
+                    await MockData.GetBill("title", "content"),
                     cancellationTokenSource.Token
                 );
 
@@ -80,7 +80,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
 
             //Act
             var result = await subject.AppendToChain(
-                MockData.GetBill("title", "content"),
+                await MockData.GetBill("title", "content"),
                 CancellationToken.None
             );
 
@@ -155,7 +155,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
             var subject = GetSubject();
 
             var id = await subject.AppendToChain(
-                MockData.GetBill("title", "content"),
+                await MockData.GetBill("title", "content"),
                 CancellationToken.None
             );
 

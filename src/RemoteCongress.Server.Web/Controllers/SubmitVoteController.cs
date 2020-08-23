@@ -35,20 +35,20 @@ namespace RemoteCongress.Server.Web.Controllers
     public class SubmitVoteController
     {
         private readonly ILogger _logger;
-        private readonly IVoteRepository _voteRepository;
+        private readonly IImmutableDataRepository<Vote> _voteRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="voteRepository">
-        /// An <see cref="IVoteRepository"/> instance.
+        /// An <see cref="IImmutableDataRepository<VoteData>"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="voteRepository"/> is null.
         /// </exception>
         public SubmitVoteController(
             ILogger<SubmitVoteController> logger,
-            IVoteRepository voteRepository
+            IImmutableDataRepository<Vote> voteRepository
         )
         {
             _logger = logger ??
@@ -71,7 +71,10 @@ namespace RemoteCongress.Server.Web.Controllers
         /// The persisted, signed, and validiated <see cref="Vote"/>.
         /// </returns>
         [HttpPost]
-        public async Task<Vote> Post([FromBody] Vote vote, CancellationToken cancellationToken)
+        public async Task<VerifiedData<Vote>> Post(
+            [FromBody] VerifiedData<Vote> vote,
+            CancellationToken cancellationToken
+        )
         {
             Validate(vote, cancellationToken);
 
@@ -100,7 +103,10 @@ namespace RemoteCongress.Server.Web.Controllers
         /// <exception cref="OperationCanceledException">
         /// Thrown if <paramref name="cancellationToken"/> is null.
         /// </exception>
-        private void Validate(Vote vote, CancellationToken cancellationToken)
+        private void Validate(
+            VerifiedData<Vote> vote,
+            CancellationToken cancellationToken
+        )
         {
             if (vote is null)
                 throw _logger.LogException(

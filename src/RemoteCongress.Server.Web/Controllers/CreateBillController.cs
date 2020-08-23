@@ -35,20 +35,20 @@ namespace RemoteCongress.Server.Web.Controllers
     public class CreateBillController
     {
         private readonly ILogger _logger;
-        private readonly IBillRepository _billRepository;
+        private readonly IImmutableDataRepository<Bill> _billRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="billRepository">
-        /// An <see cref="IBillRepository"/> instance.
+        /// An <see cref="IImmutableDataRepository<BillData>"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="billRepository"/> is null.
         /// </exception>
         public CreateBillController(
             ILogger<CreateBillController> logger,
-            IBillRepository billRepository
+            IImmutableDataRepository<Bill> billRepository
         )
         {
             _logger = logger ??
@@ -71,7 +71,10 @@ namespace RemoteCongress.Server.Web.Controllers
         /// The persisted, signed, and validiated <see cref="Bill"/>.
         /// </returns>
         [HttpPost]
-        public async Task<Bill> Post([FromBody] Bill bill, CancellationToken cancellationToken)
+        public async Task<VerifiedData<Bill>> Post(
+            [FromBody] VerifiedData<Bill> bill,
+            CancellationToken cancellationToken
+        )
         {
             Validate(bill, cancellationToken);
 
@@ -100,7 +103,10 @@ namespace RemoteCongress.Server.Web.Controllers
         /// <exception cref="OperationCanceledException">
         /// Thrown if <paramref name="cancellationToken"/> is null.
         /// </exception>
-        private void Validate(Bill bill, CancellationToken cancellationToken)
+        private void Validate(
+            VerifiedData<Bill> bill,
+            CancellationToken cancellationToken
+        )
         {
             if (bill is null)
                 throw _logger.LogException(

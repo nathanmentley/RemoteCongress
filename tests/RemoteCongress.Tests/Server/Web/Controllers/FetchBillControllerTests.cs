@@ -35,8 +35,8 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
     {
         private readonly Mock<ILogger<FetchBillController>> _loggerMock =
             new Mock<ILogger<FetchBillController>>();
-        private readonly Mock<IBillRepository> _billRepositoryMock =
-            new Mock<IBillRepository>();
+        private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
+            new Mock<IImmutableDataRepository<Bill>>();
 
         private FetchBillController GetSubject() =>
             new FetchBillController(
@@ -118,14 +118,14 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
             //arrange
             FetchBillController subject = GetSubject();
             string billId = "billId";
-            Bill fetchedBill = MockData.GetBill("title", "content");
+            VerifiedData<Bill> fetchedBill = await MockData.GetBill("title", "content");
 
             _billRepositoryMock.Setup(
                 mock => mock.Fetch(billId, CancellationToken.None)
             ).ReturnsAsync(fetchedBill);
 
             //act
-            Bill result = await subject.Get(billId, CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Get(billId, CancellationToken.None);
 
             //assert
             result.Should().BeSameAs(fetchedBill);

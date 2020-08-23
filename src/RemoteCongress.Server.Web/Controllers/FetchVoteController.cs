@@ -35,13 +35,13 @@ namespace RemoteCongress.Server.Web.Controllers
     public class FetchVoteController
     {
         private readonly ILogger _logger;
-        private readonly IVoteRepository _voteRepository;
+        private readonly IImmutableDataRepository<Vote> _voteRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="voteRepository">
-        /// An <see cref="IVoteRepository"/> instance.
+        /// An <see cref="IImmutableDataRepository<VoteData>"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
@@ -51,7 +51,7 @@ namespace RemoteCongress.Server.Web.Controllers
         /// </exception>
         public FetchVoteController(
             ILogger<FetchVoteController> logger,
-            IVoteRepository voteRepository
+            IImmutableDataRepository<Vote> voteRepository
         )
         {
             _logger = logger ??
@@ -74,7 +74,10 @@ namespace RemoteCongress.Server.Web.Controllers
         /// The persisted, signed, and validiated <see cref="Vote"/>.
         /// </returns>
         [HttpGet]
-        public async Task<Vote> Get([FromRoute] string id, CancellationToken cancellationToken)
+        public async Task<VerifiedData<Vote>> Get(
+            [FromRoute] string id,
+            CancellationToken cancellationToken
+        )
         {
             Validate(id, cancellationToken);
 
@@ -103,7 +106,10 @@ namespace RemoteCongress.Server.Web.Controllers
         /// <exception cref="OperationCanceledException">
         /// Thrown if <paramref name="cancellationToken"/> is null.
         /// </exception>
-        private void Validate(string id, CancellationToken cancellationToken)
+        private void Validate(
+            string id,
+            CancellationToken cancellationToken
+        )
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw _logger.LogException(

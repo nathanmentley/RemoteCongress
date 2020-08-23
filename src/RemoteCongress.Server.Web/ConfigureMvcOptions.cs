@@ -20,7 +20,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RemoteCongress.Common;
 using RemoteCongress.Common.Logging;
+using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.Web.ExceptionFilters;
 using RemoteCongress.Server.Web.Formatters;
 using System;
@@ -33,8 +35,17 @@ namespace RemoteCongress.Server.Web
     {
         private readonly ILogger<ConfigureMvcOptions> _logger;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ICodec<SignedData> _signedDataCodec;
+        private readonly ICodec<Bill> _billDataCodec;
+        private readonly ICodec<Vote> _voteDataCodec;
 
-        public ConfigureMvcOptions(ILogger<ConfigureMvcOptions> logger, ILoggerFactory loggerFactory)
+        public ConfigureMvcOptions(
+            ILogger<ConfigureMvcOptions> logger,
+            ILoggerFactory loggerFactory,
+            ICodec<SignedData> signedDataCodec,
+            ICodec<Bill> billDataCodec,
+            ICodec<Vote> voteDataCodec
+        )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
@@ -43,6 +54,24 @@ namespace RemoteCongress.Server.Web
                 throw logger.LogException(
                     LogLevel.Debug,
                     new ArgumentNullException(nameof(loggerFactory))
+                );
+
+            _signedDataCodec = signedDataCodec ??
+                throw logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(signedDataCodec))
+                );
+
+            _billDataCodec = billDataCodec ??
+                throw logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(billDataCodec))
+                );
+
+            _voteDataCodec = voteDataCodec ??
+                throw logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(voteDataCodec))
                 );
         }
     
@@ -59,22 +88,36 @@ namespace RemoteCongress.Server.Web
 
             SetupFormatter(
                 options.InputFormatters,
-                new BillInputFormatter(_loggerFactory.CreateLogger<BillInputFormatter>())
+                new VerifiedDataInputFormatter<Bill>(
+                    _loggerFactory.CreateLogger<VerifiedDataInputFormatter<Bill>>(),
+                    _signedDataCodec,
+                    _billDataCodec
+                )
             );
             SetupFormatter(
                 options.InputFormatters,
-                new VoteInputFormatter(_loggerFactory.CreateLogger<VoteInputFormatter>())
+                new VerifiedDataInputFormatter<Vote>(
+                    _loggerFactory.CreateLogger<VerifiedDataInputFormatter<Vote>>(),
+                    _signedDataCodec,
+                    _voteDataCodec
+                )
             );
 
             _logger.LogTrace("Setting up output formatters.");
 
             SetupFormatter(
                 options.OutputFormatters,
-                new BillOutputFormatter(_loggerFactory.CreateLogger<BillOutputFormatter>())
+                new VerifiedDataOutputFormatter<Bill>(
+                    _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Bill>>(),
+                    _signedDataCodec
+                )
             );
             SetupFormatter(
                 options.OutputFormatters,
-                new VoteOutputFormatter(_loggerFactory.CreateLogger<VoteOutputFormatter>())
+                new VerifiedDataOutputFormatter<Vote>(
+                    _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Vote>>(),
+                    _signedDataCodec
+                )
             );
         }
 

@@ -35,8 +35,8 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
     {
         private readonly Mock<ILogger<CreateBillController>> _loggerMock =
             new Mock<ILogger<CreateBillController>>();
-        private readonly Mock<IBillRepository> _billRepositoryMock =
-            new Mock<IBillRepository>();
+        private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
+            new Mock<IImmutableDataRepository<Bill>>();
 
         private CreateBillController GetSubject() =>
             new CreateBillController(
@@ -94,13 +94,13 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         }
 
         [TestMethod]
-        public void PostShouldThrowCancelledToken()
+        public async Task PostShouldThrowCancelledToken()
         {
             //arrange
             CreateBillController subject = GetSubject();
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
-            Bill billToCreate = MockData.GetBill("title", "content");
+            VerifiedData<Bill> billToCreate = await MockData.GetBill("title", "content");
 
             Func<Task> action = async () =>
                 await subject.Post(billToCreate, cancellationTokenSource.Token);
@@ -118,15 +118,15 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         {
             //arrange
             CreateBillController subject = GetSubject();
-            Bill billToCreate = MockData.GetBill("title", "content");
-            Bill createdBill = MockData.GetBill("title", "content");
+            VerifiedData<Bill> billToCreate = await MockData.GetBill("title", "content");
+            VerifiedData<Bill> createdBill = await MockData.GetBill("title", "content");
 
             _billRepositoryMock.Setup(
                 mock => mock.Create(billToCreate, CancellationToken.None)
             ).ReturnsAsync(createdBill);
 
             //act
-            Bill result = await subject.Post(billToCreate, CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Post(billToCreate, CancellationToken.None);
 
             //assert
             result.Should().BeSameAs(createdBill);

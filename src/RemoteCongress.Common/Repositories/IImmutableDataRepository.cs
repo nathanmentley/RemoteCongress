@@ -26,8 +26,7 @@ namespace RemoteCongress.Common.Repositories
     /// <typeparam name="TBlock">
     /// A type that inherits from <see cref="BaseBlockModel"/>. So we know it's signed, and immutable.
     /// </typeparam>
-    public interface IImmutableDataRepository<TBlock>
-        where TBlock: BaseBlockModel
+    public interface IImmutableDataRepository<TData>
     {
         /// <summary>
         /// Creates and persist the signed and verified <paramref name="instance"/>.
@@ -41,7 +40,7 @@ namespace RemoteCongress.Common.Repositories
         /// <returns>
         /// The persisted <paramref name="instance"/> model.
         /// </returns>
-        Task<TBlock> Create(TBlock instance, CancellationToken cancellationToken);
+        Task<VerifiedData<TData>> Create(VerifiedData<TData> instance, CancellationToken cancellationToken);
 
         /// <summary>
         /// Fetches a persisted instance of <typeparamref name="TBlock"/> that has an <see cref="IIdentifiable.Id"/> that
@@ -57,6 +56,6 @@ namespace RemoteCongress.Common.Repositories
         /// The immutable, and verified <typeparamref name="TBlock"/> instance with an <see cref="IIdentifiable.Id"/>
         ///     of <paramref name="id"/>.
         /// </returns>
-        Task<TBlock> Fetch(string id, CancellationToken cancellationToken);
+        Task<VerifiedData<TData>> Fetch(string id, CancellationToken cancellationToken);
     }
 }

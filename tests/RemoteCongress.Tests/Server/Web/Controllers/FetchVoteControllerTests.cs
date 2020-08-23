@@ -35,8 +35,8 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
     {
         private readonly Mock<ILogger<FetchVoteController>> _loggerMock =
             new Mock<ILogger<FetchVoteController>>();
-        private readonly Mock<IVoteRepository> _voteRepositoryMock =
-            new Mock<IVoteRepository>();
+        private readonly Mock<IImmutableDataRepository<Vote>> _voteRepositoryMock =
+            new Mock<IImmutableDataRepository<Vote>>();
 
         private FetchVoteController GetSubject() =>
             new FetchVoteController(
@@ -118,14 +118,14 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
             //arrange
             FetchVoteController subject = GetSubject();
             string voteId = "voteId";
-            Vote fetchedVote = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> fetchedVote = await MockData.GetVote("billId", true, "message");
 
             _voteRepositoryMock.Setup(
                 mock => mock.Fetch(voteId, CancellationToken.None)
             ).ReturnsAsync(fetchedVote);
 
             //act
-            Vote result = await subject.Get(voteId, CancellationToken.None);
+            VerifiedData<Vote> result = await subject.Get(voteId, CancellationToken.None);
 
             //assert
             result.Should().BeSameAs(fetchedVote);

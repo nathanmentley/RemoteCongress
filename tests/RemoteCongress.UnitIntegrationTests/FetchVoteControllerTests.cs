@@ -16,19 +16,19 @@ namespace RemoteCongress.UnitIntegrationTests
         {
             // Arrange
             using TestContext context = TestContext.Create();
-            Vote vote = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> vote = await MockData.GetVote("billId", true, "message");
             string id = await context.SeedVote(vote);
             FetchVoteController subject = context.GetFetchVoteController();
 
             //Act
-            Vote result = await subject.Get(id, CancellationToken.None);
+            VerifiedData<Vote> result = await subject.Get(id, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
             result.Id.Should().NotBeNull();
-            result.BillId.Should().Be(vote.BillId);
-            result.Opinion.Should().Be(vote.Opinion);
-            result.Message.Should().Be(vote.Message);
+            result.Data.BillId.Should().Be(vote.Data.BillId);
+            result.Data.Opinion.Should().Be(vote.Data.Opinion);
+            result.Data.Message.Should().Be(vote.Data.Message);
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace RemoteCongress.UnitIntegrationTests
             using TestContext context = TestContext.Create();
             using CancellationTokenSource tokenSource = new CancellationTokenSource();
             tokenSource.Cancel();
-            Vote vote = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> vote = await MockData.GetVote("billId", true, "message");
             string id = await context.SeedVote(vote);
             FetchVoteController subject = context.GetFetchVoteController();
 

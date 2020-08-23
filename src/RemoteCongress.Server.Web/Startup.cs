@@ -25,7 +25,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
+using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
 using System.Diagnostics.CodeAnalysis;
 
@@ -62,10 +64,14 @@ namespace RemoteCongress.Server.Web
                     return engine;
                 })
 
+                .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
+
                 .AddSingleton<IDataClient, IpfsBlockchainClient>()
 
-                .AddSingleton<IBillRepository, BillRepository>()
-                .AddSingleton<IVoteRepository, VoteRepository>()
+                .AddSingleton<IImmutableDataRepository<Bill>, ImmutableDataRepository<Bill>>()
+                .AddSingleton<IImmutableDataRepository<Vote>, ImmutableDataRepository<Vote>>()
 
                 .AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>()
 

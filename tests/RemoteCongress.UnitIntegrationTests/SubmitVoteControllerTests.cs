@@ -17,21 +17,21 @@ namespace RemoteCongress.UnitIntegrationTests
             // Arrange
             using TestContext context = TestContext.Create();
             SubmitVoteController subject = context.GetSubmitVoteController();
-            Vote vote = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> vote = await MockData.GetVote("billId", true, "message");
 
             //Act
-            Vote result = await subject.Post(vote, CancellationToken.None);
+            VerifiedData<Vote> result = await subject.Post(vote, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
             result.Id.Should().NotBeNull();
-            result.BillId.Should().Be(vote.BillId);
-            result.Opinion.Should().Be(vote.Opinion);
-            result.Message.Should().Be(vote.Message);
+            result.Data.BillId.Should().Be(vote.Data.BillId);
+            result.Data.Opinion.Should().Be(vote.Data.Opinion);
+            result.Data.Message.Should().Be(vote.Data.Message);
         }
 
         [TestMethod]
-        public void SubmitVoteThrowsOnCancelledToken()
+        public async Task SubmitVoteThrowsOnCancelledToken()
         {
             // Arrange
             using TestContext context = TestContext.Create();
@@ -39,7 +39,7 @@ namespace RemoteCongress.UnitIntegrationTests
             tokenSource.Cancel();
 
             SubmitVoteController subject = context.GetSubmitVoteController();
-            Vote vote = MockData.GetVote("billId", true, "message");
+            VerifiedData<Vote> vote = await MockData.GetVote("billId", true, "message");
 
             Func<Task> action = async () =>
                 await subject.Post(vote, tokenSource.Token);

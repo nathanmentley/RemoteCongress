@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
+using RemoteCongress.Common;
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -31,56 +32,75 @@ namespace RemoteCongress.CliTool
     {
         public static async Task<int> Main(string[] args)
         {
-            var castVoteCommand = new Command("cast-vote", "cast a vote")
+            Command castVoteCommand = new Command("cast-vote", "cast a vote")
             {
                 Handler = CommandHandler.Create<string, string, string, string, bool, string>(
                     async (protocol, hostname, key, billId, opinion, message) => {
-                        var client = SetupApp(protocol, hostname);
-                        var (privateKey, publicKey) = await SetupKeys(key);
+                        IRemoteCongressClient client = SetupApp(protocol, hostname);
+                        (string privateKey, string publicKey) = await SetupKeys(key);
 
-                        var vote = await client.CreateVote(privateKey, publicKey, billId, opinion, message, CancellationToken.None);
+                        VerifiedData<Vote> vote = await client.CreateVote(
+                            privateKey,
+                            publicKey,
+                            new Vote()
+                            {
+                                BillId = billId,
+                                Opinion = opinion,
+                                Message = message
+                            },
+                            CancellationToken.None
+                        );
 
                         Console.WriteLine($"cast a new vote with id: {vote.Id}.");
                     }
                 )
             };
 
-            var submitBillCommand = new Command("submit-bill", "submit a bill")
+            Command submitBillCommand = new Command("submit-bill", "submit a bill")
             {
                 Handler = CommandHandler.Create<string, string, string, string, string>(
                     async (protocol, hostname, key, title, content) => {
-                        var client = SetupApp(protocol, hostname);
-                        var (privateKey, publicKey) = await SetupKeys(key);
+                        IRemoteCongressClient client = SetupApp(protocol, hostname);
+                        (string privateKey, string publicKey) = await SetupKeys(key);
 
-                        var bill = await client.CreateBill(privateKey, publicKey, title, content, CancellationToken.None);
+                        VerifiedData<Bill> bill = await client.CreateBill(
+                            privateKey,
+                            publicKey,
+                            new Bill()
+                            {
+                                Title = title,
+                                Content = content
+                            },
+                            CancellationToken.None
+                        );
 
                         Console.WriteLine($"A new bill was submitted with id: {bill.Id}.");
                     }
                 )
             };
 
-            var viewBillCommand = new Command("view-bill", "view an already submitted bill")
+            Command viewBillCommand = new Command("view-bill", "view an already submitted bill")
             {
                 Handler = CommandHandler.Create<string, string, string>(
                     async (protocol, hostname, id) => {
-                        var client = SetupApp(protocol, hostname);
+                        IRemoteCongressClient client = SetupApp(protocol, hostname);
 
-                        var bill = await client.GetBill(id, CancellationToken.None);
+                        VerifiedData<Bill> bill = await client.GetBill(id, CancellationToken.None);
 
-                        Console.WriteLine($"found a bill with id: {bill.Id} - Title: {bill.Title}. Content: {bill.Content}");
+                        Console.WriteLine($"found a bill with id: {bill.Id} - Title: {bill.Data.Title}. Content: {bill.Data.Content}");
                     }
                 )
             };
 
-            var viewVoteCommand = new Command("view-vote", "view an already cast vote")
+            Command viewVoteCommand = new Command("view-vote", "view an already cast vote")
             {
                 Handler = CommandHandler.Create<string, string, string>(
                     async (protocol, hostname, id) => {
-                        var client = SetupApp(protocol, hostname);
+                        IRemoteCongressClient client = SetupApp(protocol, hostname);
 
-                        var vote = await client.GetVote(id, CancellationToken.None);
+                        VerifiedData<Vote> vote = await client.GetVote(id, CancellationToken.None);
 
-                        Console.WriteLine($"found a vote with id: {vote.Id}. For Bill: {vote.BillId}. Opinon: {vote.Opinion}. Message: {vote.Message}.");
+                        Console.WriteLine($"found a vote with id: {vote.Id}. For Bill: {vote.Data.BillId}. Opinion: {vote.Data.Opinion}. Message: {vote.Data.Message}.");
                     }
                 )
             };
@@ -148,7 +168,7 @@ namespace RemoteCongress.CliTool
                 )
             );
 
-            var rootCommand = new RootCommand
+            RootCommand rootCommand = new RootCommand
             {
                 castVoteCommand,
                 submitBillCommand,
@@ -183,7 +203,7 @@ namespace RemoteCongress.CliTool
         public static IRemoteCongressClient SetupApp(string protocol, string hostname)
         {
             // Setup client in DI
-            var serviceProvider = GetServiceProvider(new ClientConfig(protocol, hostname));
+            ServiceProvider serviceProvider = GetServiceProvider(new ClientConfig(protocol, hostname));
                 //TODO: set service provider up somewhere to dispose
             
             // pull out the client
@@ -193,17 +213,16 @@ namespace RemoteCongress.CliTool
         public static async Task<(string privateKey, string publicKey)> SetupKeys(string key)
         {
             // load keys
-            var privateKeyFile = key;
-            var publicKeyFile = $"{key}.pub";
-            var (privateKey, publicKey) = await ReadKeys(privateKeyFile, publicKeyFile);
+            string privateKeyFile = key;
+            string publicKeyFile = $"{key}.pub";
 
-            return (privateKey, publicKey);
+            return await ReadKeys(privateKeyFile, publicKeyFile);
         }
 
         private static async Task<(string, string)> ReadKeys(string privateKeyFile, string publicKeyFile)
         {
-            var privateKeyData = await File.ReadAllTextAsync(privateKeyFile, Encoding.UTF8);
-            var publicKeyData = await File.ReadAllTextAsync(publicKeyFile, Encoding.UTF8);
+            string privateKeyData = await File.ReadAllTextAsync(privateKeyFile, Encoding.UTF8);
+            string publicKeyData = await File.ReadAllTextAsync(publicKeyFile, Encoding.UTF8);
 
             return (TrimKey(privateKeyData), TrimKey(publicKeyData));
         }

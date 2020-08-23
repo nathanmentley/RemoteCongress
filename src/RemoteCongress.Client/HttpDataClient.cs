@@ -28,11 +28,11 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Client
 {
     /// <summary>
-    /// An abstraction layer implementing <see cref="IBillRepository"/> that fetches and creates
+    /// An abstraction layer implementing <see cref="IImmutableDataRepository<BillData>"/> that fetches and creates
     ///     <see cref="Bill"/> instances.
     /// </summary>
     /// <remarks>
-    /// This implementation of <see cref="IBillRepository"/> of the repository is built for connecting over an http
+    /// This implementation of <see cref="IImmutableDataRepository<BillData>"/> of the repository is built for connecting over an http
     ///     connection. It's expecting to send <see cref="SignedData"/> instances to a web server.
     /// </remarks>
     public class HttpDataClient: IDataClient
