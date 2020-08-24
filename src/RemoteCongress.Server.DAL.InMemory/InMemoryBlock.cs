@@ -18,6 +18,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using RemoteCongress.Common;
 
 namespace RemoteCongress.Server.DAL.InMemory
 {
@@ -58,6 +59,11 @@ namespace RemoteCongress.Server.DAL.InMemory
         internal string Hash { get; private set; }
 
         /// <summary>
+        /// The MediaType of <see cref="Content"/>.
+        /// </summary>
+        internal RemoteCongressMediaType MediaType { get; private set; }
+
+        /// <summary>
         /// An <see cref="InMemoryBlock"/> is valid if the <see cref="Hash"/> equals the result from <see cref="GenerateHash"/>.
         /// </summary>
         internal bool IsValid =>
@@ -73,15 +79,18 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <param name="content">
         /// The content to be stored in the <see cref="InMemoryBlock"/>.
         /// </param>
-        internal InMemoryBlock(InMemoryBlock previousBlock, string content)
+        internal InMemoryBlock(InMemoryBlock previousBlock, string content, RemoteCongressMediaType mediaType)
         {
             if (previousBlock is null)
                 throw new ArgumentNullException(nameof(previousBlock));
             if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
+            if (mediaType is null)
+                throw new ArgumentNullException(nameof(mediaType));
 
             LastBlockHash = previousBlock.Hash;
             Content = content;
+            MediaType = mediaType;
             Hash = GenerateHash();
         }
 
@@ -95,6 +104,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         {
             LastBlockHash = string.Empty;
             Content = string.Empty;
+            MediaType = RemoteCongressMediaType.None;
             Hash = GenerateHash();
         }
 

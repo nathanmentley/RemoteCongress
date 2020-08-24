@@ -23,6 +23,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Serialization;
 
 namespace RemoteCongress.Tests.Server.DAL.InMemory
 {
@@ -30,7 +31,11 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
     public class InMemoryBlockchainClientTests
     {
         private InMemoryBlockchainClient GetSubject() =>
-            new InMemoryBlockchainClient();
+            new InMemoryBlockchainClient(
+                new [] {
+                    new SignedDataV1JsonCodec()
+                }
+            );
 
         [TestMethod]
         public void AppendToChainShouldThrowNullData()

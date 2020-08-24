@@ -18,10 +18,13 @@
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
+using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,8 +36,8 @@ namespace RemoteCongress.Client
     public class RemoteCongressClient: IRemoteCongressClient
     {
         private readonly ILogger<RemoteCongressClient> _logger;
-        private readonly ICodec<Bill> _billCodec;
-        private readonly ICodec<Vote> _voteCodec;
+        private readonly IEnumerable<ICodec<Bill>> _billCodecs;
+        private readonly IEnumerable<ICodec<Vote>> _voteCodecs;
         private readonly IImmutableDataRepository<Bill> _billRepository;
         private readonly IImmutableDataRepository<Vote> _voteRepository;
 
@@ -44,12 +47,27 @@ namespace RemoteCongress.Client
         /// <param name="logger">
         /// An <see cref="ILogger"/> to log against.
         /// </param>
+        /// <param name="billCodecs">
+        /// An <see cref="ICodec"/> for <see cref="Bill"/>s.
+        /// </param>
+        /// <param name="voteCodecs">
+        /// An <see cref="ICodec"/> for <see cref="Vote"/>s.
+        /// </param>
         /// <param name="billRepository">
         /// An <see cref="IImmutableDataRepository<BillData>"/> instance to use to interact with <see cref="Bill"/>s.
         /// </param>
         /// <param name="voteRepository">
         /// An <see cref="IImmutableDataRepository<VoteData>"/> instance to use to interact with <see cref="Vote"/>s.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="billCodecs"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="voteCodecs"/> is null.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="billRepository"/> is null.
         /// </exception>
@@ -58,8 +76,8 @@ namespace RemoteCongress.Client
         /// </exception>
         public RemoteCongressClient(
             ILogger<RemoteCongressClient> logger,
-            ICodec<Bill> billCodec,
-            ICodec<Vote> voteCodec,
+            IEnumerable<ICodec<Bill>> billCodecs,
+            IEnumerable<ICodec<Vote>> voteCodecs,
             IImmutableDataRepository<Bill> billRepository,
             IImmutableDataRepository<Vote> voteRepository
         )
@@ -67,16 +85,16 @@ namespace RemoteCongress.Client
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
 
-            _billCodec = billCodec ??
+            _billCodecs = billCodecs ??
                 throw _logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(billCodec))
+                    new ArgumentNullException(nameof(billCodecs))
                 );
 
-            _voteCodec = voteCodec ??
+            _voteCodecs = voteCodecs ??
                 throw _logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(voteCodec))
+                    new ArgumentNullException(nameof(voteCodecs))
                 );
 
             _billRepository = billRepository ??
@@ -102,11 +120,8 @@ namespace RemoteCongress.Client
         /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to
         ///     the producing individual.
         /// </param>
-        /// <param name="title">
-        /// The title of the <see cref="Bill"/>.
-        /// </param>
-        /// <param name="content">
-        /// The content of the <see cref="Bill"/>.
+        /// <param name="data">
+        /// The <see cref="Bill"/> data to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -123,15 +138,17 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = await _billCodec.EncodeToString(
-                _billCodec.GetPreferredMediaType(),
+            ICodec<Bill> codec = GetBillCodec(BillV1AvroCodec.MediaType);
+
+            string blockContent = await codec.EncodeToString(
+                codec.GetPreferredMediaType(),
                 data
             );
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(privateKey, blockContent),
-                _billCodec.GetPreferredMediaType()
+                codec.GetPreferredMediaType()
             );
 
             VerifiedData<Bill> bill = new VerifiedData<Bill>(signedData, data);
@@ -168,14 +185,8 @@ namespace RemoteCongress.Client
         /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to
         ///     the producing individual.
         /// </param>
-        /// <param name="billId">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/> related to the <see cref="Vote"/>.
-        /// </param>
-        /// <param name="opinion">
-        /// The opinion in the <see cref="Vote"/>.
-        /// </param>
-        /// <param name="message">
-        /// The optional message attached to the <see cref="Vote"/>.
+        /// <param name="data">
+        /// The <see cref="Vote"/> data to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -192,15 +203,17 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = await _voteCodec.EncodeToString(
-                _voteCodec.GetPreferredMediaType(),
+            ICodec<Vote> codec = GetVoteCodec(VoteV1AvroCodec.MediaType);
+
+            string blockContent = await codec.EncodeToString(
+                codec.GetPreferredMediaType(),
                 data
             );
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
                 RsaUtils.GenerateSignature(privateKey, blockContent),
-                _voteCodec.GetPreferredMediaType()
+                codec.GetPreferredMediaType()
             );
 
             VerifiedData<Vote> vote = new VerifiedData<Vote>(signedData, data);
@@ -226,5 +239,27 @@ namespace RemoteCongress.Client
 
             return await _voteRepository.Fetch(id, cancellationToken);
         }
+
+        private ICodec<Bill> GetBillCodec(RemoteCongressMediaType mediaType) =>
+            _billCodecs.FirstOrDefault(
+                codec => codec.CanHandle(mediaType)
+            ) ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnknownBlockMediaTypeException(
+                        $"{mediaType.ToString()} is not supported."
+                    )
+                );
+
+        private ICodec<Vote> GetVoteCodec(RemoteCongressMediaType mediaType) =>
+            _voteCodecs.FirstOrDefault(
+                codec => codec.CanHandle(mediaType)
+            ) ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnknownBlockMediaTypeException(
+                        $"{mediaType.ToString()} is not supported."
+                    )
+                );
     }
 }

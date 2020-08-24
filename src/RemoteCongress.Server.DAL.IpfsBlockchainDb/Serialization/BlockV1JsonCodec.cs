@@ -1,3 +1,4 @@
+
 /*
     RemoteCongress - A platform for conducting small secure public elections
     Copyright (C) 2020  Nathan Mentley
@@ -16,25 +17,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Newtonsoft.Json.Linq;
+using RemoteCongress.Common;
+using RemoteCongress.Common.Serialization;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Common.Serialization
+namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
 {
     /// <summary>
-    /// An <see cref="ICodec"/> for a version 1 json representation of a <see cref="SignedData"/>.
+    /// An <see cref="ICodec"/> for a version 1 json representation of a <see cref="Block"/>.
     /// </summary>
-    public class SignedDataV1JsonCodec: ICodec<SignedData>
+    internal class BlockV1JsonCodec: ICodec<Block>
     {
-        public readonly static RemoteCongressMediaType MediaType =
+        private readonly static RemoteCongressMediaType MediaType =
             new RemoteCongressMediaType(
                 "application",
                 "json",
-                "remotecongress.signeddata",
+                "remotecongress.ipfs.block", 
                 1
             );
 
@@ -80,7 +81,7 @@ namespace RemoteCongress.Common.Serialization
         /// <exception cref="InvalidOperationException"/>
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
-        public async Task<SignedData> Decode(RemoteCongressMediaType mediaType, Stream data)
+        public async Task<Block> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
             if (mediaType is null)
                 throw new ArgumentNullException(nameof(mediaType));
@@ -88,39 +89,35 @@ namespace RemoteCongress.Common.Serialization
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
-            if (!CanHandle(mediaType))
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
-                );
-
-            using StreamReader sr = new StreamReader(data);
-            string json = await sr.ReadToEndAsync();
-
-            JObject jObject = JObject.Parse(json);
-
-            string publicKey = jObject.Value<string>("publicKey");
-            string blockContent = jObject.Value<string>("blockContent");
-            string blockMediaType = jObject.Value<string>("mediaType");
-            IList<byte> signature = new List<byte>();
-            JArray signatureJson = jObject["signature"] as JArray;
-
-            if (!(signatureJson is null))
+            if (CanHandle(mediaType))
             {
-                foreach(JToken token in signatureJson)
-                {
-                    signature.Add(token.Value<byte>());
-                }
+                using StreamReader sr = new StreamReader(data);
+                string json = await sr.ReadToEndAsync();
+
+                JObject jObject = JObject.Parse(json);
+
+                string id = jObject.Value<string>("id");
+                string lastBlockId = jObject.Value<string>("lastBlockId");
+                DateTime timestampUtc = jObject.Value<DateTime>("timestampUtc");
+                string lastBlockHash = jObject.Value<string>("lastBlockHash");
+                string content = jObject.Value<string>("content");
+                string blockMediaType = jObject.Value<string>("mediaType");
+                string hash = jObject.Value<string>("hash");
+
+                return Block.CreateFromData(
+                    id,
+                    lastBlockId,
+                    timestampUtc,
+                    lastBlockHash,
+                    content,
+                    RemoteCongressMediaType.Parse(blockMediaType),
+                    hash
+                );
             }
 
-            return new SignedData(
-                publicKey,
-                blockContent,
-                signature.ToArray(),
-                RemoteCongressMediaType.Parse(blockMediaType)
-            )
-            {
-                Id = jObject["id"].Value<string>()
-            };
+            throw new InvalidOperationException(
+               $"{GetType()} cannot handle {mediaType}"
+           );
         }
 
         /// <summary>
@@ -144,7 +141,7 @@ namespace RemoteCongress.Common.Serialization
         /// <exception cref="InvalidOperationException"/>
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
-        public Task<Stream> Encode(RemoteCongressMediaType mediaType, SignedData data)
+        public Task<Stream> Encode(RemoteCongressMediaType mediaType, Block data)
         {
             if (mediaType is null)
                 throw new ArgumentNullException(nameof(mediaType));
@@ -152,30 +149,27 @@ namespace RemoteCongress.Common.Serialization
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
-            if (!CanHandle(mediaType))
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
-                );
-
-            JArray signature = new JArray();
-
-            foreach(byte signatureByte in data.Signature)
+            if (CanHandle(mediaType))
             {
-                signature.Add(signatureByte);
+                JObject jObject = new JObject()
+                {
+                    ["id"] = data.Id,
+                    ["lastBlockId"] = data.LastBlockHash,
+                    ["timestampUtc"] = data.Timestamp,
+                    ["lastBlockHash"] = data.LastBlockHash,
+                    ["content"] = data.Content,
+                    ["mediaType"] = data.MediaType.ToString(),
+                    ["hash"] = data.Hash
+                };
+
+                byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());
+
+                return Task.FromResult(new MemoryStream(jsonBytes) as Stream);
             }
 
-            JObject jObject = new JObject()
-            {
-                ["id"] = data.Id,
-                ["publicKey"] = data.PublicKey,
-                ["blockContent"] = data.BlockContent,
-                ["signature"] = signature,
-                ["mediaType"] = data.MediaType.ToString()
-            };
-
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());
-
-            return Task.FromResult(new MemoryStream(jsonBytes) as Stream);
+            throw new InvalidOperationException(
+               $"{GetType()} cannot handle {mediaType}"
+           );
         }
     }
 }

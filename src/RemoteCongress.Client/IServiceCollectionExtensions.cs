@@ -21,6 +21,7 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
@@ -72,8 +73,11 @@ namespace RemoteCongress.Client
                 })
                 .AddSingleton(config)
 
+                .AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
                 .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1AvroCodec>()
                 .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Vote>, VoteV1AvroCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
 
                 .AddSingleton<
@@ -86,9 +90,10 @@ namespace RemoteCongress.Client
                             provider.GetRequiredService<ILogger<HttpDataClient>>(),
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
+                            provider.GetRequiredService<IEnumerable<ICodec<SignedData>>>(),
                             BillEndpoint
                         ),
-                        provider.GetRequiredService<ICodec<Bill>>()
+                        provider.GetRequiredService<IEnumerable<ICodec<Bill>>>()
                     )
                 )
                 .AddSingleton<
@@ -101,9 +106,10 @@ namespace RemoteCongress.Client
                             provider.GetRequiredService<ILogger<HttpDataClient>>(),
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
+                            provider.GetRequiredService<IEnumerable<ICodec<SignedData>>>(),
                             VoteEndpoint
                         ),
-                        provider.GetRequiredService<ICodec<Vote>>()
+                        provider.GetRequiredService<IEnumerable<ICodec<Vote>>>()
                     )
                 )
 

@@ -17,10 +17,14 @@
 */
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,42 +32,54 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Client
 {
     /// <summary>
-    /// An abstraction layer implementing <see cref="IImmutableDataRepository<BillData>"/> that fetches and creates
-    ///     <see cref="Bill"/> instances.
+    /// An <see cref="IDataClient"/> that operates over http.
     /// </summary>
-    /// <remarks>
-    /// This implementation of <see cref="IImmutableDataRepository<BillData>"/> of the repository is built for connecting over an http
-    ///     connection. It's expecting to send <see cref="SignedData"/> instances to a web server.
-    /// </remarks>
     public class HttpDataClient: IDataClient
     {
         private readonly ILogger<HttpDataClient> _logger;
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
+        private readonly IEnumerable<ICodec<SignedData>> _codecs;
         private readonly string _endpoint;
-
-        private readonly ICodec<SignedData> _codec = 
-            new SignedDataV1JsonCodec();
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> to log against.
+        /// </param>
         /// <param name="config">
         /// A <see cref="ClientConfig"/> instance that holds configuration data on connecting to the server.
         /// </param>
         /// <param name="httpClient">
         /// A <see cref="HttpClient"/> instance to use to communicate with the server.
         /// </param>
+        /// <param name="codecs">
+        /// An <see cref="ICodec{TData}"/> for <see cref="SignedData"/>.
+        /// </param>
+        /// <param name="endpoint">
+        /// The endpoint to this client should hit.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </excpetion>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="config"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="codecs"/> is null.
+        /// </excpetion>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="endpoint"/> is null.
+        /// </excpetion>
         public HttpDataClient(
             ILogger<HttpDataClient> logger,
             ClientConfig config,
             HttpClient httpClient,
+            IEnumerable<ICodec<SignedData>> codecs,
             string endpoint
         )
         {
@@ -71,17 +87,27 @@ namespace RemoteCongress.Client
                 throw new ArgumentNullException(nameof(logger));
 
             _config = config ??
-                throw new ArgumentNullException(nameof(config));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(config))
+                );
 
             _httpClient = httpClient ??
-                throw new ArgumentNullException(nameof(httpClient));
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(httpClient))
+                );
+
+            _codecs = codecs ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(codecs))
+                );
 
             _endpoint = endpoint ??
-                throw new ArgumentNullException(nameof(endpoint));
-
-            if(!_codec.CanHandle(_codec.GetPreferredMediaType()))
-                throw new InvalidOperationException(
-                    $"{_codec.GetType()} cannot handle {_codec.GetPreferredMediaType()} client is misconfigured."
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(endpoint))
                 );
         }
 
@@ -101,14 +127,17 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using Stream jsonStream = await _codec.Encode(
-                _codec.GetPreferredMediaType(),
+            ICodec<SignedData> avroCodec = GetSignedDataForMediaType(SignedDataV1AvroCodec.MediaType);
+            ICodec<SignedData> jsonCodec = GetSignedDataForMediaType(SignedDataV1JsonCodec.MediaType);
+
+            using Stream jsonStream = await avroCodec.Encode(
+                avroCodec.GetPreferredMediaType(),
                 new SignedData(data)
             );
             using StreamContent streamContent = new StreamContent(jsonStream)
             {
                 Headers = {
-                    { "Content-Type", _codec.GetPreferredMediaType().ToString() }
+                    { "Content-Type", avroCodec.GetPreferredMediaType().ToString() }
                 }
             };
 
@@ -118,14 +147,15 @@ namespace RemoteCongress.Client
             )
             {
                 Headers = {
-                    { "Accept", _codec.GetPreferredMediaType().ToString() }
+                    { "Accept", jsonCodec.GetPreferredMediaType().ToString() }
                 },
                 Content = streamContent
             };
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
             using Stream body = await response.Content.ReadAsStreamAsync();
-            SignedData result = await _codec.Decode(_codec.GetPreferredMediaType(), body);
+
+            SignedData result = await jsonCodec.Decode(jsonCodec.GetPreferredMediaType(), body);
 
             return result.Id;
         }
@@ -146,20 +176,34 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            ICodec<SignedData> codec = GetSignedDataForMediaType(SignedDataV1JsonCodec.MediaType);
+
             using HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}/{id}"
             )
             {
                 Headers = {
-                    { "Accept", _codec.GetPreferredMediaType().ToString() }
+                    { "Accept", codec.GetPreferredMediaType().ToString() }
                 }
             };
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
-
             using Stream body = await response.Content.ReadAsStreamAsync();
-            return await _codec.Decode(_codec.GetPreferredMediaType(), body);
+
+            return await codec.Decode(codec.GetPreferredMediaType(), body);
         }
+
+
+        private ICodec<SignedData> GetSignedDataForMediaType(RemoteCongressMediaType mediaType) =>
+            _codecs.FirstOrDefault(
+                codec => codec.CanHandle(mediaType)
+            ) ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnknownBlockMediaTypeException(
+                        $"{mediaType.ToString()} is not supported."
+                    )
+                );
     }
 }

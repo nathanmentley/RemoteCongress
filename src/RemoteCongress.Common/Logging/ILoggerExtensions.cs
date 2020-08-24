@@ -21,6 +21,7 @@ using System;
 namespace RemoteCongress.Common.Logging
 {
     /// <summary>
+    /// <see cref="ILogger"/> extension methods.
     /// </summary>
     public static class ILoggerExtensions
     {

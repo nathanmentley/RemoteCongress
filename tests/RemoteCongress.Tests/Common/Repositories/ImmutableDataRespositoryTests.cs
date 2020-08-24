@@ -24,6 +24,7 @@ using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,23 +38,26 @@ namespace RemoteCongress.Tests.Common.Repositories
         private readonly Mock<ILogger<ImmutableDataRepository<Bill>>> _mockLogger =
             new Mock<ILogger<ImmutableDataRepository<Bill>>>();
 
-        private readonly ICodec<Bill> _codec =
-            new BillV1JsonCodec();
+        private readonly IEnumerable<ICodec<Bill>> _codecs =
+            new []
+            {
+                new BillV1JsonCodec()
+            };
 
         private class FakeImmutableDataRepository : ImmutableDataRepository<Bill>
         {
             public FakeImmutableDataRepository(
                 ILogger<ImmutableDataRepository<Bill>> logger,
                 IDataClient client,
-                ICodec<Bill> codec
-            ) : base(logger, client, codec) {}
+                IEnumerable<ICodec<Bill>> codecs
+            ) : base(logger, client, codecs) {}
         }
 
         private FakeImmutableDataRepository GetSubject() =>
             new FakeImmutableDataRepository(
                 _mockLogger.Object,
                 _mockClient.Object,
-                _codec
+                _codecs
             );
 
         [TestMethod]
@@ -64,7 +68,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                 new FakeImmutableDataRepository(
                     null,
                     _mockClient.Object,
-                    _codec
+                    _codecs
                 );
 
             //act
@@ -84,7 +88,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                 new FakeImmutableDataRepository(
                     _mockLogger.Object,
                     null,
-                    _codec
+                    _codecs
                 );
 
             //act
@@ -113,7 +117,7 @@ namespace RemoteCongress.Tests.Common.Repositories
             //assert
                 .Should()
                 .Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("codec");
+                .And.ParamName.Should().Be("codecs");
         }
 
         [TestMethod]

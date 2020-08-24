@@ -36,11 +36,8 @@ namespace RemoteCongress.Client
         /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to
         ///     the producing individual.
         /// </param>
-        /// <param name="title">
-        /// The title of the <see cref="Bill"/>.
-        /// </param>
-        /// <param name="content">
-        /// The content of the <see cref="Bill"/>.
+        /// <param name="data">
+        /// The <see cref="Bill"/> data to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -79,14 +76,8 @@ namespace RemoteCongress.Client
         /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to
         ///     the producing individual.
         /// </param>
-        /// <param name="billId">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/> related to the <see cref="Vote"/>.
-        /// </param>
-        /// <param name="opinion">
-        /// The opinion in the <see cref="Vote"/>.
-        /// </param>
-        /// <param name="message">
-        /// The optional message attached to the <see cref="Vote"/>.
+        /// <param name="data">
+        /// The <see cref="Vote"/> data to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.

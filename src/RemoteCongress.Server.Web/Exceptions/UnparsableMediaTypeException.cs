@@ -17,39 +17,40 @@
 */
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
-namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
+namespace RemoteCongress.Server.Web.Exceptions
 {
     /// <summary>
-    /// Configuration data for Ipfs
+    /// An <see cref="Exception"/> to throw when a request body is missing.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class IpfsBlockchainConfig
+    public class UnparsableMediaTypeException: Exception
     {
-        private readonly static string BaseDirectoryPath = 
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-        private readonly static string RelativeDataDirectoryPath =
-            ".remote_congress/ipfs";
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        /// <param name="innerException">
+        /// Another exception that brought this exception to light.
+        /// </param>
+        public UnparsableMediaTypeException(string message, Exception innerException):
+            base(message, innerException) {}
 
         /// <summary>
+        /// Constructor
         /// </summary>
-        public readonly string AbsoluteDataDirectoryPath =
-            Path.Combine(
-                BaseDirectoryPath,
-                RelativeDataDirectoryPath
-            );
-
-
-        /// <summary>
-        /// The ending <see cref="Block.Id"/>  of the <see cref="Blockchain" />
-        /// </summary>
-        public string LastBlockId { get; set; }
+        /// <param name="message">
+        /// A message describing the exceptional situation in detail.
+        /// </param>
+        public UnparsableMediaTypeException(string message):
+            base(message) {}
 
         /// <summary>
-        /// The ipfs node password
+        /// Constructor
         /// </summary>
-        public string Password { get; set; }
+        public UnparsableMediaTypeException():
+            base() {}
     }
 }

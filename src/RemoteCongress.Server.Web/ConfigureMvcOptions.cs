@@ -26,6 +26,7 @@ using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.Web.ExceptionFilters;
 using RemoteCongress.Server.Web.Formatters;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web
@@ -35,16 +36,16 @@ namespace RemoteCongress.Server.Web
     {
         private readonly ILogger<ConfigureMvcOptions> _logger;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ICodec<SignedData> _signedDataCodec;
-        private readonly ICodec<Bill> _billDataCodec;
-        private readonly ICodec<Vote> _voteDataCodec;
+        private readonly IEnumerable<ICodec<SignedData>> _signedDataCodecs;
+        private readonly IEnumerable<ICodec<Bill>> _billDataCodecs;
+        private readonly IEnumerable<ICodec<Vote>> _voteDataCodecs;
 
         public ConfigureMvcOptions(
             ILogger<ConfigureMvcOptions> logger,
             ILoggerFactory loggerFactory,
-            ICodec<SignedData> signedDataCodec,
-            ICodec<Bill> billDataCodec,
-            ICodec<Vote> voteDataCodec
+            IEnumerable<ICodec<SignedData>> signedDataCodecs,
+            IEnumerable<ICodec<Bill>> billDataCodecs,
+            IEnumerable<ICodec<Vote>> voteDataCodecs
         )
         {
             _logger = logger ??
@@ -56,22 +57,22 @@ namespace RemoteCongress.Server.Web
                     new ArgumentNullException(nameof(loggerFactory))
                 );
 
-            _signedDataCodec = signedDataCodec ??
+            _signedDataCodecs = signedDataCodecs ??
                 throw logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(signedDataCodec))
+                    new ArgumentNullException(nameof(signedDataCodecs))
                 );
 
-            _billDataCodec = billDataCodec ??
+            _billDataCodecs = billDataCodecs ??
                 throw logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(billDataCodec))
+                    new ArgumentNullException(nameof(billDataCodecs))
                 );
 
-            _voteDataCodec = voteDataCodec ??
+            _voteDataCodecs = voteDataCodecs ??
                 throw logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(voteDataCodec))
+                    new ArgumentNullException(nameof(voteDataCodecs))
                 );
         }
     
@@ -90,16 +91,16 @@ namespace RemoteCongress.Server.Web
                 options.InputFormatters,
                 new VerifiedDataInputFormatter<Bill>(
                     _loggerFactory.CreateLogger<VerifiedDataInputFormatter<Bill>>(),
-                    _signedDataCodec,
-                    _billDataCodec
+                    _signedDataCodecs,
+                    _billDataCodecs
                 )
             );
             SetupFormatter(
                 options.InputFormatters,
                 new VerifiedDataInputFormatter<Vote>(
                     _loggerFactory.CreateLogger<VerifiedDataInputFormatter<Vote>>(),
-                    _signedDataCodec,
-                    _voteDataCodec
+                    _signedDataCodecs,
+                    _voteDataCodecs
                 )
             );
 
@@ -109,14 +110,14 @@ namespace RemoteCongress.Server.Web
                 options.OutputFormatters,
                 new VerifiedDataOutputFormatter<Bill>(
                     _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Bill>>(),
-                    _signedDataCodec
+                    _signedDataCodecs
                 )
             );
             SetupFormatter(
                 options.OutputFormatters,
                 new VerifiedDataOutputFormatter<Vote>(
                     _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Vote>>(),
-                    _signedDataCodec
+                    _signedDataCodecs
                 )
             );
         }
@@ -141,6 +142,24 @@ namespace RemoteCongress.Server.Web
                 options.Filters,
                 new InvalidBlockSignatureExceptionFilter(
                     _loggerFactory.CreateLogger<InvalidBlockSignatureExceptionFilter>()
+                )
+            );
+            SetupExceptionHandler(
+                options.Filters,
+                new UnknownBlockMediaTypeExceptionFilter(
+                    _loggerFactory.CreateLogger<UnknownBlockMediaTypeExceptionFilter>()
+                )
+            );
+            SetupExceptionHandler(
+                options.Filters,
+                new UnacceptableMediaTypeExceptionFilter(
+                    _loggerFactory.CreateLogger<UnacceptableMediaTypeExceptionFilter>()
+                )
+            );
+            SetupExceptionHandler(
+                options.Filters,
+                new UnparsableMediaTypeExceptionFilter(
+                    _loggerFactory.CreateLogger<UnparsableMediaTypeExceptionFilter>()
                 )
             );
             SetupExceptionHandler(

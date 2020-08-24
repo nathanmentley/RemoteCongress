@@ -17,6 +17,7 @@
 */
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RemoteCongress.Common;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
 using System;
 
@@ -41,7 +42,7 @@ namespace RemoteCongress.Tests.Server.DAL.IpfsBlockchainDb
         {
             //arrange
             Func<Block> action = () =>
-                new Block(null, "content");
+                new Block(null, "content", RemoteCongressMediaType.None);
 
             //act
             action
@@ -57,7 +58,7 @@ namespace RemoteCongress.Tests.Server.DAL.IpfsBlockchainDb
         {
             //arrange
             Func<Block> action = () =>
-                new Block(Block.CreateGenisysBlock(), null);
+                new Block(Block.CreateGenisysBlock(), null, RemoteCongressMediaType.None);
 
             //act
             action
@@ -72,7 +73,7 @@ namespace RemoteCongress.Tests.Server.DAL.IpfsBlockchainDb
         public void CtorSuccess()
         {
             Block genisysBlock = Block.CreateGenisysBlock();
-            Block block = new Block(genisysBlock, "content");
+            Block block = new Block(genisysBlock, "content", RemoteCongressMediaType.None);
 
             block.LastBlockHash.Should().Be(genisysBlock.Hash);
             block.Content.Should().Be("content");

@@ -18,12 +18,16 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Serialization;
+using RemoteCongress.Server.Web.Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,7 +41,7 @@ namespace RemoteCongress.Server.Web.Formatters
     /// </typeparam>
     public class VerifiedDataOutputFormatter<TData>: TextOutputFormatter
     {
-        private readonly ICodec<SignedData> _codec;
+        private readonly IEnumerable<ICodec<SignedData>> _codecs;
 
         private readonly ILogger _logger;
 
@@ -46,23 +50,26 @@ namespace RemoteCongress.Server.Web.Formatters
         /// </summary>
         public VerifiedDataOutputFormatter(
             ILogger logger,
-            ICodec<SignedData> codec
+            IEnumerable<ICodec<SignedData>> codecs
         )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
 
-            _codec = codec ??
+            _codecs = codecs ??
                 throw _logger.LogException(
                     LogLevel.Debug,
                     new ArgumentNullException(nameof(logger))
                 );
 
-            SupportedMediaTypes.Add(
-                MediaTypeHeaderValue.Parse(
-                    _codec.GetPreferredMediaType().ToString()
-                )
-            );
+            foreach(ICodec<SignedData> codec in _codecs)
+            {
+                SupportedMediaTypes.Add(
+                    MediaTypeHeaderValue.Parse(
+                        codec.GetPreferredMediaType().ToString()
+                    )
+                );
+            }
 
             SupportedEncodings.Add(Encoding.UTF8);
         }
@@ -92,9 +99,26 @@ namespace RemoteCongress.Server.Web.Formatters
                         $"using public key[{signedData.PublicKey}]"
                 );
 
+            StringValues accepts = context.HttpContext.Request.Headers["Accept"];
+
+            ICodec<SignedData> codec = _codecs.FirstOrDefault(
+                codec => accepts.Any(accept =>
+                    codec.CanHandle(
+                        RemoteCongressMediaType.Parse(
+                            accept
+                        )
+                    )
+                )
+            );
+
+            if (codec is null)
+                throw new UnacceptableMediaTypeException(
+                    $"Cannot return any media types {accepts} for type {typeof(TData)}"
+                );
+
             await context.HttpContext.Response.WriteAsync(
-                await _codec.EncodeToString(
-                    _codec.GetPreferredMediaType(),
+                await codec.EncodeToString(
+                    codec.GetPreferredMediaType(),
                     new SignedData(signedData)
                 )
             );

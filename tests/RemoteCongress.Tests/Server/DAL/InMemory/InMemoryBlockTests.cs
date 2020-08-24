@@ -17,6 +17,7 @@
 */
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RemoteCongress.Common;
 using RemoteCongress.Server.DAL.InMemory;
 using System;
 
@@ -42,7 +43,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
         {
             //arrange
             Func<InMemoryBlock> action = () =>
-                new InMemoryBlock(null, "content");
+                new InMemoryBlock(null, "content", RemoteCongressMediaType.None);
 
             //act
             action
@@ -58,7 +59,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
         {
             //arrange
             Func<InMemoryBlock> action = () =>
-                new InMemoryBlock(InMemoryBlock.CreateGenisysBlock(), null);
+                new InMemoryBlock(InMemoryBlock.CreateGenisysBlock(), null, RemoteCongressMediaType.None);
 
             //act
             action
@@ -73,7 +74,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
         public void CtorSuccess()
         {
             InMemoryBlock genisysBlock = InMemoryBlock.CreateGenisysBlock();
-            InMemoryBlock block = new InMemoryBlock(genisysBlock, "content");
+            InMemoryBlock block = new InMemoryBlock(genisysBlock, "content", RemoteCongressMediaType.None);
 
             block.Id.Should().NotBeNullOrWhiteSpace();
             block.LastBlockHash.Should().Be(genisysBlock.Hash);

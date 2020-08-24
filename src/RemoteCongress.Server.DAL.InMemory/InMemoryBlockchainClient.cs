@@ -20,6 +20,8 @@ using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,8 +42,22 @@ namespace RemoteCongress.Server.DAL.InMemory
         private readonly InMemoryBlockchain _blockchain =
             new InMemoryBlockchain();
 
-        private readonly ICodec<SignedData> _codec =
-            new SignedDataV1JsonCodec();
+        private readonly IEnumerable<ICodec<SignedData>> _codecs;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="codecs">
+        /// The <see cref="ICodec"/> to use for <see cref="SignedData"/> data.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="codecs"/> is null.
+        /// </exception>
+        public InMemoryBlockchainClient(IEnumerable<ICodec<SignedData>> codecs)
+        {
+            _codecs = codecs ??
+                throw new ArgumentNullException(nameof(codecs));
+        }
 
         /// <summary>
         /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
@@ -62,11 +78,13 @@ namespace RemoteCongress.Server.DAL.InMemory
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = await _codec.EncodeToString(
-                _codec.GetPreferredMediaType(),
+            ICodec<SignedData> codec = _codecs.First();
+
+            string blockContent = await codec.EncodeToString(
+                codec.GetPreferredMediaType(),
                 new SignedData(data)
             );
-            InMemoryBlock block = _blockchain.AppendToChain(blockContent);
+            InMemoryBlock block = _blockchain.AppendToChain(blockContent, codec.GetPreferredMediaType());
 
             return block.Id;
         }
@@ -97,7 +115,16 @@ namespace RemoteCongress.Server.DAL.InMemory
                     $"Could not fetch block with id[{id}] from {nameof(InMemoryBlockchainClient)}"
                 );
 
-            return await _codec.DecodeFromString(_codec.GetPreferredMediaType(), block.Content);
+            ICodec<SignedData> codec = _codecs.FirstOrDefault(
+                codec => codec.CanHandle(block.MediaType)
+            );
+
+            if (codec is null)
+                throw new UnknownBlockMediaTypeException(
+                    $"Cannot handle {block.MediaType}"
+                );
+
+            return await codec.DecodeFromString(codec.GetPreferredMediaType(), block.Content);
         }
     }
 }

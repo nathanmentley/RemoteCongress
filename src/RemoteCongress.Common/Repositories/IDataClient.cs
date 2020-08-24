@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
+    /// An interface for interacting with an immutable data store.
     /// </summary>
     public interface IDataClient
     {

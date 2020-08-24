@@ -21,6 +21,7 @@ using RemoteCongress.Server.DAL.InMemory;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using RemoteCongress.Common;
 
 namespace RemoteCongress.Tests.Server.DAL.InMemory
 {
@@ -52,7 +53,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
             InMemoryBlockchain subject = GetSubject();
 
             //act
-            InMemoryBlock block = subject.AppendToChain("content");
+            InMemoryBlock block = subject.AppendToChain("content", RemoteCongressMediaType.None);
             IList<InMemoryBlock> blocks = GetBlocks(subject);
 
             //assert
@@ -68,10 +69,10 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
         {
             //arrange
             InMemoryBlockchain subject = GetSubject();
-            subject.AppendToChain("content");
-            subject.AppendToChain("content");
-            subject.AppendToChain("content");
-            subject.AppendToChain("content");
+            subject.AppendToChain("content", RemoteCongressMediaType.None);
+            subject.AppendToChain("content", RemoteCongressMediaType.None);
+            subject.AppendToChain("content", RemoteCongressMediaType.None);
+            subject.AppendToChain("content", RemoteCongressMediaType.None);
             IList<InMemoryBlock> blocks = GetBlocks(subject);
 
             //act

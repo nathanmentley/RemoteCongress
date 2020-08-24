@@ -20,6 +20,7 @@ using Ipfs.Engine;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,8 +66,11 @@ namespace RemoteCongress.Server.Web
                 })
 
                 .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
                 .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1AvroCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
+                .AddSingleton<ICodec<Vote>, VoteV1AvroCodec>()
 
                 .AddSingleton<IDataClient, IpfsBlockchainClient>()
 
@@ -76,6 +80,11 @@ namespace RemoteCongress.Server.Web
                 .AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>()
 
                 .AddControllers();
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

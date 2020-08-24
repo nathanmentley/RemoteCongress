@@ -21,6 +21,8 @@ using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,23 +37,43 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     public class IpfsBlockchainClient: IDataClient
     {
         private readonly Blockchain _blockchain;
-        private readonly ICodec<SignedData> _codec =
-            new SignedDataV1JsonCodec();
+        private readonly IEnumerable<ICodec<SignedData>> _codecs;
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="coreApi">
+        /// A <see cref="ICoreApi"/> to use to interact with IPFS
+        /// </param>
         /// <param name="config">
+        /// The IPFS configuration data.
+        /// </param>
+        /// <param name="codecs">
+        /// The <see cref="ICodec"/> to use for <see cref="SignedData"/> data.
         /// </param>
         /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="coreApi"/> is null.
         /// </exception>
-        public IpfsBlockchainClient(ICoreApi coreApi, IpfsBlockchainConfig config)
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="config"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="codecs"/> is null.
+        /// </exception>
+        public IpfsBlockchainClient(
+            ICoreApi coreApi,
+            IpfsBlockchainConfig config,
+            IEnumerable<ICodec<SignedData>> codecs
+        )
         {
             if (coreApi is null)
                 throw new ArgumentNullException(nameof(coreApi));
 
             if (config is null)
                 throw new ArgumentNullException(nameof(config));
+
+            _codecs = codecs ??
+                throw new ArgumentNullException(nameof(codecs));
 
             _blockchain = new Blockchain(coreApi, config);
         }
@@ -75,8 +97,23 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            string blockContent = await FromSignedData(data);
-            Block block = await _blockchain.AppendToChain(blockContent, cancellationToken);
+            ICodec<SignedData> codec = _codecs.FirstOrDefault();
+
+            if (codec is null)
+                throw new UnknownBlockMediaTypeException(
+                    $"Cannot encode {typeof(SignedData)}"
+                );
+
+            string blockContent = await codec.EncodeToString(
+                codec.GetPreferredMediaType(),
+                new SignedData(data)
+            );
+
+            Block block = await _blockchain.AppendToChain(
+                blockContent,
+                codec.GetPreferredMediaType(),
+                cancellationToken
+            );
 
             return block.Id;
         }
@@ -107,31 +144,16 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
                     $"Could not fetch block with id[{id}] from {nameof(IpfsBlockchainClient)}"
                 );
 
-            return await FromString(block.Content);
+            ICodec<SignedData> codec = _codecs.FirstOrDefault(
+                codec => codec.CanHandle(block.MediaType)
+            );
+
+            if (codec is null)
+                throw new UnknownBlockMediaTypeException(
+                    $"Cannot handle {block.MediaType}"
+                );
+
+            return await codec.DecodeFromString(codec.GetPreferredMediaType(), block.Content);
         }
-
-        /// <summary>
-        /// Transforms a <see cref="string"/> into a <see cref="ISignedData"/>.
-        /// </summary>
-        /// <param name="data">
-        /// The <see cref="string"/> to transform.
-        /// </param>
-        /// <returns>
-        /// The <see cref="ISignedData"/> representation.
-        /// </returns>
-        private async Task<ISignedData> FromString(string data) => 
-            await _codec.DecodeFromString(_codec.GetPreferredMediaType(), data);
-
-        /// <summary>
-        /// Transforms a <see cref="ISignedData"/> into a <see cref="string"/>.
-        /// </summary>
-        /// <param name="data">
-        /// The <see cref="ISignedData"/> to transform.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/> representation.
-        /// </returns>
-        private async Task<string> FromSignedData(ISignedData data) =>
-            await _codec.EncodeToString(_codec.GetPreferredMediaType(), new SignedData(data));
     }
 }

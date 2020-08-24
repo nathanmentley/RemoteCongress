@@ -20,7 +20,10 @@ namespace RemoteCongress.UnitIntegrationTests
                 .AddSingleton<IDataClient, InMemoryBlockchainClient>()
 
                 .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1AvroCodec>()
                 .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Vote>, VoteV1AvroCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
 
                 .AddSingleton<IImmutableDataRepository<Bill>, ImmutableDataRepository<Bill>>()

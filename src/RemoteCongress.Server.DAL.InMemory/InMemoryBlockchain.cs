@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
+using RemoteCongress.Common;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,9 +49,9 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <returns>
         /// The created <see cref="InMemoryBlock"/> that contains <paramref name="content"/>.
         /// </returns>
-        internal InMemoryBlock AppendToChain(string content)
+        internal InMemoryBlock AppendToChain(string content, RemoteCongressMediaType mediaType)
         {
-            var block = new InMemoryBlock(_blocks.Last(), content);
+            var block = new InMemoryBlock(_blocks.Last(), content, mediaType);
 
             _blocks.Add(block);
 

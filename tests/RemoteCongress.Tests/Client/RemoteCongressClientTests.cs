@@ -24,6 +24,7 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,11 +36,15 @@ namespace RemoteCongress.Tests.Client
         private readonly Mock<ILogger<RemoteCongressClient>> _loggerMock =
             new Mock<ILogger<RemoteCongressClient>>();
 
-        private readonly ICodec<Bill> _billCodec =
-            new BillV1JsonCodec();
+        private readonly IEnumerable<ICodec<Bill>> _billCodecs =
+            new [] {
+                new BillV1JsonCodec()
+            };
 
-        private readonly ICodec<Vote> _voteCodec =
-            new VoteV1JsonCodec();
+        private readonly IEnumerable<ICodec<Vote>> _voteCodecs =
+            new [] {
+                new VoteV1JsonCodec()
+            };
 
         private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
             new Mock<IImmutableDataRepository<Bill>>();
@@ -50,8 +55,8 @@ namespace RemoteCongress.Tests.Client
         private RemoteCongressClient GetSubject() =>
             new RemoteCongressClient(
                 _loggerMock.Object,
-                _billCodec,
-                _voteCodec,
+                _billCodecs,
+                _voteCodecs,
                 _billRepositoryMock.Object,
                 _voteRepositoryMock.Object
             );
@@ -63,8 +68,8 @@ namespace RemoteCongress.Tests.Client
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     null,
-                    _billCodec,
-                    _voteCodec,
+                    _billCodecs,
+                    _voteCodecs,
                     _billRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
@@ -87,7 +92,7 @@ namespace RemoteCongress.Tests.Client
                 new RemoteCongressClient(
                     _loggerMock.Object,
                     null,
-                    _voteCodec,
+                    _voteCodecs,
                     _billRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
@@ -109,7 +114,7 @@ namespace RemoteCongress.Tests.Client
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     _loggerMock.Object,
-                    _billCodec,
+                    _billCodecs,
                     null,
                     _billRepositoryMock.Object,
                     _voteRepositoryMock.Object
@@ -132,8 +137,8 @@ namespace RemoteCongress.Tests.Client
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     _loggerMock.Object,
-                    _billCodec,
-                    _voteCodec,
+                    _billCodecs,
+                    _voteCodecs,
                     null,
                     _voteRepositoryMock.Object
                 );
@@ -155,8 +160,8 @@ namespace RemoteCongress.Tests.Client
             Func<RemoteCongressClient> action = () =>
                 new RemoteCongressClient(
                     _loggerMock.Object,
-                    _billCodec,
-                    _voteCodec,
+                    _billCodecs,
+                    _voteCodecs,
                     _billRepositoryMock.Object,
                     null
                 );

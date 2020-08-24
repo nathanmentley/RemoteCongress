@@ -18,10 +18,12 @@
 using Ipfs;
 using Ipfs.CoreApi;
 using Nito.AsyncEx;
+using RemoteCongress.Common;
+using RemoteCongress.Common.Serialization;
+using RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,6 +41,8 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
     {
         private readonly ICoreApi _engine;
         private readonly IList<Block> _blocks;
+        private readonly ICodec<Block> _codec =
+            new BlockV1JsonCodec();
 
         /// <summary>
         /// A <see cref="Blockchain"/> is valid if:
@@ -94,7 +98,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
             cancellationToken.ThrowIfCancellationRequested();
 
             string result = await _engine.FileSystem.ReadAllTextAsync(id, cancellationToken);
-            Block block = FromString(result);
+            Block block = await FromString(result);
 
             block.Id = id;
             _blocks.Insert(0, block);
@@ -112,11 +116,15 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <returns>
         /// The created <see cref="Block"/> that contains <paramref name="content"/>.
         /// </returns>
-        internal async Task<Block> AppendToChain(string content, CancellationToken cancellationToken)
+        internal async Task<Block> AppendToChain(
+            string content,
+            RemoteCongressMediaType mediaType,
+            CancellationToken cancellationToken
+        )
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            Block block = new Block(_blocks.Last(), content);
+            Block block = new Block(_blocks.Last(), content, mediaType);
             block = await PersistBlock(block, cancellationToken);
 
             _blocks.Add(block);
@@ -149,7 +157,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string content = FromBlock(block);
+            string content = await FromBlock(block);
             IFileSystemNode result = await _engine.FileSystem.AddTextAsync(
                 content,
                 null,
@@ -168,8 +176,8 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </param>
         /// <returns>
         /// </returns>
-        private static Block FromString(string data) => 
-            JsonSerializer.Deserialize<Block>(data, new JsonSerializerOptions());
+        private async Task<Block> FromString(string data) =>
+            await _codec.DecodeFromString(_codec.GetPreferredMediaType(), data);
 
         /// <summary>
         /// </summary>
@@ -177,7 +185,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </param>
         /// <returns>
         /// </returns>
-        private static string FromBlock(Block data) => 
-            JsonSerializer.Serialize<Block>(data);
+        private async Task<string> FromBlock(Block data) => 
+            await _codec.EncodeToString(_codec.GetPreferredMediaType(), data);
     }
 }

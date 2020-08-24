@@ -20,8 +20,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Serialization;
+using RemoteCongress.Server.Web.Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,8 +39,8 @@ namespace RemoteCongress.Server.Web.Formatters
     /// </typeparam>
     public class VerifiedDataInputFormatter<TData>: TextInputFormatter
     {
-        private readonly ICodec<SignedData> _codec;
-        private readonly ICodec<TData> _dataCodec;
+        private readonly IEnumerable<ICodec<SignedData>> _signedDataCodecs;
+        private readonly IEnumerable<ICodec<TData>> _dataCodecs;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -44,24 +48,27 @@ namespace RemoteCongress.Server.Web.Formatters
         /// </summary>
         public VerifiedDataInputFormatter(
             ILogger logger,
-            ICodec<SignedData> codec,
-            ICodec<TData> dataCodec
+            IEnumerable<ICodec<SignedData>> signedDataCodecs,
+            IEnumerable<ICodec<TData>> dataCodecs
         )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
 
-            _codec = codec ??
-                throw new ArgumentNullException(nameof(codec));
+            _signedDataCodecs = signedDataCodecs ??
+                throw new ArgumentNullException(nameof(signedDataCodecs));
 
-            _dataCodec = dataCodec ??
-                throw new ArgumentNullException(nameof(dataCodec));
+            _dataCodecs = dataCodecs ??
+                throw new ArgumentNullException(nameof(dataCodecs));
 
-            SupportedMediaTypes.Add(
-                MediaTypeHeaderValue.Parse(
-                    _codec.GetPreferredMediaType().ToString()
-                )
-            );
+            foreach(ICodec<SignedData> signedDataCodec in _signedDataCodecs)
+            {
+                SupportedMediaTypes.Add(
+                    MediaTypeHeaderValue.Parse(
+                        signedDataCodec.GetPreferredMediaType().ToString()
+                    )
+                );
+            }
 
             SupportedEncodings.Add(Encoding.UTF8);
         }
@@ -83,30 +90,55 @@ namespace RemoteCongress.Server.Web.Formatters
             Encoding encoding
         )
         {
-            SignedData signedData = await _codec.Decode(
-                _codec.GetPreferredMediaType(),
+            RemoteCongressMediaType mediaType = RemoteCongressMediaType.Parse(
+                context.HttpContext.Request.ContentType
+            );
+
+            ICodec<SignedData> codec = _signedDataCodecs.FirstOrDefault(
+                codec => codec.CanHandle(mediaType)
+            );
+
+            if (codec is null)
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnparsableMediaTypeException(
+                        $"Cannot handle {mediaType.ToString()}"
+                    )
+                );
+
+            SignedData signedData = await codec.Decode(
+                codec.GetPreferredMediaType(),
                 context.HttpContext.Request.Body
             );
 
             if (signedData is null)
                 throw new Exception("TODO: Get a better exception for this.");
 
-            if(!_dataCodec.CanHandle(signedData.MediaType))
-                throw new InvalidOperationException("TODO: Get a better exception for this.");
+            ICodec<TData> dataCodec = _dataCodecs.FirstOrDefault(
+                codec => codec.CanHandle(signedData.MediaType)
+            );
 
-            TData model = await _dataCodec.DecodeFromString(signedData.MediaType, signedData.BlockContent);
+            if (dataCodec is null)
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnknownBlockMediaTypeException(
+                        $"Cannot handle {signedData.MediaType.ToString()}"
+                    )
+                );
+
+            TData model = await dataCodec.DecodeFromString(signedData.MediaType, signedData.BlockContent);
 
             if (model is null)
                 throw new Exception("TODO: Get a better exception for this.");
 
             VerifiedData<TData> result = new VerifiedData<TData>(signedData, model);
-            if (!(result as ISignedData).IsValid)
-                throw new InvalidBlockSignatureException(
-                    $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
-                        $"using public key[{result.PublicKey}]"
-                );
+            if ((result as ISignedData).IsValid)
+                return await InputFormatterResult.SuccessAsync(result);
 
-            return await InputFormatterResult.SuccessAsync(result);
+            throw new InvalidBlockSignatureException(
+                $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
+                    $"using public key[{result.PublicKey}]"
+            );
         }
 
         /// <summary>

@@ -18,6 +18,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using RemoteCongress.Common;
 
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
@@ -34,23 +35,23 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <summary>
         /// The <see cref="Id"/> of the previous <see cref="Block"/> in the <see cref="Blockchain"/>.
         /// </summary>
-        public string LastBlockId { get; set; }
+        public string LastBlockId { get; private set; }
 
         /// <summary>
         /// A UTC timestamp for when the block was created.
         /// </summary>
-        public DateTime Timestamp { get; set; } =
+        public DateTime Timestamp { get; private set; } =
             DateTime.UtcNow;
 
         /// <summary>
         /// The <see cref="Hash"/> of the previous <see cref="Block"/> in the <see cref="Blockchain"/>.
         /// </summary>
-        public string LastBlockHash { get; set; }
+        public string LastBlockHash { get; private set; }
         
         /// <summary>
         /// The raw content of the block.
         /// </summary>
-        public string Content { get; set; }
+        public string Content { get; private set; }
         
         /// <summary>
         /// The SHA256 hash of the concatinated:
@@ -58,7 +59,12 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         ///     * <see cref="LastBlockHash"/>
         ///     * <see cref="Content"/>
         /// </summary>
-        public string Hash { get; set; }
+        public string Hash { get; private set; }
+
+        /// <summary>
+        /// media type of <see cref="Content"/>.
+        /// </summary>
+        public RemoteCongressMediaType MediaType { get; private set; }
 
         /// <summary>
         /// An <see cref="Block"/> is valid if the <see cref="Hash"/> equals the result from <see cref="GenerateHash"/>.
@@ -75,16 +81,19 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="content">
         /// The content to be stored in the <see cref="Block"/>.
         /// </param>
-        public Block(Block previousBlock, string content)
+        public Block(Block previousBlock, string content, RemoteCongressMediaType mediaType)
         {
             if (previousBlock is null)
                 throw new ArgumentNullException(nameof(previousBlock));
             if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
+            if (mediaType is null)
+                throw new ArgumentNullException(nameof(mediaType));
 
             LastBlockHash = previousBlock.Hash;
             LastBlockId = previousBlock.Id;
             Content = content;
+            MediaType = mediaType;
             Hash = GenerateHash();
         }
 
@@ -99,6 +108,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
             LastBlockHash = string.Empty;
             LastBlockId = string.Empty;
             Content = string.Empty;
+            MediaType = RemoteCongressMediaType.None;
             Hash = GenerateHash();
         }
 
@@ -125,5 +135,40 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         internal static Block CreateGenisysBlock() =>
             new Block();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">
+        /// </param>
+        /// <param name="lastBlockId">
+        /// </param>
+        /// <param name="lastBlockHash">
+        /// </param>
+        /// <param name="content">
+        /// </param>
+        /// <param name="hash">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        internal static Block CreateFromData(
+            string id,
+            string lastBlockId,
+            DateTime timestampUtc,
+            string lastBlockHash,
+            string content,
+            RemoteCongressMediaType mediaType,
+            string hash
+        ) =>
+            new Block()
+            {
+                Id = id,
+                LastBlockId = lastBlockHash,
+                Timestamp = timestampUtc,
+                LastBlockHash = lastBlockHash,
+                Content = content,
+                MediaType = mediaType,
+                Hash = hash
+            };
     }
 }

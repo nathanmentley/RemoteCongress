@@ -22,16 +22,83 @@ using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Serialization
 {
-    public interface ICodec<T>
+    /// <summary>
+    /// An interface around encoding and decoding data.
+    /// </summary>
+    /// <typeparam name="TData">
+    /// The data type to encode or decode.
+    /// </typeparam>
+    public interface ICodec<TData>
     {
+        /// <summary>
+        /// Gets the preferred <see cref="RemoteCongressMediaType"/> for the codec.
+        /// </summary>
+        /// <returns>
+        /// The preferred <see cref="RemoteCongressMediaType"/>.
+        /// </returns>
         RemoteCongressMediaType GetPreferredMediaType();
 
+        /// <summary>
+        /// Checks if <paramref name="mediaType"/> can be handled by the codec.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to check if it can be handled.
+        /// </param>
+        /// <returns>
+        /// True if <paramref name="mediaType"/> can be handled.
+        /// </returns>
         bool CanHandle(RemoteCongressMediaType mediaType);
 
-        Task<Stream> Encode(RemoteCongressMediaType mediaType, T data);
-        Task<T> Decode(RemoteCongressMediaType mediaType, Stream data);
+        /// <summary>
+        /// Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to encode the data to.
+        /// </param>
+        /// <param name="data">
+        /// The data to encode.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Stream"/> containing the encoded data.
+        /// </returns>
+        Task<Stream> Encode(RemoteCongressMediaType mediaType, TData data);
 
-        public async Task<string> EncodeToString(RemoteCongressMediaType mediaType, T data)
+        /// <summary>
+        /// Decodes a <paramref name="data"/> into a <typeparamref name="TData"/>.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
+        /// </param>
+        /// <param name="data">
+        /// The <see cref="Stream"/> to decode data from.
+        /// </param>
+        /// <returns>
+        /// The <typeparamref name="TData"/> from <paramref name="data"/>.
+        /// </returns>
+        Task<TData> Decode(RemoteCongressMediaType mediaType, Stream data);
+
+        /// <summary>
+        /// Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to encode the data to.
+        /// </param>
+        /// <param name="data">
+        /// The data to encode.
+        /// </param>
+        /// <returns>
+        /// A <see cref="string"/> containing the encoded data.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// Thrown if <paramref name="mediaType"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException"/>
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidOperationException"/>
+        /// Thrown if the <paramref name="mediaType"/> cannot be handled.
+        /// </exception>
+        public async Task<string> EncodeToString(RemoteCongressMediaType mediaType, TData data)
         {
             if (mediaType is null)
                 throw new ArgumentNullException(nameof(mediaType));
@@ -51,7 +118,28 @@ namespace RemoteCongress.Common.Serialization
             return await reader.ReadToEndAsync();
         }
 
-        public async Task<T> DecodeFromString(RemoteCongressMediaType mediaType, string data)
+        /// <summary>
+        /// Decodes a <paramref name="data"/> into a <typeparamref name="TData"/>.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
+        /// </param>
+        /// <param name="data">
+        /// The <see cref="string"/> to decode data from.
+        /// </param>
+        /// <returns>
+        /// The <typeparamref name="TData"/> from <paramref name="data"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// Thrown if <paramref name="mediaType"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException"/>
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidOperationException"/>
+        /// Thrown if the <paramref name="mediaType"/> cannot be handled.
+        /// </exception>
+        public async Task<TData> DecodeFromString(RemoteCongressMediaType mediaType, string data)
         {
             if (mediaType is null)
                 throw new ArgumentNullException(nameof(mediaType));

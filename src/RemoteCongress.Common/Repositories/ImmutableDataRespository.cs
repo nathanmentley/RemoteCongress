@@ -20,18 +20,21 @@ using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Serialization;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
+    /// An immutable data repository for <see cref="TData"/>.
     /// </summary>
     public class ImmutableDataRepository<TData>: IImmutableDataRepository<TData>
     {
         private readonly ILogger<IImmutableDataRepository<TData>> _logger;
         private readonly IDataClient _client;
-        private readonly ICodec<TData> _codec;
+        private readonly IEnumerable<ICodec<TData>> _codecs;
 
         /// <summary>
         /// Constructor
@@ -40,10 +43,10 @@ namespace RemoteCongress.Common.Repositories
         /// An <see cref="ILogger"/> instance to log against.
         /// </param>
         /// <param name="client">
-        /// A <see cref="IDataClient"/> instance to use to communicate with the server.
+        /// A <see cref="IDataClient"/> instance to use to communicate with the data store.
         /// </param>
-        /// <param name="codec">
-        /// 
+        /// <param name="codecs">
+        /// <see cref="ICodec"/>s for <typeparamref name="TData"/> to process block content.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="config"/> is null.
@@ -52,12 +55,12 @@ namespace RemoteCongress.Common.Repositories
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="builder"/> is null.
+        /// Thrown if <paramref name="codec"/> is null.
         /// </excpetion>
         public ImmutableDataRepository(
             ILogger<IImmutableDataRepository<TData>> logger,
             IDataClient client,
-            ICodec<TData> codec
+            IEnumerable<ICodec<TData>> codecs
         )
         {
             _logger = logger ??
@@ -69,10 +72,10 @@ namespace RemoteCongress.Common.Repositories
                     new ArgumentNullException(nameof(client))
                 );
 
-            _codec = codec ??
+            _codecs = codecs ??
                 throw _logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(codec))
+                    new ArgumentNullException(nameof(codecs))
                 );
         }
 
@@ -80,7 +83,7 @@ namespace RemoteCongress.Common.Repositories
         /// Creates and persist the signed and verified <paramref name="instance"/>.
         /// </summary>
         /// <param name="instance">
-        /// A signed and verified instance of type <see cref="Bill"/> to persist.
+        /// A signed and verified instance of type <typeparamref cref="TData"/> to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -110,7 +113,7 @@ namespace RemoteCongress.Common.Repositories
         }
 
         /// <summary>
-        /// Fetches a persisted instance of <see cref="Bill"/> that has an <see cref="IIdentifiable.Id"/> that
+        /// Fetches a persisted instance of <typeparamref name="TData"/> that has an <see cref="IIdentifiable.Id"/> that
         ///     matches <paramref name="id"/>.
         /// </summary>
         /// <param name="id">
@@ -120,11 +123,14 @@ namespace RemoteCongress.Common.Repositories
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The immutable, and verified <see cref="Bill"/> instance with an <see cref="IIdentifiable.Id"/>
+        /// The immutable, and verified <typeparamref name="TData"/> instance with an <see cref="IIdentifiable.Id"/>
         ///     of <paramref name="id"/>.
         /// </returns>
         /// <exception cref="BlockNotFoundException">
         /// Thrown if a block with an id of <paramref name="id"/> cannot be fetched.
+        /// </exception>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if a block has a <see cref="RemoteCongressMediaType"/> cannot be decoded.
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
@@ -141,13 +147,17 @@ namespace RemoteCongress.Common.Repositories
                     new BlockNotFoundException()
                 );
 
-            if (!_codec.CanHandle(block.MediaType))
+            ICodec<TData> codec = _codecs.FirstOrDefault(
+                codec => codec.CanHandle(block.MediaType)
+            );
+
+            if (codec is null)
                 throw _logger.LogException(
                     LogLevel.Debug,
                     new UnknownBlockMediaTypeException()
                 );
 
-            TData data = await _codec.DecodeFromString(block.MediaType, block.BlockContent);
+            TData data = await codec.DecodeFromString(block.MediaType, block.BlockContent);
 
             return new VerifiedData<TData>(id, block, data);
         }

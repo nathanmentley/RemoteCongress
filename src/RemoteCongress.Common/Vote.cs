@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace RemoteCongress.Common
 {
     /// <summary>
+    /// A model representing a vote
     /// </summary>
     [ExcludeFromCodeCoverage]
     public sealed class Vote
