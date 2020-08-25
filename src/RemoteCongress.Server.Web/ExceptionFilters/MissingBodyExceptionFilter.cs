@@ -9,8 +9,10 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
     public sealed class MissingBodyExceptionFilter: BaseExceptionFilter
     {
         protected override int StatusCode => 400;
-        protected override Type ExceptionType => typeof(MissingBodyException);
     
         public MissingBodyExceptionFilter(ILogger logger): base(logger) {}
+
+        protected override bool CanHandle(Exception exception) =>
+            exception is MissingBodyException;
     }
 }

@@ -152,18 +152,6 @@ namespace RemoteCongress.Server.Web
             );
             SetupExceptionHandler(
                 options.Filters,
-                new UnacceptableMediaTypeExceptionFilter(
-                    _loggerFactory.CreateLogger<UnacceptableMediaTypeExceptionFilter>()
-                )
-            );
-            SetupExceptionHandler(
-                options.Filters,
-                new UnparsableMediaTypeExceptionFilter(
-                    _loggerFactory.CreateLogger<UnparsableMediaTypeExceptionFilter>()
-                )
-            );
-            SetupExceptionHandler(
-                options.Filters,
                 new MissingBodyExceptionFilter(
                     _loggerFactory.CreateLogger<MissingBodyExceptionFilter>()
                 )
@@ -172,6 +160,18 @@ namespace RemoteCongress.Server.Web
                 options.Filters,
                 new MissingPathParameterExceptionFilter(
                     _loggerFactory.CreateLogger<MissingPathParameterExceptionFilter>()
+                )
+            );
+            SetupExceptionHandler(
+                options.Filters,
+                new UnacceptableMediaTypeExceptionFilter(
+                    _loggerFactory.CreateLogger<UnacceptableMediaTypeExceptionFilter>()
+                )
+            );
+            SetupExceptionHandler(
+                options.Filters,
+                new UnparsableMediaTypeExceptionFilter(
+                    _loggerFactory.CreateLogger<UnparsableMediaTypeExceptionFilter>()
                 )
             );
         }

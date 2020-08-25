@@ -9,8 +9,10 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
     public sealed class InvalidBlockSignatureExceptionFilter: BaseExceptionFilter
     {
         protected override int StatusCode => 403;
-        protected override Type ExceptionType => typeof(InvalidBlockSignatureException);
     
         public InvalidBlockSignatureExceptionFilter(ILogger logger): base(logger) {}
+
+        protected override bool CanHandle(Exception exception) =>
+            exception is InvalidBlockSignatureException;
     }
 }

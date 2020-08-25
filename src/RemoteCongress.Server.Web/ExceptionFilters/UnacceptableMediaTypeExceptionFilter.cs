@@ -9,8 +9,10 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
     public sealed class UnacceptableMediaTypeExceptionFilter: BaseExceptionFilter
     {
         protected override int StatusCode => 406;
-        protected override Type ExceptionType => typeof(UnacceptableMediaTypeException);
     
         public UnacceptableMediaTypeExceptionFilter(ILogger logger): base(logger) {}
+
+        protected override bool CanHandle(Exception exception) =>
+            exception is UnacceptableMediaTypeException;
     }
 }

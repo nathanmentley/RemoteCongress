@@ -10,7 +10,6 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
         private ILogger _Logger;
     
         protected abstract int StatusCode { get; }
-        protected abstract Type ExceptionType { get; }
     
         protected BaseExceptionFilter(ILogger logger)
         {
@@ -26,13 +25,12 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
                 GetType()
             );
     
-            if (context.Exception.GetType().Equals(ExceptionType))
+            if (CanHandle(context.Exception))
             {
                 _Logger.LogTrace(
-                    "Running {logic} for {type} because the exception is {exceptionType}.",
+                    "Running {logic} for {type}.",
                     nameof(Logic),
-                    GetType(),
-                    ExceptionType
+                    GetType()
                 );
     
                 await Logic(context);
@@ -41,6 +39,8 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
             base.OnException(context);
         }
     
+        protected abstract bool CanHandle(Exception exception);
+
         protected virtual Task Logic(ExceptionContext context)
         {
             context.HttpContext.Response.StatusCode = StatusCode;

@@ -37,12 +37,14 @@ namespace RemoteCongress.Tests.Client
             new Mock<ILogger<RemoteCongressClient>>();
 
         private readonly IEnumerable<ICodec<Bill>> _billCodecs =
-            new [] {
+            new ICodec<Bill>[] {
+                new BillV1AvroCodec(),
                 new BillV1JsonCodec()
             };
 
         private readonly IEnumerable<ICodec<Vote>> _voteCodecs =
-            new [] {
+            new ICodec<Vote>[] {
+                new VoteV1AvroCodec(),
                 new VoteV1JsonCodec()
             };
 
@@ -104,7 +106,7 @@ namespace RemoteCongress.Tests.Client
                 .Should()
                 .Throw<ArgumentNullException>()
                     .And.ParamName.Should()
-                        .Be("billCodec");
+                        .Be("billCodecs");
         }
 
         [TestMethod]
@@ -127,7 +129,7 @@ namespace RemoteCongress.Tests.Client
                 .Should()
                 .Throw<ArgumentNullException>()
                     .And.ParamName.Should()
-                        .Be("voteCodec");
+                        .Be("voteCodecs");
         }
 
         [TestMethod]

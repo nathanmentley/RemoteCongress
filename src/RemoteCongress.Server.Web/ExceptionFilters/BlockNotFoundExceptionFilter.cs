@@ -9,8 +9,10 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
     public sealed class BlockNotFoundExceptionFilter: BaseExceptionFilter
     {
         protected override int StatusCode => 404;
-        protected override Type ExceptionType => typeof(BlockNotFoundException);
     
         public BlockNotFoundExceptionFilter(ILogger logger): base(logger) {}
+
+        protected override bool CanHandle(Exception exception) =>
+            exception is BlockNotFoundException;
     }
 }

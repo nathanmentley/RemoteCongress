@@ -42,7 +42,8 @@ namespace RemoteCongress.Tests.Client
             new Mock<ILogger<HttpDataClient>>();
  
         private readonly IEnumerable<ICodec<SignedData>> _codecs =
-            new [] {
+            new ICodec<SignedData>[] {
+                new SignedDataV1AvroCodec(),
                 new SignedDataV1JsonCodec()
             };
 
@@ -164,7 +165,7 @@ namespace RemoteCongress.Tests.Client
                 .Should()
                 .Throw<ArgumentNullException>()
                     .And.ParamName.Should()
-                        .Be("codec");
+                        .Be("codecs");
         }
 
         [TestMethod]
