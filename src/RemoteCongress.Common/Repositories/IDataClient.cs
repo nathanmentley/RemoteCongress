@@ -15,6 +15,8 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using RemoteCongress.Common.Repositories.Queries;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -52,5 +54,19 @@ namespace RemoteCongress.Common.Repositories
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
         Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Fetches all matching verified data in the form of <see cref="ISignedData"/> from the blockchain.
+        /// </summary>
+        /// <param name="query">
+        /// The query to pull data by.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ISignedData"/> instance containing the block data.
+        /// </returns>
+        IAsyncEnumerable<ISignedData> FetchAllFromChain(IList<IQuery> query, CancellationToken cancellationToken);
     }
 }

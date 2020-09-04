@@ -19,10 +19,12 @@ using Ipfs.CoreApi;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -154,6 +156,44 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
                 );
 
             return await codec.DecodeFromString(codec.GetPreferredMediaType(), block.Content);
+        }
+
+        /// <summary>
+        /// Fetches all matching verified data in the form of <see cref="ISignedData"/> from the blockchain.
+        /// </summary>
+        /// <param name="query">
+        /// The query to pull data by.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ISignedData"/> instance containing the block data.
+        /// </returns>
+        public async IAsyncEnumerable<ISignedData> FetchAllFromChain(
+            IList<IQuery> query,
+            [EnumeratorCancellation] CancellationToken cancellationToken
+        )
+        {
+            await foreach(Block block in _blockchain.FetchAllFromChain(query, cancellationToken))
+            {
+                ICodec<SignedData> codec = _codecs.FirstOrDefault(
+                    codec => codec.CanHandle(block.MediaType)
+                );
+
+                if (codec is null)
+                    throw new UnknownBlockMediaTypeException(
+                        $"Cannot handle {block.MediaType}"
+                    );
+
+                SignedData signedData = await codec.DecodeFromString(
+                    codec.GetPreferredMediaType(),
+                    block.Content
+                );
+                signedData.Id = block.Id;
+
+                yield return signedData;
+            }
         }
     }
 }

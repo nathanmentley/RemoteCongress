@@ -5,6 +5,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RemoteCongress.Common\RemoteCongress.Common.csproj" />
+    <ProjectReference Include="..\RemoteCongress.Server.DAL.Blockchain\RemoteCongress.Server.DAL.Blockchain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

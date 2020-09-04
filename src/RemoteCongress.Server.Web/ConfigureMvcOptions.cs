@@ -37,14 +37,18 @@ namespace RemoteCongress.Server.Web
         private readonly ILogger<ConfigureMvcOptions> _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IEnumerable<ICodec<SignedData>> _signedDataCodecs;
+        private readonly IEnumerable<ICodec<IEnumerable<SignedData>>> _signedDataCollectionCodecs;
         private readonly IEnumerable<ICodec<Bill>> _billDataCodecs;
+        private readonly IEnumerable<ICodec<Member>> _memberDataCodecs;
         private readonly IEnumerable<ICodec<Vote>> _voteDataCodecs;
 
         public ConfigureMvcOptions(
             ILogger<ConfigureMvcOptions> logger,
             ILoggerFactory loggerFactory,
             IEnumerable<ICodec<SignedData>> signedDataCodecs,
+            IEnumerable<ICodec<IEnumerable<SignedData>>> signedDataCollectionCodecs,
             IEnumerable<ICodec<Bill>> billDataCodecs,
+            IEnumerable<ICodec<Member>> memberDataCodecs,
             IEnumerable<ICodec<Vote>> voteDataCodecs
         )
         {
@@ -63,10 +67,22 @@ namespace RemoteCongress.Server.Web
                     new ArgumentNullException(nameof(signedDataCodecs))
                 );
 
+            _signedDataCollectionCodecs = signedDataCollectionCodecs ??
+                throw logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(signedDataCollectionCodecs))
+                );
+
             _billDataCodecs = billDataCodecs ??
                 throw logger.LogException(
                     LogLevel.Debug,
                     new ArgumentNullException(nameof(billDataCodecs))
+                );
+
+            _memberDataCodecs = memberDataCodecs ??
+                throw logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(memberDataCodecs))
                 );
 
             _voteDataCodecs = voteDataCodecs ??
@@ -97,6 +113,14 @@ namespace RemoteCongress.Server.Web
             );
             SetupFormatter(
                 options.InputFormatters,
+                new VerifiedDataInputFormatter<Member>(
+                    _loggerFactory.CreateLogger<VerifiedDataInputFormatter<Member>>(),
+                    _signedDataCodecs,
+                    _memberDataCodecs
+                )
+            );
+            SetupFormatter(
+                options.InputFormatters,
                 new VerifiedDataInputFormatter<Vote>(
                     _loggerFactory.CreateLogger<VerifiedDataInputFormatter<Vote>>(),
                     _signedDataCodecs,
@@ -108,8 +132,37 @@ namespace RemoteCongress.Server.Web
 
             SetupFormatter(
                 options.OutputFormatters,
+                new VerifiedDataCollectionOutputFormatter<Bill>(
+                    _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Bill>>(),
+                    _signedDataCollectionCodecs
+                )
+            );
+            SetupFormatter(
+                options.OutputFormatters,
+                new VerifiedDataCollectionOutputFormatter<Member>(
+                    _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Member>>(),
+                    _signedDataCollectionCodecs
+                )
+            );
+            SetupFormatter(
+                options.OutputFormatters,
+                new VerifiedDataCollectionOutputFormatter<Vote>(
+                    _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Vote>>(),
+                    _signedDataCollectionCodecs
+                )
+            );
+
+            SetupFormatter(
+                options.OutputFormatters,
                 new VerifiedDataOutputFormatter<Bill>(
                     _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Bill>>(),
+                    _signedDataCodecs
+                )
+            );
+            SetupFormatter(
+                options.OutputFormatters,
+                new VerifiedDataOutputFormatter<Member>(
+                    _loggerFactory.CreateLogger<VerifiedDataOutputFormatter<Member>>(),
                     _signedDataCodecs
                 )
             );

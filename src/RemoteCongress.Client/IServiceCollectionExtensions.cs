@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace RemoteCongress.Client
     public static class IServiceCollectionExtensions
     {
         private static readonly string BillEndpoint = "bill";
+        private static readonly string MemberEndpoint = "member";
         private static readonly string VoteEndpoint = "vote";
 
         /// <summary>
@@ -75,10 +77,13 @@ namespace RemoteCongress.Client
 
                 .AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
                 .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
+                .AddSingleton<ICodec<IEnumerable<SignedData>>, SignedDataCollectionV1JsonCodec>()
                 .AddSingleton<ICodec<Bill>, BillV1AvroCodec>()
                 .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Member>, MemberV1JsonCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1AvroCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
+                .AddSingleton<ICodec<IQuery>, IQueryV1JsonCodec>()
 
                 .AddSingleton<
                     IImmutableDataRepository<Bill>,
@@ -91,9 +96,27 @@ namespace RemoteCongress.Client
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
                             provider.GetRequiredService<IEnumerable<ICodec<SignedData>>>(),
+                            provider.GetRequiredService<IEnumerable<ICodec<IEnumerable<SignedData>>>>(),
                             BillEndpoint
                         ),
                         provider.GetRequiredService<IEnumerable<ICodec<Bill>>>()
+                    )
+                )
+                .AddSingleton<
+                    IImmutableDataRepository<Member>,
+                    ImmutableDataRepository<Member>
+                >(provider =>
+                    new ImmutableDataRepository<Member>(
+                        provider.GetRequiredService<ILogger<ImmutableDataRepository<Member>>>(),
+                        new HttpDataClient(
+                            provider.GetRequiredService<ILogger<HttpDataClient>>(),
+                            provider.GetRequiredService<ClientConfig>(),
+                            provider.GetRequiredService<HttpClient>(),
+                            provider.GetRequiredService<IEnumerable<ICodec<SignedData>>>(),
+                            provider.GetRequiredService<IEnumerable<ICodec<IEnumerable<SignedData>>>>(),
+                            MemberEndpoint
+                        ),
+                        provider.GetRequiredService<IEnumerable<ICodec<Member>>>()
                     )
                 )
                 .AddSingleton<
@@ -107,11 +130,16 @@ namespace RemoteCongress.Client
                             provider.GetRequiredService<ClientConfig>(),
                             provider.GetRequiredService<HttpClient>(),
                             provider.GetRequiredService<IEnumerable<ICodec<SignedData>>>(),
+                            provider.GetRequiredService<IEnumerable<ICodec<IEnumerable<SignedData>>>>(),
                             VoteEndpoint
                         ),
                         provider.GetRequiredService<IEnumerable<ICodec<Vote>>>()
                     )
                 )
+
+                .AddSingleton<IEndpointClient<Bill>, EndpointClient<Bill>>()
+                .AddSingleton<IEndpointClient<Member>, EndpointClient<Member>>()
+                .AddSingleton<IEndpointClient<Vote>, EndpointClient<Vote>>()
 
                 .AddSingleton<IRemoteCongressClient, RemoteCongressClient>();
         }

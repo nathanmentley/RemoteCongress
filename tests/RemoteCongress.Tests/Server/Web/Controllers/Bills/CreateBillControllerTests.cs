@@ -22,34 +22,34 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
-using RemoteCongress.Server.Web.Controllers;
+using RemoteCongress.Server.Web.Controllers.Bills;
 using RemoteCongress.Server.Web.Exceptions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Tests.Server.Web.Controllers
+namespace RemoteCongress.Tests.Server.Web.Controllers.Bills
 {
     [TestClass]
-    public class FetchVoteControllerTests
+    public class CreateBillControllerTests
     {
-        private readonly Mock<ILogger<FetchVoteController>> _loggerMock =
-            new Mock<ILogger<FetchVoteController>>();
-        private readonly Mock<IImmutableDataRepository<Vote>> _voteRepositoryMock =
-            new Mock<IImmutableDataRepository<Vote>>();
+        private readonly Mock<ILogger<CreateBillController>> _loggerMock =
+            new Mock<ILogger<CreateBillController>>();
+        private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
+            new Mock<IImmutableDataRepository<Bill>>();
 
-        private FetchVoteController GetSubject() =>
-            new FetchVoteController(
+        private CreateBillController GetSubject() =>
+            new CreateBillController(
                 _loggerMock.Object,
-                _voteRepositoryMock.Object
+                _billRepositoryMock.Object
             );
 
         [TestMethod]
         public void CtorShouldThrowNullLogger()
         {
             //arrange
-            Func<FetchVoteController> action = () =>
-                new FetchVoteController(null, _voteRepositoryMock.Object);
+            Func<CreateBillController> action = () =>
+                new CreateBillController(null, _billRepositoryMock.Object);
 
             //act
             action
@@ -64,8 +64,8 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         public void CtorShouldThrowNullRepo()
         {
             //arrange
-            Func<FetchVoteController> action = () =>
-                new FetchVoteController(_loggerMock.Object, null);
+            Func<CreateBillController> action = () =>
+                new CreateBillController(_loggerMock.Object, null);
 
             //act
             action
@@ -73,36 +73,37 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
             //assert
                 .Should()
                 .Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("voteRepository");
+                .And.ParamName.Should().Be("repository");
         }
 
         [TestMethod]
-        public void GetShouldThrowNullVoteId()
+        public void PostShouldThrowNullBill()
         {
             //arrange
-            FetchVoteController subject = GetSubject();
+            CreateBillController subject = GetSubject();
 
             Func<Task> action = async () =>
-                await subject.Get(null, CancellationToken.None);
+                await subject.Post(null, CancellationToken.None);
 
             //act
             action
 
             //assert
                 .Should()
-                .Throw<MissingPathParameterException>();
+                .Throw<MissingBodyException>();
         }
 
         [TestMethod]
-        public void GetShouldThrowCancelledToken()
+        public async Task PostShouldThrowCancelledToken()
         {
             //arrange
-            FetchVoteController subject = GetSubject();
+            CreateBillController subject = GetSubject();
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
+            VerifiedData<Bill> billToCreate = await MockData.GetBill("title", "content");
 
             Func<Task> action = async () =>
-                await subject.Get("id", cancellationTokenSource.Token);
+                await subject.Post(billToCreate, cancellationTokenSource.Token);
 
             //act
             action
@@ -113,25 +114,25 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GetShouldCallRepo()
+        public async Task PostShouldCallRepo()
         {
             //arrange
-            FetchVoteController subject = GetSubject();
-            string voteId = "voteId";
-            VerifiedData<Vote> fetchedVote = await MockData.GetVote("billId", true, "message");
+            CreateBillController subject = GetSubject();
+            VerifiedData<Bill> billToCreate = await MockData.GetBill("title", "content");
+            VerifiedData<Bill> createdBill = await MockData.GetBill("title", "content");
 
-            _voteRepositoryMock.Setup(
-                mock => mock.Fetch(voteId, CancellationToken.None)
-            ).ReturnsAsync(fetchedVote);
+            _billRepositoryMock.Setup(
+                mock => mock.Create(billToCreate, CancellationToken.None)
+            ).ReturnsAsync(createdBill);
 
             //act
-            VerifiedData<Vote> result = await subject.Get(voteId, CancellationToken.None);
+            VerifiedData<Bill> result = await subject.Post(billToCreate, CancellationToken.None);
 
             //assert
-            result.Should().BeSameAs(fetchedVote);
+            result.Should().BeSameAs(createdBill);
 
-            _voteRepositoryMock.Verify(
-                mock => mock.Fetch(voteId, CancellationToken.None),
+            _billRepositoryMock.Verify(
+                mock => mock.Create(billToCreate, CancellationToken.None),
                 Times.Once
             );
         }

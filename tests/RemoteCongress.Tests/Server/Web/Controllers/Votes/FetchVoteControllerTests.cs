@@ -22,34 +22,34 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
-using RemoteCongress.Server.Web.Controllers;
+using RemoteCongress.Server.Web.Controllers.Votes;
 using RemoteCongress.Server.Web.Exceptions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Tests.Server.Web.Controllers
+namespace RemoteCongress.Tests.Server.Web.Controllers.Votes
 {
     [TestClass]
-    public class FetchBillControllerTests
+    public class FetchVoteControllerTests
     {
-        private readonly Mock<ILogger<FetchBillController>> _loggerMock =
-            new Mock<ILogger<FetchBillController>>();
-        private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
-            new Mock<IImmutableDataRepository<Bill>>();
+        private readonly Mock<ILogger<FetchVoteController>> _loggerMock =
+            new Mock<ILogger<FetchVoteController>>();
+        private readonly Mock<IImmutableDataRepository<Vote>> _voteRepositoryMock =
+            new Mock<IImmutableDataRepository<Vote>>();
 
-        private FetchBillController GetSubject() =>
-            new FetchBillController(
+        private FetchVoteController GetSubject() =>
+            new FetchVoteController(
                 _loggerMock.Object,
-                _billRepositoryMock.Object
+                _voteRepositoryMock.Object
             );
 
         [TestMethod]
         public void CtorShouldThrowNullLogger()
         {
             //arrange
-            Func<FetchBillController> action = () =>
-                new FetchBillController(null, _billRepositoryMock.Object);
+            Func<FetchVoteController> action = () =>
+                new FetchVoteController(null, _voteRepositoryMock.Object);
 
             //act
             action
@@ -64,8 +64,8 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         public void CtorShouldThrowNullRepo()
         {
             //arrange
-            Func<FetchBillController> action = () =>
-                new FetchBillController(_loggerMock.Object, null);
+            Func<FetchVoteController> action = () =>
+                new FetchVoteController(_loggerMock.Object, null);
 
             //act
             action
@@ -73,14 +73,14 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
             //assert
                 .Should()
                 .Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("billRepository");
+                .And.ParamName.Should().Be("repository");
         }
 
         [TestMethod]
-        public void GetShouldThrowNullBillId()
+        public void GetShouldThrowNullVoteId()
         {
             //arrange
-            FetchBillController subject = GetSubject();
+            FetchVoteController subject = GetSubject();
 
             Func<Task> action = async () =>
                 await subject.Get(null, CancellationToken.None);
@@ -97,7 +97,7 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         public void GetShouldThrowCancelledToken()
         {
             //arrange
-            FetchBillController subject = GetSubject();
+            FetchVoteController subject = GetSubject();
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.Cancel();
 
@@ -116,22 +116,22 @@ namespace RemoteCongress.Tests.Server.Web.Controllers
         public async Task GetShouldCallRepo()
         {
             //arrange
-            FetchBillController subject = GetSubject();
-            string billId = "billId";
-            VerifiedData<Bill> fetchedBill = await MockData.GetBill("title", "content");
+            FetchVoteController subject = GetSubject();
+            string voteId = "voteId";
+            VerifiedData<Vote> fetchedVote = await MockData.GetVote("billId", true, "message");
 
-            _billRepositoryMock.Setup(
-                mock => mock.Fetch(billId, CancellationToken.None)
-            ).ReturnsAsync(fetchedBill);
+            _voteRepositoryMock.Setup(
+                mock => mock.Fetch(voteId, CancellationToken.None)
+            ).ReturnsAsync(fetchedVote);
 
             //act
-            VerifiedData<Bill> result = await subject.Get(billId, CancellationToken.None);
+            VerifiedData<Vote> result = await subject.Get(voteId, CancellationToken.None);
 
             //assert
-            result.Should().BeSameAs(fetchedBill);
+            result.Should().BeSameAs(fetchedVote);
 
-            _billRepositoryMock.Verify(
-                mock => mock.Fetch(billId, CancellationToken.None),
+            _voteRepositoryMock.Verify(
+                mock => mock.Fetch(voteId, CancellationToken.None),
                 Times.Once
             );
         }

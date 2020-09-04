@@ -46,6 +46,11 @@ namespace RemoteCongress.Tests.Client
                 new SignedDataV1AvroCodec(),
                 new SignedDataV1JsonCodec()
             };
+ 
+        private readonly IEnumerable<ICodec<IEnumerable<SignedData>>> _collectionCodecs =
+            new ICodec<IEnumerable<SignedData>>[] {
+                new SignedDataCollectionV1JsonCodec()
+            };
 
         private HttpClient GetClient(HttpResponseMessage response)
         {
@@ -73,6 +78,7 @@ namespace RemoteCongress.Tests.Client
                 new ClientConfig("http", "localhost"),
                 GetClient(response),
                 _codecs,
+                _collectionCodecs,
                 "endpoint"
             );
 
@@ -86,6 +92,7 @@ namespace RemoteCongress.Tests.Client
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
                     _codecs,
+                    _collectionCodecs,
                     "endpoint"
                 );
 
@@ -109,6 +116,7 @@ namespace RemoteCongress.Tests.Client
                     null,
                     new HttpClient(),
                     _codecs,
+                    _collectionCodecs,
                     "endpoint"
                 );
 
@@ -132,6 +140,7 @@ namespace RemoteCongress.Tests.Client
                     new ClientConfig("http", "localhost"),
                     null,
                     _codecs,
+                    _collectionCodecs,
                     "endpoint"
                 );
 
@@ -155,6 +164,7 @@ namespace RemoteCongress.Tests.Client
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
                     null,
+                    _collectionCodecs,
                     "endpoint"
                 );
 
@@ -169,6 +179,30 @@ namespace RemoteCongress.Tests.Client
         }
 
         [TestMethod]
+        public void CtorNullCollectionCodecThrows()
+        {
+            //Arrange
+            Func<HttpDataClient> action = () =>
+                new HttpDataClient(
+                    mockLogger.Object,
+                    new ClientConfig("http", "localhost"),
+                    new HttpClient(),
+                    _codecs,
+                    null,
+                    "endpoint"
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("collectionCodecs");
+        }
+
+        [TestMethod]
         public void CtorNullThrows()
         {
             //Arrange
@@ -178,6 +212,7 @@ namespace RemoteCongress.Tests.Client
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
                     _codecs,
+                    _collectionCodecs,
                     null
                 );
 

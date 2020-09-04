@@ -19,11 +19,13 @@ using Ipfs;
 using Ipfs.CoreApi;
 using Nito.AsyncEx;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -143,6 +145,31 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </returns>
         internal Block FetchFromChain(string id) =>
             _blocks.FirstOrDefault(block => block.Id.Equals(id));
+
+        #pragma warning disable CS1998
+
+        /// <summary>
+        /// </summary>
+        /// <param name="query">
+        /// </param>
+        /// <param name="cancellationToken">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        internal async IAsyncEnumerable<Block> FetchAllFromChain(
+            IList<IQuery> query,
+            [EnumeratorCancellation] CancellationToken cancellationToken
+        )
+        {
+            foreach(Block block in _blocks.Skip(1))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                yield return block;
+            }
+        }
+
+        #pragma warning restore CS1998
 
         /// <summary>"
         /// Persists a <see cref="Block"/> inside the <see cref="Blockchain"/>.

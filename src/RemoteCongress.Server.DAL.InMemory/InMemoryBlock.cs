@@ -15,17 +15,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using RemoteCongress.Common;
+using RemoteCongress.Server.DAL.Blockchain;
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using RemoteCongress.Common;
 
 namespace RemoteCongress.Server.DAL.InMemory
 {
     /// <summary>
     /// A simple class to exist as a block inside a blockchain.
     /// </summary>
-    internal class InMemoryBlock
+    internal class InMemoryBlock: BaseBlock
     {
         /// <summary>
         /// The unique Identifier from the block.

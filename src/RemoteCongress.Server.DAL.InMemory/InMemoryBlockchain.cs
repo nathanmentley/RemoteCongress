@@ -16,15 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories.Queries;
+using RemoteCongress.Server.DAL.Blockchain;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace RemoteCongress.Server.DAL.InMemory
 {
     /// <summary>
     /// A simple proof of concept in memory blockchain implementation.
     /// </summary>
-    internal class InMemoryBlockchain
+    internal class InMemoryBlockchain: BaseBlockchain<InMemoryBlock>
     {
         private readonly IList<InMemoryBlock> _blocks =
             new List<InMemoryBlock>()
@@ -69,5 +73,30 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// </returns>
         internal InMemoryBlock FetchFromChain(string id) =>
             _blocks.FirstOrDefault(block => block.Id.Equals(id));
+
+        #pragma warning disable CS1998
+
+        /// <summary>
+        /// </summary>
+        /// <param name="query">
+        /// </param>
+        /// <param name="cancellationToken">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        internal async IAsyncEnumerable<InMemoryBlock> FetchAllFromChain(
+            IList<IQuery> query,
+            [EnumeratorCancellation] CancellationToken cancellationToken
+        )
+        {
+            foreach(InMemoryBlock block in _blocks.Skip(1))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                yield return block;
+            }
+        }
+
+        #pragma warning restore CS1998
     }
 }

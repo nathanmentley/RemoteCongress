@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+/*
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,6 +43,11 @@ namespace RemoteCongress.Tests.Client
                 new BillV1JsonCodec()
             };
 
+        private readonly IEnumerable<ICodec<Member>> _memberCodecs =
+            new ICodec<Member>[] {
+                new MemberV1JsonCodec()
+            };
+
         private readonly IEnumerable<ICodec<Vote>> _voteCodecs =
             new ICodec<Vote>[] {
                 new VoteV1AvroCodec(),
@@ -51,6 +57,9 @@ namespace RemoteCongress.Tests.Client
         private readonly Mock<IImmutableDataRepository<Bill>> _billRepositoryMock =
             new Mock<IImmutableDataRepository<Bill>>();
 
+        private readonly Mock<IImmutableDataRepository<Member>> _memberRepositoryMock =
+            new Mock<IImmutableDataRepository<Member>>();
+
         private readonly Mock<IImmutableDataRepository<Vote>> _voteRepositoryMock =
             new Mock<IImmutableDataRepository<Vote>>();
 
@@ -58,8 +67,10 @@ namespace RemoteCongress.Tests.Client
             new RemoteCongressClient(
                 _loggerMock.Object,
                 _billCodecs,
+                _memberCodecs,
                 _voteCodecs,
                 _billRepositoryMock.Object,
+                _memberRepositoryMock.Object,
                 _voteRepositoryMock.Object
             );
 
@@ -71,8 +82,10 @@ namespace RemoteCongress.Tests.Client
                 new RemoteCongressClient(
                     null,
                     _billCodecs,
+                    _memberCodecs,
                     _voteCodecs,
                     _billRepositoryMock.Object,
+                    _memberRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
 
@@ -94,8 +107,10 @@ namespace RemoteCongress.Tests.Client
                 new RemoteCongressClient(
                     _loggerMock.Object,
                     null,
+                    _memberCodecs,
                     _voteCodecs,
                     _billRepositoryMock.Object,
+                    _memberRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
 
@@ -110,7 +125,7 @@ namespace RemoteCongress.Tests.Client
         }
 
         [TestMethod]
-        public void CtorNullVoteCodecThrows()
+        public void CtorNullMemberCodecThrows()
         {
             //Arrange
             Func<RemoteCongressClient> action = () =>
@@ -118,7 +133,34 @@ namespace RemoteCongress.Tests.Client
                     _loggerMock.Object,
                     _billCodecs,
                     null,
+                    _voteCodecs,
                     _billRepositoryMock.Object,
+                    _memberRepositoryMock.Object,
+                    _voteRepositoryMock.Object
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("memberCodecs");
+        }
+
+        [TestMethod]
+        public void CtorNullVoteCodecThrows()
+        {
+            //Arrange
+            Func<RemoteCongressClient> action = () =>
+                new RemoteCongressClient(
+                    _loggerMock.Object,
+                    _billCodecs,
+                    _memberCodecs,
+                    null,
+                    _billRepositoryMock.Object,
+                    _memberRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
 
@@ -140,8 +182,10 @@ namespace RemoteCongress.Tests.Client
                 new RemoteCongressClient(
                     _loggerMock.Object,
                     _billCodecs,
+                    _memberCodecs,
                     _voteCodecs,
                     null,
+                    _memberRepositoryMock.Object,
                     _voteRepositoryMock.Object
                 );
 
@@ -156,6 +200,31 @@ namespace RemoteCongress.Tests.Client
         }
 
         [TestMethod]
+        public void CtorNullMemberRepoThrows()
+        {
+            //Arrange
+            Func<RemoteCongressClient> action = () =>
+                new RemoteCongressClient(
+                    _loggerMock.Object,
+                    _billCodecs,
+                    _memberCodecs,
+                    _voteCodecs,
+                    _billRepositoryMock.Object,
+                    null,
+                    _voteRepositoryMock.Object
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("memberRepository");
+        }
+
+        [TestMethod]
         public void CtorNullVoteRepoThrows()
         {
             //Arrange
@@ -163,8 +232,10 @@ namespace RemoteCongress.Tests.Client
                 new RemoteCongressClient(
                     _loggerMock.Object,
                     _billCodecs,
+                    _memberCodecs,
                     _voteCodecs,
                     _billRepositoryMock.Object,
+                    _memberRepositoryMock.Object,
                     null
                 );
 
@@ -284,3 +355,4 @@ namespace RemoteCongress.Tests.Client
         }
     }
 }
+*/

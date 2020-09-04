@@ -18,10 +18,12 @@
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -160,6 +162,44 @@ namespace RemoteCongress.Common.Repositories
             TData data = await codec.DecodeFromString(block.MediaType, block.BlockContent);
 
             return new VerifiedData<TData>(id, block, data);
+        }
+
+        /// <summary>
+        /// Fetches all matching verified data in the form of <see cref="ISignedData"/> from the blockchain.
+        /// </summary>
+        /// <param name="query">
+        /// The query to pull data by.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ISignedData"/> instance containing the block data.
+        /// </returns>
+        public async IAsyncEnumerable<VerifiedData<TData>> Fetch(
+            IList<IQuery> query,
+            [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await foreach(ISignedData block in _client.FetchAllFromChain(query, cancellationToken))
+            {
+                if (block is SignedData signedData)
+                {
+                    ICodec<TData> codec = _codecs.FirstOrDefault(
+                        codec => codec.CanHandle(block.MediaType)
+                    );
+
+                    if (codec is null)
+                    {
+                        continue;
+                    }
+
+                    TData data = await codec.DecodeFromString(block.MediaType, block.BlockContent);
+
+                    yield return new VerifiedData<TData>(signedData.Id, block, data);
+                }
+            }
         }
     }
 }

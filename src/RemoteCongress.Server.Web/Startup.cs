@@ -23,13 +23,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
+using RemoteCongress.Server.DAL.InMemory;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web
@@ -67,14 +69,18 @@ namespace RemoteCongress.Server.Web
 
                 .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
                 .AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
-                .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<IEnumerable<SignedData>>, SignedDataCollectionV1JsonCodec>()
                 .AddSingleton<ICodec<Bill>, BillV1AvroCodec>()
+                .AddSingleton<ICodec<Bill>, BillV1JsonCodec>()
+                .AddSingleton<ICodec<Member>, MemberV1JsonCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1AvroCodec>()
+                .AddSingleton<ICodec<IQuery>, IQueryV1JsonCodec>()
 
-                .AddSingleton<IDataClient, IpfsBlockchainClient>()
+                .AddSingleton<IDataClient, InMemoryBlockchainClient>()
 
                 .AddSingleton<IImmutableDataRepository<Bill>, ImmutableDataRepository<Bill>>()
+                .AddSingleton<IImmutableDataRepository<Member>, ImmutableDataRepository<Member>>()
                 .AddSingleton<IImmutableDataRepository<Vote>, ImmutableDataRepository<Vote>>()
 
                 .AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>()

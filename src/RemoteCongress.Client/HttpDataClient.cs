@@ -15,17 +15,20 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Flurl;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,7 +43,11 @@ namespace RemoteCongress.Client
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
         private readonly IEnumerable<ICodec<SignedData>> _codecs;
+        private readonly IEnumerable<ICodec<IEnumerable<SignedData>>> _collectionCodecs;
         private readonly string _endpoint;
+
+        private readonly ICodec<IQuery> _queryCodec =
+            new IQueryV1JsonCodec();
 
         /// <summary>
         /// Constructor
@@ -56,6 +63,9 @@ namespace RemoteCongress.Client
         /// </param>
         /// <param name="codecs">
         /// An <see cref="ICodec{TData}"/> for <see cref="SignedData"/>.
+        /// </param>
+        /// <param name="collectionCodecs">
+        /// An <see cref="ICodec{TData}"/> for a collection of <see cref="SignedData"/>s.
         /// </param>
         /// <param name="endpoint">
         /// The endpoint to this client should hit.
@@ -73,6 +83,9 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="codecs"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="collectionCodecs"/> is null.
+        /// </excpetion>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="endpoint"/> is null.
         /// </excpetion>
         public HttpDataClient(
@@ -80,6 +93,7 @@ namespace RemoteCongress.Client
             ClientConfig config,
             HttpClient httpClient,
             IEnumerable<ICodec<SignedData>> codecs,
+            IEnumerable<ICodec<IEnumerable<SignedData>>> collectionCodecs,
             string endpoint
         )
         {
@@ -102,6 +116,12 @@ namespace RemoteCongress.Client
                 throw _logger.LogException(
                     LogLevel.Debug,
                     new ArgumentNullException(nameof(codecs))
+                );
+
+            _collectionCodecs = collectionCodecs ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(collectionCodecs))
                 );
 
             _endpoint = endpoint ??
@@ -127,23 +147,25 @@ namespace RemoteCongress.Client
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            ICodec<SignedData> avroCodec = GetSignedDataForMediaType(SignedDataV1AvroCodec.MediaType);
             ICodec<SignedData> jsonCodec = GetSignedDataForMediaType(SignedDataV1JsonCodec.MediaType);
 
-            using Stream jsonStream = await avroCodec.Encode(
-                avroCodec.GetPreferredMediaType(),
+            using Stream jsonStream = await jsonCodec.Encode(
+                jsonCodec.GetPreferredMediaType(),
                 new SignedData(data)
             );
             using StreamContent streamContent = new StreamContent(jsonStream)
             {
                 Headers = {
-                    { "Content-Type", avroCodec.GetPreferredMediaType().ToString() }
+                    { "Content-Type", jsonCodec.GetPreferredMediaType().ToString() }
                 }
             };
 
+            Url url = new Url($"{_config.Protocol}://{_config.ServerHostName}")
+                .AppendPathSegment(_endpoint);
+
             using HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
-                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}"
+                url
             )
             {
                 Headers = {
@@ -178,9 +200,13 @@ namespace RemoteCongress.Client
 
             ICodec<SignedData> codec = GetSignedDataForMediaType(SignedDataV1JsonCodec.MediaType);
 
+            Url url = new Url($"{_config.Protocol}://{_config.ServerHostName}")
+                .AppendPathSegment(_endpoint)
+                .AppendPathSegment(id);
+
             using HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"{_config.Protocol}://{_config.ServerHostName}/{_endpoint}/{id}"
+                url
             )
             {
                 Headers = {
@@ -194,6 +220,75 @@ namespace RemoteCongress.Client
             return await codec.Decode(codec.GetPreferredMediaType(), body);
         }
 
+        /// <summary>
+        /// Fetches all matching verified data in the form of <see cref="ISignedData"/> from the blockchain.
+        /// </summary>
+        /// <param name="queries">
+        /// The query to pull data by.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ISignedData"/> instance containing the block data.
+        /// </returns>
+        public async IAsyncEnumerable<ISignedData> FetchAllFromChain(
+            IList<IQuery> queries,
+            [EnumeratorCancellation] CancellationToken cancellationToken
+        )
+        {
+            if (queries is null)
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new ArgumentNullException(nameof(queries))
+                );
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            ICodec<IEnumerable<SignedData>> codec =
+                GetSignedDataCollectionForMediaType(SignedDataCollectionV1JsonCodec.MediaType);
+
+            Url url = new Url($"{_config.Protocol}://{_config.ServerHostName}")
+                .AppendPathSegment(_endpoint);
+
+            foreach(IQuery query in queries)
+            {
+                string queryData = await _queryCodec.EncodeToString(
+                    _queryCodec.GetPreferredMediaType(),
+                    query
+                );
+                url.SetQueryParam("query", queryData);
+            }
+
+            using HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Get,
+                url
+            )
+            {
+                Headers = {
+                    { "Accept", codec.GetPreferredMediaType().ToString() }
+                }
+            };
+
+            using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+            using Stream body = await response.Content.ReadAsStreamAsync();
+
+            foreach(SignedData data in await codec.Decode(codec.GetPreferredMediaType(), body))
+            {
+                yield return data;
+            }
+        }
+
+        private ICodec<IEnumerable<SignedData>> GetSignedDataCollectionForMediaType(RemoteCongressMediaType mediaType) =>
+            _collectionCodecs.FirstOrDefault(
+                codec => codec.CanHandle(mediaType)
+            ) ??
+                throw _logger.LogException(
+                    LogLevel.Debug,
+                    new UnknownBlockMediaTypeException(
+                        $"{mediaType.ToString()} is not supported."
+                    )
+                );
 
         private ICodec<SignedData> GetSignedDataForMediaType(RemoteCongressMediaType mediaType) =>
             _codecs.FirstOrDefault(

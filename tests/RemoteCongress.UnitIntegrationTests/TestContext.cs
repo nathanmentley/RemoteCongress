@@ -3,7 +3,8 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.DAL.InMemory;
-using RemoteCongress.Server.Web.Controllers;
+using RemoteCongress.Server.Web.Controllers.Bills;
+using RemoteCongress.Server.Web.Controllers.Votes;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace RemoteCongress.UnitIntegrationTests
                 
                 .AddSingleton<CreateBillController>()
                 .AddSingleton<FetchBillController>()
-                .AddSingleton<SubmitVoteController>()
+                .AddSingleton<CreateVoteController>()
                 .AddSingleton<FetchVoteController>()
 
                 .AddLogging()
@@ -47,8 +48,8 @@ namespace RemoteCongress.UnitIntegrationTests
         public FetchBillController GetFetchBillController() =>
             _provider.GetRequiredService<FetchBillController>();
 
-        public SubmitVoteController GetSubmitVoteController() =>
-            _provider.GetRequiredService<SubmitVoteController>();
+        public CreateVoteController GetCreateVoteController() =>
+            _provider.GetRequiredService<CreateVoteController>();
 
         public FetchVoteController GetFetchVoteController() =>
             _provider.GetRequiredService<FetchVoteController>();
@@ -64,7 +65,7 @@ namespace RemoteCongress.UnitIntegrationTests
 
         public async Task<string> SeedVote(VerifiedData<Vote> vote)
         {
-            SubmitVoteController controller = GetSubmitVoteController();
+            CreateVoteController controller = GetCreateVoteController();
 
             VerifiedData<Vote> result = await controller.Post(vote, CancellationToken.None);
 

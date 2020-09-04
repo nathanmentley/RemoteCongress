@@ -25,90 +25,88 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Server.Web.Controllers
+namespace RemoteCongress.Server.Web.Controllers.Base
 {
     /// <summary>
-    /// Exposes an endpoint to persist <see cref="Vote"/>s.
+    /// Exposes an endpoint to persist <typeparamref name="TModel"/>s.
     /// </summary>
-    [ApiController]
-    [Route("vote")]
-    public class SubmitVoteController
+    public abstract class BaseCreateController<TModel>
     {
         private readonly ILogger _logger;
-        private readonly IImmutableDataRepository<Vote> _voteRepository;
+        private readonly IImmutableDataRepository<TModel> _repository;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="voteRepository">
-        /// An <see cref="IImmutableDataRepository<VoteData>"/> instance.
+        /// <param name="repository">
+        /// An <see cref="IImmutableDataRepository<TModelData>"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="voteRepository"/> is null.
+        /// Thrown if <paramref name="repository"/> is null.
         /// </exception>
-        public SubmitVoteController(
-            ILogger<SubmitVoteController> logger,
-            IImmutableDataRepository<Vote> voteRepository
+        protected BaseCreateController(
+            ILogger<BaseCreateController<TModel>> logger,
+            IImmutableDataRepository<TModel> repository
         )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
 
-            _voteRepository = voteRepository ??
+            _repository = repository ??
                 throw _logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(voteRepository))
+                    new ArgumentNullException(nameof(repository))
                 );
         }
 
         /// <summary>
-        /// Persists a <see cref="Vote"/>.
+        /// Persists a <typeparamref name="TModel"/>.
         /// </summary>
-        /// <param name="vote">
-        /// The <see cref="Vote"/> to persist.
+        /// <param name="model">
+        /// The <typeparamref name="TModel"/> to persist.
         /// </param>
         /// <returns>
-        /// The persisted, signed, and validiated <see cref="Vote"/>.
+        /// The persisted, signed, and validiated <typeparamref name="TModel"/>.
         /// </returns>
         [HttpPost]
-        public async Task<VerifiedData<Vote>> Post(
-            [FromBody] VerifiedData<Vote> vote,
+        public async Task<VerifiedData<TModel>> Post(
+            [FromBody] VerifiedData<TModel> model,
             CancellationToken cancellationToken
         )
         {
-            Validate(vote, cancellationToken);
+            Validate(model, cancellationToken);
 
             _logger.LogTrace(
-                "{controller}.{endpoint} called with {vote}",
-                nameof(SubmitVoteController),
+                "{controller}.{endpoint} called with {model}",
+                nameof(BaseCreateController<TModel>),
                 nameof(Post),
-                vote
+                model
             );
 
-            return await _voteRepository.Create(vote, cancellationToken);
+            return await _repository.Create(model, cancellationToken);
         }
 
         /// <summary>
-        /// Ensures that a submit vote request is valid.
+        /// Ensures that a create model request is valid.
         /// </summary>
-        /// <param name="vote">
-        /// A <see cref="Vote"/> to persist.
+        /// <param name="model">
+        /// A <typeparamref name="TModel"/> to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="vote"/> is null.
+        /// Thrown if <paramref name="model"/> is null.
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// Thrown if <paramref name="cancellationToken"/> is null.
         /// </exception>
         private void Validate(
-            VerifiedData<Vote> vote,
+            VerifiedData<TModel> model,
             CancellationToken cancellationToken
         )
         {
-            if (vote is null)
+            if (model is null)
                 throw _logger.LogException(
                     LogLevel.Debug,
                     new MissingBodyException()

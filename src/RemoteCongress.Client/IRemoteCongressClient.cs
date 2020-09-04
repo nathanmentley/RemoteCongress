@@ -67,6 +67,46 @@ namespace RemoteCongress.Client
         Task<VerifiedData<Bill>> GetBill(string id, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Creates, signs, and persists a <see cref="Member"/> instance.
+        /// </summary>
+        /// <param name="privateKey">
+        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Member"/>.
+        /// </param>
+        /// <param name="publicKey">
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Member"/> to
+        ///     the producing individual.
+        /// </param>
+        /// <param name="data">
+        /// The <see cref="Member"/> data to persist.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Member"/>.
+        /// </returns>
+        Task<VerifiedData<Member>> CreateMember(
+            string privateKey,
+            string publicKey,
+            Member data,
+            CancellationToken cancellationToken
+        );
+
+        /// <summary>
+        /// Fetches a signed, and verified <see cref="Member"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Member"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Member"/>.
+        /// </returns>
+        Task<VerifiedData<Member>> GetMember(string id, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
         /// </summary>
         /// <param name="privateKey">

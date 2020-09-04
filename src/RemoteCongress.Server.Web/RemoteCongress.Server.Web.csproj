@@ -4,7 +4,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RemoteCongress.Server.DAL.IpfsBlockchainDb\RemoteCongress.Server.DAL.IpfsBlockchainDb.csproj" />
+    <ProjectReference Include="..\RemoteCongress.Server.DAL.InMemory\RemoteCongress.Server.DAL.InMemory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

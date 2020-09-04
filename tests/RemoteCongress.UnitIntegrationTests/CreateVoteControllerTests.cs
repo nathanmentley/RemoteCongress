@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RemoteCongress.Common;
-using RemoteCongress.Server.Web.Controllers;
+using RemoteCongress.Server.Web.Controllers.Votes;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 namespace RemoteCongress.UnitIntegrationTests
 {
     [TestClass]
-    public class SubmitVoteControllerTests
+    public class CreateVoteControllerTests
     {
         [TestMethod]
-        public async Task SubmitVoteTests()
+        public async Task CreateVoteTests()
         {
             // Arrange
             using TestContext context = TestContext.Create();
-            SubmitVoteController subject = context.GetSubmitVoteController();
+            CreateVoteController subject = context.GetCreateVoteController();
             VerifiedData<Vote> vote = await MockData.GetVote("billId", true, "message");
 
             //Act
@@ -31,14 +31,14 @@ namespace RemoteCongress.UnitIntegrationTests
         }
 
         [TestMethod]
-        public async Task SubmitVoteThrowsOnCancelledToken()
+        public async Task CreateVoteThrowsOnCancelledToken()
         {
             // Arrange
             using TestContext context = TestContext.Create();
             using CancellationTokenSource tokenSource = new CancellationTokenSource();
             tokenSource.Cancel();
 
-            SubmitVoteController subject = context.GetSubmitVoteController();
+            CreateVoteController subject = context.GetCreateVoteController();
             VerifiedData<Vote> vote = await MockData.GetVote("billId", true, "message");
 
             Func<Task> action = async () =>

@@ -25,56 +25,51 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Server.Web.Controllers
+namespace RemoteCongress.Server.Web.Controllers.Base
 {
     /// <summary>
-    /// Exposes an endpoint to fetch a <see cref="Vote"/>.
+    /// Exposes an endpoint to fetch a <typeparamref name="TModel"/>.
     /// </summary>
-    [ApiController]
-    [Route("vote/{id}")]
-    public class FetchVoteController
+    public class BaseFetchController<TModel>
     {
         private readonly ILogger _logger;
-        private readonly IImmutableDataRepository<Vote> _voteRepository;
+        private readonly IImmutableDataRepository<TModel> _repository;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="voteRepository">
-        /// An <see cref="IImmutableDataRepository<VoteData>"/> instance.
+        /// <param name="repository">
+        /// An <see cref="IImmutableDataRepository<TModelData>"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="logger"/> is null.
+        /// Thrown if <paramref name="repository"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="voteRepository"/> is null.
-        /// </exception>
-        public FetchVoteController(
-            ILogger<FetchVoteController> logger,
-            IImmutableDataRepository<Vote> voteRepository
+        protected BaseFetchController(
+            ILogger<BaseFetchController<TModel>> logger,
+            IImmutableDataRepository<TModel> repository
         )
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
 
-            _voteRepository = voteRepository ??
+            _repository = repository ??
                 throw _logger.LogException(
                     LogLevel.Debug,
-                    new ArgumentNullException(nameof(voteRepository))
+                    new ArgumentNullException(nameof(repository))
                 );
         }
 
         /// <summary>
-        /// Fetches a <see cref="Vote"/>.
+        /// Fetches a <typeparamref name="TModel"/>.
         /// </summary>
         /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/> to fetch.
+        /// The <see cref="IIdentifiable.Id"/> of the <typeparamref name="TModel"/> to fetch.
         /// </param>
         /// <returns>
-        /// The persisted, signed, and validiated <see cref="Vote"/>.
+        /// The persisted, signed, and validiated <typeparamref name="TModel"/>.
         /// </returns>
         [HttpGet]
-        public async Task<VerifiedData<Vote>> Get(
+        public async Task<VerifiedData<TModel>> Get(
             [FromRoute] string id,
             CancellationToken cancellationToken
         )
@@ -83,19 +78,19 @@ namespace RemoteCongress.Server.Web.Controllers
 
             _logger.LogTrace(
                 "{controller}.{endpoint} called with {id}",
-                nameof(FetchVoteController),
+                nameof(BaseFetchController<TModel>),
                 nameof(Get),
                 id
             );
 
-            return await _voteRepository.Fetch(id, cancellationToken);
+            return await _repository.Fetch(id, cancellationToken);
         }
 
         /// <summary>
-        /// Ensures that a fetch vote request is valid.
+        /// Ensures that a fetch model request is valid.
         /// </summary>
         /// <param name="id">
-        /// An id of a <see cref="Vote"/> to fetch.
+        /// An id of a <typeparamref name="TModel"/> to fetch.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation.
