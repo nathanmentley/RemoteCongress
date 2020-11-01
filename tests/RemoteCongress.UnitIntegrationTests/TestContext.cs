@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.DAL.InMemory;
 using RemoteCongress.Server.Web.Controllers.Bills;
@@ -27,6 +28,8 @@ namespace RemoteCongress.UnitIntegrationTests
                 .AddSingleton<ICodec<Vote>, VoteV1AvroCodec>()
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
 
+                .AddSingleton<IQueryProcessor<Bill>, BillQueryProcessor>()
+                .AddSingleton<IQueryProcessor<Vote>, VoteQueryProcessor>()
                 .AddSingleton<IImmutableDataRepository<Bill>, ImmutableDataRepository<Bill>>()
                 .AddSingleton<IImmutableDataRepository<Vote>, ImmutableDataRepository<Vote>>()
                 
