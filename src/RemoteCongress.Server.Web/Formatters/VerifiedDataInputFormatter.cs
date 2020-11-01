@@ -100,7 +100,6 @@ namespace RemoteCongress.Server.Web.Formatters
 
             if (codec is null)
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new UnparsableMediaTypeException(
                         $"Cannot handle {mediaType.ToString()}"
                     )
@@ -120,7 +119,6 @@ namespace RemoteCongress.Server.Web.Formatters
 
             if (dataCodec is null)
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new UnknownBlockMediaTypeException(
                         $"Cannot handle {signedData.MediaType.ToString()}"
                     )

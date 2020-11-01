@@ -43,6 +43,7 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
 
         private IList<InMemoryBlock> GetBlocks(InMemoryBlockchain blockchain) =>
             typeof(InMemoryBlockchain)
+                .BaseType
                 .GetField("_blocks", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(blockchain) as IList<InMemoryBlock>;
 

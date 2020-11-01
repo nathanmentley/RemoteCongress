@@ -15,11 +15,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +30,29 @@ namespace RemoteCongress.Common.Serialization
     /// </summary>
     public class SignedDataCollectionV1JsonCodec: ICodec<IEnumerable<SignedData>>
     {
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        public SignedDataCollectionV1JsonCodec(ILogger<SignedDataCollectionV1JsonCodec> logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> handled by this codec.
+        /// </summary>
         public readonly static RemoteCongressMediaType MediaType =
             new RemoteCongressMediaType(
                 "application",
@@ -82,9 +105,6 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public async Task<IEnumerable<SignedData>> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -104,22 +124,13 @@ namespace RemoteCongress.Common.Serialization
                 string publicKey = jObject.Value<string>("publicKey");
                 string blockContent = jObject.Value<string>("blockContent");
                 string blockMediaType = jObject.Value<string>("mediaType");
-                IList<byte> signature = new List<byte>();
-                JArray signatureJson = jObject["signature"] as JArray;
-
-                if (!(signatureJson is null))
-                {
-                    foreach(JToken token in signatureJson)
-                    {
-                        signature.Add(token.Value<byte>());
-                    }
-                }
+                byte[] signature = Convert.FromBase64String(jObject.Value<string>("signature"));
 
                 ret.Add(
                     new SignedData(
                         publicKey,
                         blockContent,
-                        signature.ToArray(),
+                        signature,
                         RemoteCongressMediaType.Parse(blockMediaType)
                     )
                     {
@@ -154,9 +165,6 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, IEnumerable<SignedData> data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -169,19 +177,12 @@ namespace RemoteCongress.Common.Serialization
 
             foreach(SignedData signedData in data)
             {
-                JArray signature = new JArray();
-
-                foreach(byte signatureByte in signedData.Signature)
-                {
-                    signature.Add(signatureByte);
-                }
-
                 JObject record = new JObject()
                 {
                     ["id"] = signedData.Id,
                     ["publicKey"] = signedData.PublicKey,
                     ["blockContent"] = signedData.BlockContent,
-                    ["signature"] = signature,
+                    ["signature"] = Convert.ToBase64String(signedData.Signature),
                     ["mediaType"] = signedData.MediaType.ToString()
                 };
 

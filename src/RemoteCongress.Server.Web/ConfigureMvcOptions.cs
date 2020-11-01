@@ -57,37 +57,31 @@ namespace RemoteCongress.Server.Web
 
             _loggerFactory = loggerFactory ??
                 throw logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(loggerFactory))
                 );
 
             _signedDataCodecs = signedDataCodecs ??
                 throw logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(signedDataCodecs))
                 );
 
             _signedDataCollectionCodecs = signedDataCollectionCodecs ??
                 throw logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(signedDataCollectionCodecs))
                 );
 
             _billDataCodecs = billDataCodecs ??
                 throw logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(billDataCodecs))
                 );
 
             _memberDataCodecs = memberDataCodecs ??
                 throw logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(memberDataCodecs))
                 );
 
             _voteDataCodecs = voteDataCodecs ??
                 throw logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(voteDataCodecs))
                 );
         }

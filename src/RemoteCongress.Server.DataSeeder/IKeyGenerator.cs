@@ -15,11 +15,28 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace RemoteCongress.Common.Repositories.Queries
+namespace RemoteCongress.Server.DataSeeder
 {
     /// <summary>
-    /// A no-op <see cref="IQuery"/>.
+    /// An interface that abstracts the generation of key pairs.
     /// </summary>
-    public class NullQuery: IQuery {}
+    public interface IKeyGenerator
+    {
+        /// <summary>
+        /// Generates a public and private key pair.
+        /// </summary>
+        /// <param name="bit">
+        /// How many bits should the key be.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
+        Task<(string privateKey, string publicKey)> GenerateKeys(
+            int bit,
+            CancellationToken cancellationToken = default
+        );
+    }
 }

@@ -99,6 +99,18 @@ After submission that vote was fetched from the platform and was verified.
 Then then a yes vote was cast on the bill with a message of "message".
 After that vote was cast it was fetched from the platform and was verified.
 
+### Data Seeder
+
+There is a data seeder tool that can be used to load real senate voting data from the second session of the 116th congress.
+
+Once there is a server running, either locally or in docker, you can run the dataloader tool located at src/RemoteCongress.Server.DataSeeder
+
+    dotnet run --project src/RemoteCongress.Server.DataSeeder/RemoteCongress.Server.DataSeeder.csproj
+
+The data seeder will parse included xml files to generate public private key pairs for each senator, then it'll post bill and vote data using the RemoteCongress.Client library.
+
+Once run you should be able to use the api to search through votes and bills. All the persisted data is immutable, signed and verified. The data you receive back from the api is signed and can be verified with the packaged hash, and public key.
+
 ### Using a cli interface to interact with the platform
 
 Optionally, if you want to interact with the RemoteCongress platform in a more dynamic way you can use a command line tool included with the project.

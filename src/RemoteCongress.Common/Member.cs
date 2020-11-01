@@ -26,26 +26,32 @@ namespace RemoteCongress.Common
     public sealed class Member
     {
         /// <summary>
+        /// The member's identifier
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
+        /// The member's first name
         /// </summary>
         public string FirstName { get; set; }
 
         /// <summary>
+        /// The member's last name
         /// </summary>
         public string LastName { get; set; }
 
         /// <summary>
+        /// The member's seat
         /// </summary>
         public string Seat { get; set; }
 
         /// <summary>
+        /// The member's party
         /// </summary>
         public string Party { get; set; }
 
         /// <summary>
+        /// The member's public key
         /// </summary>
         public string PublicKey { get; set; }
     }

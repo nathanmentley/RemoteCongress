@@ -83,9 +83,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// </exception>
         public async Task<Block> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -143,9 +140,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, Block data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 

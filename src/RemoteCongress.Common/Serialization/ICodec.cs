@@ -100,16 +100,17 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public async Task<string> EncodeToString(RemoteCongressMediaType mediaType, TData data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if (!CanHandle(mediaType))
+            {
                 throw new InvalidOperationException(
                     $"{GetType()} cannot handle {mediaType}"
                 );
+            }
 
             using Stream stream = await Encode(mediaType, data);
 
@@ -141,16 +142,17 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public async Task<TData> DecodeFromString(RemoteCongressMediaType mediaType, string data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if (!CanHandle(mediaType))
+            {
                 throw new InvalidOperationException(
                     $"{GetType()} cannot handle {mediaType}"
                 );
+            }
 
             byte[] dataBytes = Encoding.UTF8.GetBytes(data);
             using Stream stream = new MemoryStream(dataBytes);

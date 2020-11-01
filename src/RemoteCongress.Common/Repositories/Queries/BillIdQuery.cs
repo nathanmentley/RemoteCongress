@@ -21,21 +21,30 @@ using System;
 namespace RemoteCongress.Common.Repositories.Queries
 {
     /// <summary>
+    /// An <see cref="IQuery"/> to filter on BillId.
     /// </summary>
     public class BillIdQuery: IQuery
     {
         /// <summary>
+        /// The Id of the <see cref="Bill"/> to filter on.
         /// </summary>
         public string BillId { get; }
 
         /// <summary>
+        /// Constructor
         /// </summary>
         /// <param name="billId">
+        /// The Id of the <see cref="Bill"/> to filter on.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="billId"/> is null.
+        /// </exception>
         public BillIdQuery(string billId)
         {
             if (string.IsNullOrWhiteSpace(billId))
+            {
                 throw new ArgumentNullException(nameof(billId));
+            }
 
             BillId = billId;
         }

@@ -31,7 +31,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <summary>
         /// The unique Identifier from the block.
         /// </summary>
-        internal string Id { get; } =
+        public override string Id { get; } =
             Guid.NewGuid().ToString();
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <summary>
         /// An <see cref="InMemoryBlock"/> is valid if the <see cref="Hash"/> equals the result from <see cref="GenerateHash"/>.
         /// </summary>
-        internal bool IsValid =>
+        public override bool IsValid =>
             string.Equals(Hash, GenerateHash(), StringComparison.InvariantCulture);
 
 
@@ -86,8 +86,6 @@ namespace RemoteCongress.Server.DAL.InMemory
                 throw new ArgumentNullException(nameof(previousBlock));
             if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
 
             LastBlockHash = previousBlock.Hash;
             Content = content;

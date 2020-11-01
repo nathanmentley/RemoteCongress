@@ -54,7 +54,6 @@ namespace RemoteCongress.Server.Web.Controllers.Base
 
             _repository = repository ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(repository))
                 );
         }
@@ -76,9 +75,9 @@ namespace RemoteCongress.Server.Web.Controllers.Base
         {
             Validate(id, cancellationToken);
 
-            _logger.LogTrace(
+            _logger.LogDebug(
                 "{controller}.{endpoint} called with {id}",
-                nameof(BaseFetchController<TModel>),
+                GetType(),
                 nameof(Get),
                 id
             );
@@ -107,10 +106,11 @@ namespace RemoteCongress.Server.Web.Controllers.Base
         )
         {
             if (string.IsNullOrWhiteSpace(id))
+            {
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new MissingPathParameterException()
                 );
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
         }

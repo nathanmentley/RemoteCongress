@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using RemoteCongress.Common.Repositories.Queries;
 using System;
@@ -29,6 +30,29 @@ namespace RemoteCongress.Common.Serialization
     /// </summary>
     public class IQueryV1JsonCodec: ICodec<IQuery>
     {
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        public IQueryV1JsonCodec(ILogger<IQueryV1JsonCodec> logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> handled by this codec.
+        /// </summary>
         public readonly static RemoteCongressMediaType MediaType =
             new RemoteCongressMediaType(
                 "application",
@@ -81,16 +105,17 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public async Task<IQuery> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if (!CanHandle(mediaType))
+            {
                 throw new InvalidOperationException(
                     $"{GetType()} cannot handle {mediaType}"
                 );
+            }
 
             using StreamReader sr = new StreamReader(data);
             string json = await sr.ReadToEndAsync();
@@ -104,6 +129,9 @@ namespace RemoteCongress.Common.Serialization
                 ),
                 "publicKey" => new PublicKeyQuery(
                     jObject.Value<string>("publicKey")
+                ),
+                "opinion" => new OpinionQuery(
+                    jObject.Value<bool>("opinion")
                 ),
                 "null" => new NullQuery(),
                 _ => new NullQuery()
@@ -133,16 +161,17 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, IQuery data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if (!CanHandle(mediaType))
+            {
                 throw new InvalidOperationException(
                     $"{GetType()} cannot handle {mediaType}"
                 );
+            }
 
             JObject jObject = new JObject();
 
@@ -150,11 +179,15 @@ namespace RemoteCongress.Common.Serialization
             {
                 case BillIdQuery billIdQuery:
                     jObject["_type"] = "billId";
-                    jObject["id"] = billIdQuery.BillId;
+                    jObject["billId"] = billIdQuery.BillId;
                     break;
                 case PublicKeyQuery publicKeyQuery:
                     jObject["_type"] = "publicKey";
-                    jObject["id"] = publicKeyQuery.PublicKey;
+                    jObject["publicKey"] = publicKeyQuery.PublicKey;
+                    break;
+                case OpinionQuery opinionQuery:
+                    jObject["_type"] = "opinion";
+                    jObject["opinion"] = opinionQuery.Opinion;
                     break;
                 case NullQuery _:
                     jObject["_type"] = "null";

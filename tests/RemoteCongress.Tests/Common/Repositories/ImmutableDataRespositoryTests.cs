@@ -22,6 +22,7 @@ using Moq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,9 @@ namespace RemoteCongress.Tests.Common.Repositories
         private readonly IEnumerable<ICodec<Bill>> _codecs =
             new []
             {
-                new BillV1JsonCodec()
+                new BillV1JsonCodec(
+                    new Mock<ILogger<BillV1JsonCodec>>().Object
+                )
             };
 
         private class FakeImmutableDataRepository : ImmutableDataRepository<Bill>
@@ -49,15 +52,17 @@ namespace RemoteCongress.Tests.Common.Repositories
             public FakeImmutableDataRepository(
                 ILogger<ImmutableDataRepository<Bill>> logger,
                 IDataClient client,
-                IEnumerable<ICodec<Bill>> codecs
-            ) : base(logger, client, codecs) {}
+                IEnumerable<ICodec<Bill>> codecs,
+                IQueryProcessor<Bill> queryProcessor
+            ) : base(logger, client, codecs, queryProcessor) {}
         }
 
         private FakeImmutableDataRepository GetSubject() =>
             new FakeImmutableDataRepository(
                 _mockLogger.Object,
                 _mockClient.Object,
-                _codecs
+                _codecs,
+                new BillQueryProcessor()
             );
 
         [TestMethod]
@@ -68,7 +73,8 @@ namespace RemoteCongress.Tests.Common.Repositories
                 new FakeImmutableDataRepository(
                     null,
                     _mockClient.Object,
-                    _codecs
+                    _codecs,
+                    new BillQueryProcessor()
                 );
 
             //act
@@ -88,7 +94,8 @@ namespace RemoteCongress.Tests.Common.Repositories
                 new FakeImmutableDataRepository(
                     _mockLogger.Object,
                     null,
-                    _codecs
+                    _codecs,
+                    new BillQueryProcessor()
                 );
 
             //act
@@ -108,7 +115,8 @@ namespace RemoteCongress.Tests.Common.Repositories
                 new FakeImmutableDataRepository(
                     _mockLogger.Object,
                     _mockClient.Object,
-                    null
+                    null,
+                    new BillQueryProcessor()
                 );
 
             //act

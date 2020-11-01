@@ -41,15 +41,26 @@ namespace RemoteCongress.Tests.Client
         private readonly Mock<ILogger<HttpDataClient>> mockLogger =
             new Mock<ILogger<HttpDataClient>>();
  
+        private readonly IQueryV1JsonCodec _queryCodec =
+            new IQueryV1JsonCodec(
+                new Mock<ILogger<IQueryV1JsonCodec>>().Object
+            );
+
         private readonly IEnumerable<ICodec<SignedData>> _codecs =
             new ICodec<SignedData>[] {
-                new SignedDataV1AvroCodec(),
-                new SignedDataV1JsonCodec()
+                new SignedDataV1AvroCodec(
+                    new Mock<ILogger<SignedDataV1AvroCodec>>().Object
+                ),
+                new SignedDataV1JsonCodec(
+                    new Mock<ILogger<SignedDataV1JsonCodec>>().Object
+                )
             };
  
         private readonly IEnumerable<ICodec<IEnumerable<SignedData>>> _collectionCodecs =
             new ICodec<IEnumerable<SignedData>>[] {
-                new SignedDataCollectionV1JsonCodec()
+                new SignedDataCollectionV1JsonCodec(
+                    new Mock<ILogger<SignedDataCollectionV1JsonCodec>>().Object
+                )
             };
 
         private HttpClient GetClient(HttpResponseMessage response)
@@ -77,6 +88,7 @@ namespace RemoteCongress.Tests.Client
                 mockLogger.Object,
                 new ClientConfig("http", "localhost"),
                 GetClient(response),
+                _queryCodec,
                 _codecs,
                 _collectionCodecs,
                 "endpoint"
@@ -91,6 +103,7 @@ namespace RemoteCongress.Tests.Client
                     null,
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
+                    _queryCodec,
                     _codecs,
                     _collectionCodecs,
                     "endpoint"
@@ -115,6 +128,7 @@ namespace RemoteCongress.Tests.Client
                     mockLogger.Object,
                     null,
                     new HttpClient(),
+                    _queryCodec,
                     _codecs,
                     _collectionCodecs,
                     "endpoint"
@@ -139,6 +153,7 @@ namespace RemoteCongress.Tests.Client
                     mockLogger.Object,
                     new ClientConfig("http", "localhost"),
                     null,
+                    _queryCodec,
                     _codecs,
                     _collectionCodecs,
                     "endpoint"
@@ -155,6 +170,31 @@ namespace RemoteCongress.Tests.Client
         }
 
         [TestMethod]
+        public void CtorNullQueryCodecThrows()
+        {
+            //Arrange
+            Func<HttpDataClient> action = () =>
+                new HttpDataClient(
+                    mockLogger.Object,
+                    new ClientConfig("http", "localhost"),
+                    new HttpClient(),
+                    null,
+                    _codecs,
+                    _collectionCodecs,
+                    "endpoint"
+                );
+
+            //Act
+            action
+
+            //Assert
+                .Should()
+                .Throw<ArgumentNullException>()
+                    .And.ParamName.Should()
+                        .Be("queryCodec");
+        }
+
+        [TestMethod]
         public void CtorNullCodecThrows()
         {
             //Arrange
@@ -163,6 +203,7 @@ namespace RemoteCongress.Tests.Client
                     mockLogger.Object,
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
+                    _queryCodec,
                     null,
                     _collectionCodecs,
                     "endpoint"
@@ -187,6 +228,7 @@ namespace RemoteCongress.Tests.Client
                     mockLogger.Object,
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
+                    _queryCodec,
                     _codecs,
                     null,
                     "endpoint"
@@ -211,6 +253,7 @@ namespace RemoteCongress.Tests.Client
                     mockLogger.Object,
                     new ClientConfig("http", "localhost"),
                     new HttpClient(),
+                    _queryCodec,
                     _codecs,
                     _collectionCodecs,
                     null

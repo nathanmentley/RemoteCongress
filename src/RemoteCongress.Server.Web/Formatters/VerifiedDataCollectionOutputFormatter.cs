@@ -57,7 +57,6 @@ namespace RemoteCongress.Server.Web.Formatters
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(logger))
                 );
 

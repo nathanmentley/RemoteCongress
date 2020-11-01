@@ -34,9 +34,25 @@ namespace RemoteCongress.Common.Repositories
     /// </summary>
     public class ImmutableDataRepository<TData>: IImmutableDataRepository<TData>
     {
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
         private readonly ILogger<IImmutableDataRepository<TData>> _logger;
+
+        /// <summary>
+        /// An <see cref="IDataClient"/> to interact with data against.
+        /// </summary>
         private readonly IDataClient _client;
+
+        /// <summary>
+        /// A collection of <see cref="ICodec{TData}"/>s to use to decode data.
+        /// </summary>
         private readonly IEnumerable<ICodec<TData>> _codecs;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IQueryProcessor<TData> _queryProcessor;
 
         /// <summary>
         /// Constructor
@@ -50,19 +66,26 @@ namespace RemoteCongress.Common.Repositories
         /// <param name="codecs">
         /// <see cref="ICodec"/>s for <typeparamref name="TData"/> to process block content.
         /// </param>
+        /// <param name="queryProcessor">
+        /// <see cref="IQueryProcessor{TData}"/> to filter <typeparamref name="TData"/> on for queries.
+        /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="config"/> is null.
+        /// Thrown if <paramref name="logger"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="httpClient"/> is null.
+        /// Thrown if <paramref name="client"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="codec"/> is null.
         /// </excpetion>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="queryProcessor"/> is null.
+        /// </excpetion>
         public ImmutableDataRepository(
             ILogger<IImmutableDataRepository<TData>> logger,
             IDataClient client,
-            IEnumerable<ICodec<TData>> codecs
+            IEnumerable<ICodec<TData>> codecs,
+            IQueryProcessor<TData> queryProcessor
         )
         {
             _logger = logger ??
@@ -70,14 +93,17 @@ namespace RemoteCongress.Common.Repositories
 
             _client = client ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(client))
                 );
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(codecs))
+                );
+
+            _queryProcessor = queryProcessor ??
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(queryProcessor))
                 );
         }
 
@@ -99,17 +125,31 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="OperationCanceledException">
         /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
-        public async Task<VerifiedData<TData>> Create(VerifiedData<TData> model, CancellationToken cancellationToken)
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="model"/> is null.
+        /// </exception>
+        public async Task<VerifiedData<TData>> Create(
+            VerifiedData<TData> model,
+            CancellationToken cancellationToken
+        )
         {
+            if (model is null)
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(model))
+                );
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             string id = await _client.AppendToChain(model, cancellationToken);
 
             if (string.IsNullOrWhiteSpace(id))
+            {
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new BlockNotStorableException()
                 );
+            }
 
             return new VerifiedData<TData>(id, model, model.Data);
         }
@@ -137,27 +177,39 @@ namespace RemoteCongress.Common.Repositories
         /// <exception cref="OperationCanceledException">
         /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="id"/> is null.
+        /// </exception>
         public async Task<VerifiedData<TData>> Fetch(string id, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(id))
+                );
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             ISignedData block = await _client.FetchFromChain(id, cancellationToken);
 
             if (block is null)
+            {
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new BlockNotFoundException()
                 );
+            }
 
             ICodec<TData> codec = _codecs.FirstOrDefault(
                 codec => codec.CanHandle(block.MediaType)
             );
 
             if (codec is null)
+            {
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new UnknownBlockMediaTypeException()
                 );
+            }
 
             TData data = await codec.DecodeFromString(block.MediaType, block.BlockContent);
 
@@ -176,10 +228,20 @@ namespace RemoteCongress.Common.Repositories
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="query"/> is null.
+        /// </exception>
         public async IAsyncEnumerable<VerifiedData<TData>> Fetch(
             IList<IQuery> query,
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
+            if (query is null)
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(query))
+                );
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             await foreach(ISignedData block in _client.FetchAllFromChain(query, cancellationToken))
@@ -196,6 +258,11 @@ namespace RemoteCongress.Common.Repositories
                     }
 
                     TData data = await codec.DecodeFromString(block.MediaType, block.BlockContent);
+
+                    if (!_queryProcessor.BlockMatchesQuery(query, signedData, data))
+                    {
+                        continue;
+                    }
 
                     yield return new VerifiedData<TData>(signedData.Id, block, data);
                 }

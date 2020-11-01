@@ -15,10 +15,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Avro.IO;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Avro.IO;
 
 namespace RemoteCongress.Common.Serialization
 {
@@ -27,6 +28,29 @@ namespace RemoteCongress.Common.Serialization
     /// </summary>
     public class VoteV1AvroCodec: ICodec<Vote>
     {
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        public VoteV1AvroCodec(ILogger<VoteV1AvroCodec> logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> handled by this codec.
+        /// </summary>
         public readonly static RemoteCongressMediaType MediaType =
             new RemoteCongressMediaType(
                 "application",
@@ -79,9 +103,6 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public Task<Vote> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -130,9 +151,6 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, Vote data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 

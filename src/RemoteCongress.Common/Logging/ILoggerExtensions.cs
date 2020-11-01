@@ -43,12 +43,31 @@ namespace RemoteCongress.Common.Logging
         /// <returns>
         /// The passed in <paramref name="exception"/> reference.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="exception"/> is null.
+        /// </exception>
         public static TException LogException<TException>(
             this ILogger logger,
-            LogLevel logLevel,
-            TException exception
-        ) where TException: Exception
+            TException exception,
+            LogLevel logLevel = LogLevel.Debug
+        )
+            where TException: Exception
         {
+            if (logger is null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            if (exception is null)
+            {
+                throw logger.LogException(
+                    new ArgumentNullException(nameof(exception))
+                );
+            }
+
             logger.Log(logLevel, exception, exception.Message);
 
             return exception;

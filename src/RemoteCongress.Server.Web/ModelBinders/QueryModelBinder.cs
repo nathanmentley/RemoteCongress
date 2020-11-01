@@ -50,7 +50,7 @@ namespace RemoteCongress.Server.Web.ModelBinders
                 }
             }
             
-            bindingContext.Result = ModelBindingResult.Success(new List<IQuery>());
+            bindingContext.Result = ModelBindingResult.Success(queries);
         }
     }
 

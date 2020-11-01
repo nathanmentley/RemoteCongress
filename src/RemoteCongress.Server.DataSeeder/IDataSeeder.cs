@@ -15,11 +15,22 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using RemoteCongress.Common;
+using System.Collections.Generic;
+using System.Threading;
 
-namespace RemoteCongress.Common.Repositories.Queries
+namespace RemoteCongress.Server.DataSeeder
 {
-    /// <summary>
-    /// A no-op <see cref="IQuery"/>.
-    /// </summary>
-    public class NullQuery: IQuery {}
+    public interface IDataSeeder
+    {
+        IAsyncEnumerable<Member> GetMembers(CancellationToken cancellationToken);
+
+        IAsyncEnumerable<(Bill, string)> GetBills(CancellationToken cancellationToken);
+
+        IAsyncEnumerable<(Vote vote, string memberPrivateKey, string memberPublicKey)> GetVotes(
+            string id,
+            VerifiedData<Bill> bill,
+            CancellationToken cancellationToken
+        );
+    }
 }

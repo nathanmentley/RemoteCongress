@@ -15,11 +15,10 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +29,29 @@ namespace RemoteCongress.Common.Serialization
     /// </summary>
     public class SignedDataV1JsonCodec: ICodec<SignedData>
     {
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        public SignedDataV1JsonCodec(ILogger<SignedDataV1JsonCodec> logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// The <see cref="RemoteCongressMediaType"/> handled by this codec.
+        /// </summary>
         public readonly static RemoteCongressMediaType MediaType =
             new RemoteCongressMediaType(
                 "application",
@@ -82,9 +104,6 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public async Task<SignedData> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -101,21 +120,12 @@ namespace RemoteCongress.Common.Serialization
             string publicKey = jObject.Value<string>("publicKey");
             string blockContent = jObject.Value<string>("blockContent");
             string blockMediaType = jObject.Value<string>("mediaType");
-            IList<byte> signature = new List<byte>();
-            JArray signatureJson = jObject["signature"] as JArray;
-
-            if (!(signatureJson is null))
-            {
-                foreach(JToken token in signatureJson)
-                {
-                    signature.Add(token.Value<byte>());
-                }
-            }
+            byte[] signature = Convert.FromBase64String(jObject.Value<string>("signature"));
 
             return new SignedData(
                 publicKey,
                 blockContent,
-                signature.ToArray(),
+                signature,
                 RemoteCongressMediaType.Parse(blockMediaType)
             )
             {
@@ -146,9 +156,6 @@ namespace RemoteCongress.Common.Serialization
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, SignedData data)
         {
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
-
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -157,19 +164,12 @@ namespace RemoteCongress.Common.Serialization
                     $"{GetType()} cannot handle {mediaType}"
                 );
 
-            JArray signature = new JArray();
-
-            foreach(byte signatureByte in data.Signature)
-            {
-                signature.Add(signatureByte);
-            }
-
             JObject jObject = new JObject()
             {
                 ["id"] = data.Id,
                 ["publicKey"] = data.PublicKey,
                 ["blockContent"] = data.BlockContent,
-                ["signature"] = signature,
+                ["signature"] = Convert.ToBase64String(data.Signature),
                 ["mediaType"] = data.MediaType.ToString()
             };
 

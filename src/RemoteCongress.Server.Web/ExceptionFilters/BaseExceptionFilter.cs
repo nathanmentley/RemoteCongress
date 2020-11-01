@@ -19,7 +19,7 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
     
         public override async Task OnExceptionAsync(ExceptionContext context)
         {
-            _Logger.LogTrace(
+            _Logger.LogDebug(
                 "Running {onException} for {type}.",
                 nameof(OnException),
                 GetType()
@@ -27,7 +27,7 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
     
             if (CanHandle(context.Exception))
             {
-                _Logger.LogTrace(
+                _Logger.LogDebug(
                     "Running {logic} for {type}.",
                     nameof(Logic),
                     GetType()
@@ -43,6 +43,12 @@ namespace RemoteCongress.Server.Web.ExceptionFilters
 
         protected virtual Task Logic(ExceptionContext context)
         {
+            _Logger.LogDebug(
+                "Setting status code to {statusCode} in {type}.",
+                nameof(Logic),
+                GetType()
+            );
+    
             context.HttpContext.Response.StatusCode = StatusCode;
     
             return Task.CompletedTask;

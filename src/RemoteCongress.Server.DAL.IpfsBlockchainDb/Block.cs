@@ -87,8 +87,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
                 throw new ArgumentNullException(nameof(previousBlock));
             if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
-            if (mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
 
             LastBlockHash = previousBlock.Hash;
             LastBlockId = previousBlock.Id;

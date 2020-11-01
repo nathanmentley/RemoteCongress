@@ -46,15 +46,22 @@ namespace RemoteCongress.Client
         /// The hostname of the server running the RemoteCongress Api
         /// </param>
         /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="protocol"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="serverHostName"/> is null.
         /// </exception>
         public ClientConfig(string protocol, string serverHostName)
         {
             if (string.IsNullOrWhiteSpace(protocol))
+            {
                 throw new ArgumentNullException(nameof(protocol));
+            }
 
             if (string.IsNullOrWhiteSpace(serverHostName))
+            {
                 throw new ArgumentNullException(nameof(serverHostName));
+            }
 
             Protocol = protocol;
             ServerHostName = serverHostName;

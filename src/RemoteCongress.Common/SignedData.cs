@@ -99,16 +99,19 @@ namespace RemoteCongress.Common
         )
         {
             if(string.IsNullOrWhiteSpace(publicKey))
+            {
                 throw new ArgumentNullException(nameof(publicKey));
+            }
 
             if(string.IsNullOrWhiteSpace(blockContent))
+            {
                 throw new ArgumentNullException(nameof(blockContent));
+            }
 
             if(signature is null)
+            {
                 throw new ArgumentNullException(nameof(signature));
-
-            if(mediaType is null)
-                throw new ArgumentNullException(nameof(mediaType));
+            }
 
             PublicKey = publicKey;
             BlockContent = blockContent;
@@ -136,13 +139,17 @@ namespace RemoteCongress.Common
         public SignedData(ISignedData data)
         {
             if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if (!data.IsValid)
+            {
                 throw new InvalidBlockSignatureException(
                     $"Invalid signature[{data.Signature}] for content[{data.BlockContent}] " +
                         $"using public key[{data.PublicKey}]"
                 );
+            }
 
             PublicKey = data.PublicKey;
             BlockContent = data.BlockContent;
@@ -150,7 +157,9 @@ namespace RemoteCongress.Common
             MediaType = data.MediaType;
 
             if (data is IIdentifiable identifiable)
+            {
                 Id = identifiable.Id;
+            }
         }
 
         /// <summary>

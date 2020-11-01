@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Moq;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
 using RemoteCongress.Common.Serialization;
@@ -33,13 +35,19 @@ FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
         private static readonly ICodec<SignedData> _signedDataCodec =
-            new SignedDataV1JsonCodec();
+            new SignedDataV1JsonCodec(
+                new Mock<ILogger<SignedDataV1JsonCodec>>().Object
+            );
 
         private static readonly ICodec<Bill> _billDataCodec =
-            new BillV1JsonCodec();
+            new BillV1JsonCodec(
+                new Mock<ILogger<BillV1JsonCodec>>().Object
+            );
 
         private static readonly ICodec<Vote> _voteDataCodec =
-            new VoteV1JsonCodec();
+            new VoteV1JsonCodec(
+                new Mock<ILogger<VoteV1JsonCodec>>().Object
+            );
 
         /// <summary>
         /// </summary>

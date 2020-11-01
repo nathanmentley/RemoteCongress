@@ -35,8 +35,19 @@ namespace RemoteCongress.Client
     /// </summary>
     public class EndpointClient<TModel>: IEndpointClient<TModel>
     {
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
         private readonly ILogger<EndpointClient<TModel>> _logger;
+
+        /// <summary>
+        /// A collection of codecs to endode and decode data.
+        /// </summary>
         private readonly IEnumerable<ICodec<TModel>> _codecs;
+
+        /// <summary>
+        /// A repository to interact with data.
+        /// </summary>
         private readonly IImmutableDataRepository<TModel> _repository;
 
         /// <summary>
@@ -71,13 +82,11 @@ namespace RemoteCongress.Client
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(codecs))
                 );
 
             _repository = repository ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(repository))
                 );
         }
@@ -108,6 +117,27 @@ namespace RemoteCongress.Client
             CancellationToken cancellationToken
         )
         {
+            if (string.IsNullOrWhiteSpace(privateKey))
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(privateKey))
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(publicKey))
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(publicKey))
+                );
+            }
+
+            if (data is null)
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data))
+                );
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             ICodec<TModel> codec = GetTModelCodec(GetPreferredMediaType());
@@ -116,6 +146,7 @@ namespace RemoteCongress.Client
                 codec.GetPreferredMediaType(),
                 data
             );
+
             SignedData signedData = new SignedData(
                 publicKey,
                 blockContent,
@@ -142,30 +173,44 @@ namespace RemoteCongress.Client
         /// </returns>
         public async Task<VerifiedData<TModel>> Get(string id, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(id))
+                );
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             return await _repository.Fetch(id, cancellationToken);
         }
 
         /// <summary>
+        /// Gets the primary media type for the client.
         /// </summary>
         /// <returns>
+        /// The primary media type.
         /// </returns>
         private RemoteCongressMediaType GetPreferredMediaType() =>
             _codecs.First().GetPreferredMediaType();
 
         /// <summary>
+        /// Fetches the codec for a media type.
         /// </summary>
         /// <param name="mediaType">
+        /// The media type to find a codec for
         /// </param>
         /// <returns>
-        /// </returns>        
+        /// The codec.
+        /// </returns>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if a codec could not be found for the media type.
+        /// </exception>
         private ICodec<TModel> GetTModelCodec(RemoteCongressMediaType mediaType) =>
             _codecs.FirstOrDefault(
                 codec => codec.CanHandle(mediaType)
             ) ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new UnknownBlockMediaTypeException(
                         $"{mediaType.ToString()} is not supported."
                     )

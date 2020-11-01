@@ -19,7 +19,24 @@
 namespace RemoteCongress.Common.Repositories.Queries
 {
     /// <summary>
-    /// A no-op <see cref="IQuery"/>.
+    /// An <see cref="IQuery"/> to filter on Opinion.
     /// </summary>
-    public class NullQuery: IQuery {}
+    public class OpinionQuery: IQuery
+    {
+        /// <summary>
+        /// The opinion to filter on.
+        /// </summary>
+        public bool Opinion { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="opinion">
+        /// The opinion to filter on.
+        /// </param>
+        public OpinionQuery(bool opinion)
+        {
+            Opinion = opinion;
+        }
+    }
 }

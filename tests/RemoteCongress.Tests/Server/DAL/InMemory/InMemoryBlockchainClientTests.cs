@@ -24,6 +24,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Serialization;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace RemoteCongress.Tests.Server.DAL.InMemory
 {
@@ -33,7 +35,9 @@ namespace RemoteCongress.Tests.Server.DAL.InMemory
         private InMemoryBlockchainClient GetSubject() =>
             new InMemoryBlockchainClient(
                 new [] {
-                    new SignedDataV1JsonCodec()
+                    new SignedDataV1JsonCodec(
+                        new Mock<ILogger<SignedDataV1JsonCodec>>().Object
+                    )
                 }
             );
 

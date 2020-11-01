@@ -54,6 +54,8 @@ namespace RemoteCongress.Server.Web
                 .Get<IpfsBlockchainConfig>();
 
             services
+                .AddLogging()
+
                 .AddSingleton<IpfsBlockchainConfig>(ipfsConfig)
                 .AddSingleton<ICoreApi>(provider => {
                     IpfsBlockchainConfig config = provider.GetRequiredService<IpfsBlockchainConfig>();
@@ -79,6 +81,9 @@ namespace RemoteCongress.Server.Web
 
                 .AddSingleton<IDataClient, InMemoryBlockchainClient>()
 
+                .AddSingleton<IQueryProcessor<Bill>, BillQueryProcessor>()
+                .AddSingleton<IQueryProcessor<Member>, MemberQueryProcessor>()
+                .AddSingleton<IQueryProcessor<Vote>, VoteQueryProcessor>()
                 .AddSingleton<IImmutableDataRepository<Bill>, ImmutableDataRepository<Bill>>()
                 .AddSingleton<IImmutableDataRepository<Member>, ImmutableDataRepository<Member>>()
                 .AddSingleton<IImmutableDataRepository<Vote>, ImmutableDataRepository<Vote>>()

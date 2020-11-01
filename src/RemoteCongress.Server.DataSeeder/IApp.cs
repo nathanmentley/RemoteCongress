@@ -15,11 +15,13 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace RemoteCongress.Common.Repositories.Queries
+namespace RemoteCongress.Server.DataSeeder
 {
-    /// <summary>
-    /// A no-op <see cref="IQuery"/>.
-    /// </summary>
-    public class NullQuery: IQuery {}
+    public interface IApp
+    {
+        Task Run(CancellationToken cancellationToken);
+    }
 }

@@ -61,7 +61,6 @@ namespace RemoteCongress.Server.Web.Controllers.Base
 
             _repository = repository ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(repository))
                 );
         }
@@ -80,9 +79,9 @@ namespace RemoteCongress.Server.Web.Controllers.Base
         {
             Validate(query, cancellationToken);
 
-            _logger.LogTrace(
+            _logger.LogDebug(
                 "{controller}.{endpoint}",
-                nameof(BaseFetchCollectionController<TModel>),
+                GetType(),
                 nameof(Get)
             );
 
@@ -92,10 +91,11 @@ namespace RemoteCongress.Server.Web.Controllers.Base
         private void Validate(IList<IQuery> query, CancellationToken cancellationToken)
         {
             if (query is null)
+            {
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new MissingBodyException()
                 );
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
         }

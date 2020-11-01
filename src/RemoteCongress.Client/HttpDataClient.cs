@@ -42,12 +42,10 @@ namespace RemoteCongress.Client
         private readonly ILogger<HttpDataClient> _logger;
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
+        private readonly ICodec<IQuery> _queryCodec;
         private readonly IEnumerable<ICodec<SignedData>> _codecs;
         private readonly IEnumerable<ICodec<IEnumerable<SignedData>>> _collectionCodecs;
         private readonly string _endpoint;
-
-        private readonly ICodec<IQuery> _queryCodec =
-            new IQueryV1JsonCodec();
 
         /// <summary>
         /// Constructor
@@ -60,6 +58,9 @@ namespace RemoteCongress.Client
         /// </param>
         /// <param name="httpClient">
         /// A <see cref="HttpClient"/> instance to use to communicate with the server.
+        /// </param>
+        /// <param name="queryCodec">
+        /// A <see cref="ICodec{ICodec}"/> instance to use.
         /// </param>
         /// <param name="codecs">
         /// An <see cref="ICodec{TData}"/> for <see cref="SignedData"/>.
@@ -80,6 +81,9 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="httpClient"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="queryCodec"/> is null.
+        /// </excpetion>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="codecs"/> is null.
         /// </excpetion>
         /// <exception cref="ArgumentNullException">
@@ -92,6 +96,7 @@ namespace RemoteCongress.Client
             ILogger<HttpDataClient> logger,
             ClientConfig config,
             HttpClient httpClient,
+            ICodec<IQuery> queryCodec,
             IEnumerable<ICodec<SignedData>> codecs,
             IEnumerable<ICodec<IEnumerable<SignedData>>> collectionCodecs,
             string endpoint
@@ -102,31 +107,31 @@ namespace RemoteCongress.Client
 
             _config = config ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(config))
                 );
 
             _httpClient = httpClient ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(httpClient))
+                );
+
+            _queryCodec = queryCodec ??
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(queryCodec))
                 );
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(codecs))
                 );
 
             _collectionCodecs = collectionCodecs ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(collectionCodecs))
                 );
 
             _endpoint = endpoint ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(endpoint))
                 );
         }
@@ -239,7 +244,6 @@ namespace RemoteCongress.Client
         {
             if (queries is null)
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new ArgumentNullException(nameof(queries))
                 );
 
@@ -279,23 +283,39 @@ namespace RemoteCongress.Client
             }
         }
 
+        /// <summary>
+        /// Fetches the codec for a collection data for a mediatype
+        /// </summary>
+        /// <param name="mediaType">
+        /// The media type to fetch a collection codec for
+        /// </param>
+        /// <returns>
+        /// The codec
+        /// </returns>
         private ICodec<IEnumerable<SignedData>> GetSignedDataCollectionForMediaType(RemoteCongressMediaType mediaType) =>
             _collectionCodecs.FirstOrDefault(
                 codec => codec.CanHandle(mediaType)
             ) ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new UnknownBlockMediaTypeException(
                         $"{mediaType.ToString()} is not supported."
                     )
                 );
 
+        /// <summary>
+        /// Fetches the codec for a mediatype
+        /// </summary>
+        /// <param name="mediaType">
+        /// The media type to fetch a codec for
+        /// </param>
+        /// <returns>
+        /// The codec
+        /// </returns>
         private ICodec<SignedData> GetSignedDataForMediaType(RemoteCongressMediaType mediaType) =>
             _codecs.FirstOrDefault(
                 codec => codec.CanHandle(mediaType)
             ) ??
                 throw _logger.LogException(
-                    LogLevel.Debug,
                     new UnknownBlockMediaTypeException(
                         $"{mediaType.ToString()} is not supported."
                     )

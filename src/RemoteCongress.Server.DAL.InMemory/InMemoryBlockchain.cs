@@ -16,12 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using RemoteCongress.Common;
-using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Server.DAL.Blockchain;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace RemoteCongress.Server.DAL.InMemory
 {
@@ -30,73 +25,40 @@ namespace RemoteCongress.Server.DAL.InMemory
     /// </summary>
     internal class InMemoryBlockchain: BaseBlockchain<InMemoryBlock>
     {
-        private readonly IList<InMemoryBlock> _blocks =
-            new List<InMemoryBlock>()
-            {
-                InMemoryBlock.CreateGenisysBlock()
-            };
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        internal InMemoryBlockchain(): base() {}
 
         /// <summary>
-        /// A <see cref="InMemoryBlockchain"/> is valid if:
-        ///     * Every <see cref="InMemoryBlockchain"/>'s <see cref="InMemoryBlockchain.IsValid"/> is true
-        ///     * Every <see cref="InMemoryBlockchain"/>'s <see cref="InMemoryBlockchain.LastBlockHash"/> matches the
-        ///         previous <see cref="InMemoryBlockchain"/>'s <see cref="InMemoryBlockchain.Hash"/>.
+        /// Creates a genisys block
         /// </summary>
-        public bool IsValid => !_blocks.Any(block => !block.IsValid);
+        /// <returns>
+        /// The genisys block
+        /// </returns>
+        protected override InMemoryBlock GenerateGenisysBlock() =>
+            InMemoryBlock.CreateGenisysBlock();
 
         /// <summary>
-        /// Appends data to the blockchain.
+        /// Creates a new block
         /// </summary>
+        /// <param name="last">
+        /// The previous block
+        /// </param>
         /// <param name="content">
-        /// The raw content to append to the blockchain.
+        /// The content of the block
+        /// </param>
+        /// <param name="mediaType">
+        /// The mediatype of the block content
         /// </param>
         /// <returns>
-        /// The created <see cref="InMemoryBlock"/> that contains <paramref name="content"/>.
+        /// The created block
         /// </returns>
-        internal InMemoryBlock AppendToChain(string content, RemoteCongressMediaType mediaType)
-        {
-            var block = new InMemoryBlock(_blocks.Last(), content, mediaType);
-
-            _blocks.Add(block);
-
-            return block;
-        }
-
-        /// <summary>
-        /// Fetches a <see cref="InMemoryBlock"/> by <paramref name="id"/>.
-        /// </summary>
-        /// <param name="id">
-        /// The unique identifier to look up the <see cref="InMemoryBlock"/> by.
-        /// </param>
-        /// <returns>
-        /// The matching <see cref="InMemoryBlock"/>, or null if it's not found.
-        /// </returns>
-        internal InMemoryBlock FetchFromChain(string id) =>
-            _blocks.FirstOrDefault(block => block.Id.Equals(id));
-
-        #pragma warning disable CS1998
-
-        /// <summary>
-        /// </summary>
-        /// <param name="query">
-        /// </param>
-        /// <param name="cancellationToken">
-        /// </param>
-        /// <returns>
-        /// </returns>
-        internal async IAsyncEnumerable<InMemoryBlock> FetchAllFromChain(
-            IList<IQuery> query,
-            [EnumeratorCancellation] CancellationToken cancellationToken
-        )
-        {
-            foreach(InMemoryBlock block in _blocks.Skip(1))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                yield return block;
-            }
-        }
-
-        #pragma warning restore CS1998
+        protected override InMemoryBlock GenerateBlock(
+            InMemoryBlock last,
+            string content,
+            RemoteCongressMediaType mediaType
+        ) =>
+            new InMemoryBlock(last, content, mediaType);
     }
 }

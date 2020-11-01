@@ -19,8 +19,7 @@
 namespace RemoteCongress.Common.Repositories.Queries
 {
     /// <summary>
+    /// A type to use for filtering.
     /// </summary>
-    public interface IQuery
-    {
-    }
+    public interface IQuery {}
 }

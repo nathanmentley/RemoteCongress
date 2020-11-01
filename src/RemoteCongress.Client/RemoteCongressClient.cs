@@ -27,8 +27,19 @@ namespace RemoteCongress.Client
     /// </summary>
     public class RemoteCongressClient: IRemoteCongressClient
     {
+        /// <summary>
+        /// An <see cref="IEndpointClient{Bill}"/> to interact with <see cref="Bill"/>s.
+        /// </summary>
         private readonly IEndpointClient<Bill> _billClient;
+
+        /// <summary>
+        /// An <see cref="IEndpointClient{Member}"/> to interact with <see cref="Member"/>s.
+        /// </summary>
         private readonly IEndpointClient<Member> _memberClient;
+
+        /// <summary>
+        /// An <see cref="IEndpointClient{Vote}"/> to interact with <see cref="Vote"/>s.
+        /// </summary>
         private readonly IEndpointClient<Vote> _voteClient;
 
         /// <summary>

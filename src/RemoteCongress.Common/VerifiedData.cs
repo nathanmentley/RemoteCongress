@@ -99,7 +99,9 @@ namespace RemoteCongress.Common
         public VerifiedData(string id, ISignedData data, TModel model): this(data, model)
         {
             if(string.IsNullOrWhiteSpace(id))
+            {
                 throw new ArgumentNullException(nameof(id));
+            }
 
             Id = id;
         }
@@ -131,16 +133,22 @@ namespace RemoteCongress.Common
         public VerifiedData(ISignedData data, TModel model)
         {
             if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if(!data.IsValid)
+            {
                 throw new InvalidBlockSignatureException(
                     $"Invalid signature[{data.Signature}] for content[{data.BlockContent}] " +
                         $"using public key[{data.PublicKey}]"
                 );
+            }
 
             if (model is null)
+            {
                 throw new ArgumentNullException(nameof(model));
+            }
 
             PublicKey = data.PublicKey;
             BlockContent = data.BlockContent;
@@ -149,7 +157,9 @@ namespace RemoteCongress.Common
             Data = model;
 
             if (data is IIdentifiable identifiable)
+            {
                 Id = identifiable.Id;
+            }
         }
     }
 }

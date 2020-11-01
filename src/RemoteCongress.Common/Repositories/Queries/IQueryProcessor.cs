@@ -15,35 +15,51 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-using System;
+using System.Collections.Generic;
 
 namespace RemoteCongress.Common.Repositories.Queries
 {
     /// <summary>
-    /// An <see cref="IQuery"/> to filter on Public Key.
+    /// Query processing logic for <see cref="TData"/>.
     /// </summary>
-    public class PublicKeyQuery: IQuery
+    public interface IQueryProcessor<TData>
     {
         /// <summary>
-        /// The Public Key to filter on.
+        /// 
         /// </summary>
-        public string PublicKey { get; }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="publicKey">
-        /// The Public Key to filter on.
+        /// <param name="query">
+        /// 
         /// </param>
-        public PublicKeyQuery(string publicKey)
+        /// <param name="data">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        bool BlockMatchesQuery(IList<IQuery> query, SignedData signedData, TData data);
+        /*
+        private bool BlockMatchesQuery(IList<IQuery> query, TData data)
         {
-            if (string.IsNullOrWhiteSpace(publicKey))
+            bool result = true;
+
+            foreach(IQuery clause in query)
             {
-                throw new ArgumentNullException(nameof(publicKey));
+                result &= clause switch {
+                    PublicKeyQuery publicKey =>
+                        true,
+                    BillIdQuery billIdQuery =>
+                        true,
+                    _ =>
+                        false
+                };
+
+                if (!result)
+                {
+                    break;
+                }
             }
 
-            PublicKey = publicKey;
-        }
+            return result;
+        }*/
     }
 }
