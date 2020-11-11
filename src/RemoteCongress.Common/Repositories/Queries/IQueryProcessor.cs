@@ -36,7 +36,7 @@ namespace RemoteCongress.Common.Repositories.Queries
         /// <returns>
         /// 
         /// </returns>
-        bool BlockMatchesQuery(IList<IQuery> query, SignedData signedData, TData data);
+        bool BlockMatchesQuery(IEnumerable<IQuery> query, SignedData signedData, TData data);
         /*
         private bool BlockMatchesQuery(IList<IQuery> query, TData data)
         {

@@ -39,6 +39,10 @@ namespace RemoteCongress.Client
     /// </summary>
     public class HttpDataClient: IDataClient
     {
+        private readonly static string AcceptHeaderKey = "Accept";
+        private readonly static string ContentTypeHeaderKey = "Content-Type";
+        private readonly static string QueryKey = "query";
+
         private readonly ILogger<HttpDataClient> _logger;
         private readonly ClientConfig _config;
         private readonly HttpClient _httpClient;
@@ -161,7 +165,7 @@ namespace RemoteCongress.Client
             using StreamContent streamContent = new StreamContent(jsonStream)
             {
                 Headers = {
-                    { "Content-Type", jsonCodec.GetPreferredMediaType().ToString() }
+                    { ContentTypeHeaderKey, jsonCodec.GetPreferredMediaType().ToString() }
                 }
             };
 
@@ -174,7 +178,7 @@ namespace RemoteCongress.Client
             )
             {
                 Headers = {
-                    { "Accept", jsonCodec.GetPreferredMediaType().ToString() }
+                    { AcceptHeaderKey, jsonCodec.GetPreferredMediaType().ToString() }
                 },
                 Content = streamContent
             };
@@ -215,7 +219,7 @@ namespace RemoteCongress.Client
             )
             {
                 Headers = {
-                    { "Accept", codec.GetPreferredMediaType().ToString() }
+                    { AcceptHeaderKey, codec.GetPreferredMediaType().ToString() }
                 }
             };
 
@@ -261,7 +265,7 @@ namespace RemoteCongress.Client
                     _queryCodec.GetPreferredMediaType(),
                     query
                 );
-                url.SetQueryParam("query", queryData);
+                url.SetQueryParam(QueryKey, queryData);
             }
 
             using HttpRequestMessage request = new HttpRequestMessage(
@@ -270,7 +274,7 @@ namespace RemoteCongress.Client
             )
             {
                 Headers = {
-                    { "Accept", codec.GetPreferredMediaType().ToString() }
+                    { AcceptHeaderKey, codec.GetPreferredMediaType().ToString() }
                 }
             };
 

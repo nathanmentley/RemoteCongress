@@ -15,8 +15,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
+using RemoteCongress.Common.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RemoteCongress.Common.Repositories.Queries
 {
@@ -25,6 +28,23 @@ namespace RemoteCongress.Common.Repositories.Queries
     /// </summary>
     public class BillQueryProcessor: IQueryProcessor<Bill>
     {
+        private readonly ILogger<BillQueryProcessor> _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> to use for logging.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        public BillQueryProcessor(ILogger<BillQueryProcessor> logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -40,32 +60,64 @@ namespace RemoteCongress.Common.Repositories.Queries
         /// <returns>
         /// 
         /// </returns>
-        public bool BlockMatchesQuery(IList<IQuery> query, SignedData signedData, Bill data)
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="query"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="signedData"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        public bool BlockMatchesQuery(IEnumerable<IQuery> query, SignedData signedData, Bill data)
         {
-            bool result = true;
-
-            foreach(IQuery clause in query)
+            if (query is null)
             {
-                result &= clause switch {
-                    NullQuery _ =>
-                        true,
-                    PublicKeyQuery publicKey =>
-                        string.Equals(publicKey.PublicKey, signedData.PublicKey, StringComparison.Ordinal),
-                    BillIdQuery billIdQuery =>
-                        string.Equals(billIdQuery.BillId, billIdQuery.BillId, StringComparison.OrdinalIgnoreCase),
-                    OpinionQuery _ =>
-                        false,
-                    _ =>
-                        false
-                };
-
-                if (!result)
-                {
-                    break;
-                }
+                throw _logger.LogException(new ArgumentNullException(nameof(query)));
             }
 
-            return result;
+            if (signedData is null)
+            {
+                throw _logger.LogException(new ArgumentNullException(nameof(signedData)));
+            }
+
+            if (data is null)
+            {
+                throw _logger.LogException(new ArgumentNullException(nameof(data)));
+            }
+
+            return !query.Any(clause => !BlockMatchesQuery(clause, signedData, data));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query">
+        /// 
+        /// </param>
+        /// <param name="signedData">
+        /// 
+        /// </param>
+        /// <param name="data">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        private static bool BlockMatchesQuery(IQuery query, SignedData signedData, Bill data) =>
+            query switch {
+                null =>
+                    true,
+                NullQuery _ =>
+                    true,
+                PublicKeyQuery publicKey =>
+                    string.Equals(publicKey.PublicKey, signedData.PublicKey, StringComparison.Ordinal),
+                BillIdQuery billIdQuery =>
+                    string.Equals(billIdQuery.BillId, signedData.Id, StringComparison.OrdinalIgnoreCase),
+                OpinionQuery _ =>
+                    false,
+                _ =>
+                    false
+            };
     }
 }

@@ -80,7 +80,10 @@ namespace RemoteCongress.Server.DAL.Blockchain
         {
             TBlock block = GenerateBlock(_blocks.Last(), content, mediaType);
 
-            _blocks.Add(block);
+            lock(_blocks)
+            {
+                _blocks.Add(block);
+            }
 
             return block;
         }

@@ -145,6 +145,49 @@ Right now there isn't much documentation outside of code, but for an example you
 You can also view the library source code in:
     src/RemoteCongress.Client/
 
+### Loading Real Data
+
+There is a DataSeeder project. It's currently setup to seed data from the current us senate session.
+
+It'll generate a key pair for each senator, seed member blocks that define that in the block chain. Those keys will then be used to seed blocks for each bill, and blocks for each vote cast by each senator.
+
+Each vote will be signed with the key for the respective senator who cast the vote.
+
+### Querying Data
+
+There are endpoints for members, bills, and votes
+
+    /member
+
+    /bill
+
+    /vote
+
+You can fetch a single member, bill, or vote by passing an id when making a GET request.
+
+    /{endpoint}/{id}
+
+You can also request a collection of members, bills, or votes by making a GET request by not passing an ID.
+
+You can also query that data by passing a query parameter. For example, to fetch all yes votes for a specific bill you could make a GET request to:
+
+    localhost:8000/vote?query={'_type': 'billId', 'billId': '9843575c-accf-4f3a-b0a3-ca08ec2193ee'}&query={'_type': 'opinion', 'opinion': true}
+
+Finally, You to get data back the server requires you to pass in a valid mediatype in the accept header.
+
+If you're fetching a single block you should pass a media type like one of these:
+
+    application/json; structure=remotecongress.signeddata; version=1
+
+    application/avro; structure=remotecongress.signeddata; version=1
+
+If you're fetching a collection you'll want to use a media type like this:
+
+    application/json; structure=remotecongress.signeddatacollection; version=1
+
+
+
+
 ## Next Steps
 
 This is a proof of concept, and the code is not production ready, and isn't suitable to be used a core of a more built out system in it's current state.

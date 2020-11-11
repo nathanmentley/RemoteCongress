@@ -15,9 +15,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
+using RemoteCongress.Common.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace RemoteCongress.Common.Repositories.Queries
 {
@@ -26,6 +28,23 @@ namespace RemoteCongress.Common.Repositories.Queries
     /// </summary>
     public class VoteQueryProcessor: IQueryProcessor<Vote>
     {
+        private readonly ILogger<VoteQueryProcessor> _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> to use for logging.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        public VoteQueryProcessor(ILogger<VoteQueryProcessor> logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -41,30 +60,64 @@ namespace RemoteCongress.Common.Repositories.Queries
         /// <returns>
         /// 
         /// </returns>
-        public bool BlockMatchesQuery(IList<IQuery> query, SignedData signedData, Vote data)
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="query"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="signedData"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        public bool BlockMatchesQuery(IEnumerable<IQuery> query, SignedData signedData, Vote data)
         {
-            foreach(IQuery clause in query)
+            if (query is null)
             {
-                bool result = clause switch {
-                    NullQuery _ =>
-                        true,
-                    PublicKeyQuery publicKey =>
-                        string.Equals(publicKey.PublicKey, signedData.PublicKey, StringComparison.Ordinal),
-                    BillIdQuery billIdQuery =>
-                        string.Equals(billIdQuery.BillId, data.BillId, StringComparison.OrdinalIgnoreCase),
-                    OpinionQuery opinionQuery =>
-                        data.Opinion == opinionQuery.Opinion,
-                    _ =>
-                        false
-                };
-
-                if (!result)
-                {
-                    return false;
-                }
+                throw _logger.LogException(new ArgumentNullException(nameof(query)));
             }
 
-            return true;
+            if (signedData is null)
+            {
+                throw _logger.LogException(new ArgumentNullException(nameof(signedData)));
+            }
+
+            if (data is null)
+            {
+                throw _logger.LogException(new ArgumentNullException(nameof(data)));
+            }
+
+            return !query.Any(clause => !BlockMatchesQuery(clause, signedData, data));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query">
+        /// 
+        /// </param>
+        /// <param name="signedData">
+        /// 
+        /// </param>
+        /// <param name="data">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        private static bool BlockMatchesQuery(IQuery query, SignedData signedData, Vote data) =>
+            query switch {
+                null =>
+                    true,
+                NullQuery _ =>
+                    true,
+                PublicKeyQuery publicKey =>
+                    string.Equals(publicKey.PublicKey, signedData.PublicKey, StringComparison.Ordinal),
+                BillIdQuery billIdQuery =>
+                    string.Equals(billIdQuery.BillId, data.BillId, StringComparison.OrdinalIgnoreCase),
+                OpinionQuery opinionQuery =>
+                    data.Opinion == opinionQuery.Opinion,
+                _ =>
+                    false
+            };
     }
 }

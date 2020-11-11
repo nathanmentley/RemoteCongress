@@ -18,7 +18,9 @@
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Client;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,16 +46,32 @@ namespace RemoteCongress.Server.DataSeeder
                 throw new ArgumentNullException(nameof(logger));
 
             if (string.IsNullOrWhiteSpace(adminPrivateKey))
-                throw new ArgumentNullException(nameof(adminPrivateKey));
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(adminPrivateKey))
+                );
+            }
 
             if (string.IsNullOrWhiteSpace(adminPublicKey))
-                throw new ArgumentNullException(nameof(adminPublicKey));
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(adminPublicKey))
+                );
+            }
 
             if (client is null)
-                throw new ArgumentNullException(nameof(client));
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(client))
+                );
+            }
 
             if (dataSeeder is null)
-                throw new ArgumentNullException(nameof(dataSeeder));
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(dataSeeder))
+                );
+            }
 
             _adminPrivateKey = adminPrivateKey;
             _adminPublicKey = adminPublicKey;
@@ -64,6 +82,7 @@ namespace RemoteCongress.Server.DataSeeder
         public async Task Run(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
 
             await foreach(Member member in _dataSeeder.GetMembers(cancellationToken))
             {
@@ -83,6 +102,7 @@ namespace RemoteCongress.Server.DataSeeder
                 );
             }
 
+            IList<Task> tasks = new List<Task>();
             await foreach((Bill bill, string id) in _dataSeeder.GetBills(cancellationToken))
             {
                 _logger.LogDebug(
@@ -90,8 +110,17 @@ namespace RemoteCongress.Server.DataSeeder
                     bill.Title
                 );
 
-                await SeedBill(bill, id, cancellationToken);
+                //await SeedBill(bill, id, cancellationToken);
+                tasks.Add(SeedBill(bill, id, cancellationToken));
+
+                if(tasks.Count >= 5)
+                {
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+                }
             }
+
+            await Task.WhenAll(tasks);
         }
 
         private async Task SeedBill(Bill bill, string id, CancellationToken cancellationToken)
@@ -103,6 +132,7 @@ namespace RemoteCongress.Server.DataSeeder
                 cancellationToken
             );
 
+            IList<Task> tasks = new List<Task>();
             await foreach(
                 (Vote vote, string memberPrivateKey, string memberPublicKey) in
                     _dataSeeder.GetVotes(id, billData, cancellationToken))
@@ -112,13 +142,22 @@ namespace RemoteCongress.Server.DataSeeder
                     vote.BillId
                 );
 
-                await _client.CreateVote(
-                    memberPrivateKey,
-                    memberPublicKey,
-                    vote,
-                    cancellationToken
+                tasks.Add(
+                    _client.CreateVote(
+                        memberPrivateKey,
+                        memberPublicKey,
+                        vote,
+                        cancellationToken
+                    )
                 );
+
+                if(tasks.Count >= 25)
+                {
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+                }
             }
+            await Task.WhenAll(tasks);
         }
     }
 }

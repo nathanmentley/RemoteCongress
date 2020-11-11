@@ -62,7 +62,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                 _mockLogger.Object,
                 _mockClient.Object,
                 _codecs,
-                new BillQueryProcessor()
+                new BillQueryProcessor(new Mock<ILogger<BillQueryProcessor>>().Object)
             );
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                     null,
                     _mockClient.Object,
                     _codecs,
-                    new BillQueryProcessor()
+                    new BillQueryProcessor(new Mock<ILogger<BillQueryProcessor>>().Object)
                 );
 
             //act
@@ -95,7 +95,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                     _mockLogger.Object,
                     null,
                     _codecs,
-                    new BillQueryProcessor()
+                    new BillQueryProcessor(new Mock<ILogger<BillQueryProcessor>>().Object)
                 );
 
             //act
@@ -116,7 +116,7 @@ namespace RemoteCongress.Tests.Common.Repositories
                     _mockLogger.Object,
                     _mockClient.Object,
                     null,
-                    new BillQueryProcessor()
+                    new BillQueryProcessor(new Mock<ILogger<BillQueryProcessor>>().Object)
                 );
 
             //act
