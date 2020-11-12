@@ -4,11 +4,14 @@ A proof of concept platform for conducting small scale public voting remotely an
 
 ## Goal
 
-This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes.
+This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes. More recently State congresses have started cancelling sessions instead of using technology to remain agile and active. 
 
-We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no excuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time.
+We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no excuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time, or worse not having it's government functioning at all.
 
 This project aims to build a simple proof of concept system that shows a working functional and safe system for holding remote votes. Ultimately this proof of concept will hopefully start conversation on how we modernize our government's ability to function at the most critical times.
+
+*Warning* This isn't production ready code. The system is doing loads of math way too often and things are slow.
+It needs a good refactoring to only verify data before appending to the blockchain server side, and client side to only verify data when it's returned. It's currently verifying block signatures basically everywhere. It's making my poor macbook cry when loading data.
 
 ## Current Status
 
@@ -145,15 +148,9 @@ Right now there isn't much documentation outside of code, but for an example you
 You can also view the library source code in:
     src/RemoteCongress.Client/
 
-### Loading Real Data
-
-There is a DataSeeder project. It's currently setup to seed data from the current us senate session.
-
-It'll generate a key pair for each senator, seed member blocks that define that in the block chain. Those keys will then be used to seed blocks for each bill, and blocks for each vote cast by each senator.
-
-Each vote will be signed with the key for the respective senator who cast the vote.
-
 ### Querying Data
+
+If you'd prefer to query data using http instead of using the C# client you should be able to hit the server directly and fetch back either json or avro.
 
 There are endpoints for members, bills, and votes
 
@@ -184,11 +181,6 @@ If you're fetching a single block you should pass a media type like one of these
 If you're fetching a collection you'll want to use a media type like this:
 
     application/json; structure=remotecongress.signeddatacollection; version=1
-
-
-
-*Warning* This isn't production ready code. The system is doing loads of math way too often and things are slow.
-It needs a good refactoring to only verify data before appending to the chain server side, and only verify data when it's returned to the client.
 
 
 ## Next Steps
