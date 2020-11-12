@@ -102,8 +102,8 @@ namespace RemoteCongress.Server.DataSeeder
                 yield return (
                     new Bill()
                     {
-                        Title = voteData.Element("vote_number").Value,
-                        Content = voteData.Element("vote_number").Value
+                        Title = voteData.Element("vote_question_text").Value,
+                        Content = voteData.Element("vote_document_text").Value
                     },
                     voteData.Element("vote_number").Value.PadLeft(5, '0')
                 );
@@ -143,7 +143,9 @@ namespace RemoteCongress.Server.DataSeeder
                     bool? opinion = voteCast switch
                     {
                         "Yea" => true,
+                        "Guilty" => true,
                         "Nay" => false,
+                        "Not Guilty" => false,
                         _ => null
                     };
                     string message = $"{memberFull} voted {voteCast}";

@@ -4,14 +4,14 @@ A proof of concept platform for conducting small scale public voting remotely an
 
 ## Goal
 
-This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes. More recently State congresses have started cancelling sessions. 
+This project was started as a result of the covid19 pandemic and the United States Congress' inability to hold remote votes. More recently State congresses have started cancelling sessions ultimately making them unable to quickly respond to the quickly changing world caused by covid19. 
 
-We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no excuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time, or worse not having it's government functioning at all. This is a point we need government to remain agile and functional.
+We have proven technology that'll allow public voting to be held remotely in a safe and transparent way. There is no reason for state and federal congresses to be meeting in person during a pandemic, or worse cancelling sessions. This is a point we need government to remain agile and functional.
 
-This project aims to build a simple proof of concept system that shows a working functional and safe system for holding remote votes. Ultimately this proof of concept will hopefully start conversation on how we modernize our government's ability to function at the most critical times.
+This project aims to build a simple proof of concept system that shows a working functional and safe system for holding remote votes. Hopefully, this proof of concept will start a conversation on how we can modernize our government to ensure it can function at the most critical times.
 
-*Warning* This isn't production ready code. The system is doing loads of math way too often and things are slow.
-It needs a good refactoring to only verify data before appending to the blockchain server side, and client side to only verify data when it's returned. It's currently verifying block signatures basically everywhere. It's making my poor macbook cry when loading data.
+**Warning** - This isn't production ready code. The system is doing loads of math way too often and things are slow.
+It needs a bit of refactoring to only verify data before appending to the blockchain server side, and client side to only verify data when it's returned. It's currently verifying data at virtual every layer on ingress and egress. Only a fraction of the redundant verification checks are needed.
 
 ## Current Status
 
@@ -19,11 +19,13 @@ Currently, this is a technical proof of concept that allows individuals to:
 * Produce signed and immutable data (bills and votes on bills).
 * Send that data to a server where it'll remained signed, get verified, and remain in an immutable state.
 * Have that data persisted in an immutable and decentralized storage system so it can't be lost or tampered with.
-* Pull any stored bills or votes, and ensure they're valid, and not tampered with.
+* retrieve any stored bills or votes, and ensure they're valid, and not tampered with.
 
 With this proof of concept we're able to show a system that'll allow representatives who cast votes publicly to do so remotely, and that anyone is able to verify the cast votes, and ensure they aren't tampered with.
 
-This system currently doesn't have a graphical interface. Currently to interact with it you must either use cli tools, write some code, or hit an http server. While a graphical interface would be useful it seems less critical than showing a working system.
+This system doesn't have a graphical interface. Currently to interact with it you must either use cli tools, write some code, or hit an http server.
+
+While a graphical interface would be useful it seems less critical than showing a working system. However, if there is demand it shouldn't be too difficult to create one.
 
 ## Design
 
@@ -63,9 +65,9 @@ Using a terminal:
 
 3. Build and spin up the RemoteCongress server:
 
-    docker-compose up -d
+    docker-compose up
 
-4. Run the example app to run some test data through the system.
+4. In another terminal window run the example app to run some test data through the system.
 
     docker run --entrypoint /app/RemoteCongress.Example --net=host remote-congress/api
 
@@ -137,12 +139,6 @@ You should see an output that looks something like this:
       "opinion": true
     }
 
-That shows a bill was submitted with the title: "title", and the content: "content".
-After submission that vote was fetched from the platform and was verified.
-
-Then then a yes vote was cast on the bill with a message of "message".
-After that vote was cast it was fetched from the platform and was verified.
-
 ### Data Seeder
 
 There is a data seeder tool that can be used to load real senate voting data from the second session of the 116th congress.
@@ -157,9 +153,9 @@ Running from a docker container
 
     docker run --entrypoint /app/RemoteCongress.Server.DataSeeder --net=host remote-congress/api
 
-The data seeder will parse included xml files to generate public private key pairs for each senator, then it'll post bill and vote data using the RemoteCongress.Client library.
+The data seeder will parse included xml files to generate public private key pairs for each senator, then it'll submit signed bill and vote data using the RemoteCongress.Client library.
 
-Once run you should be able to use the api to search through votes and bills. All the persisted data is immutable, signed and verified. The data you receive back from the api is signed and can be verified with the packaged hash, and public key.
+Once run you should be able to use the api to search through votes and bills. All the persisted data is immutable, signed and verified. The data you receive back from the api is signed and can be verified with the packaged encrypted hash, and public key.
 
 ### Using a cli interface to interact with the platform
 
@@ -185,7 +181,7 @@ Viewing a vote:
 
     dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj view-vote --id QmPnfkTnEYxVotRHtCLS4g3q4otAmAYKvtbtKbWZ34brXF
 
-### Using RemoteCongress.Client to programmically interact with the platform
+### Using RemoteCongress.Client library to programmically interact with the platform
 
 You can use the client assembly project to build tools in any dotnet language to fetch and create votes using this platform using code.
 
