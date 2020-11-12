@@ -187,6 +187,9 @@ If you're fetching a collection you'll want to use a media type like this:
 
 
 
+*Warning* This isn't production ready code. The system is doing loads of math way too often and things are slow.
+It needs a good refactoring to only verify data before appending to the chain server side, and only verify data when it's returned to the client.
+
 
 ## Next Steps
 

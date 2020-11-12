@@ -56,7 +56,7 @@ namespace RemoteCongress.Common.Serialization
             new RemoteCongressMediaType(
                 "application",
                 "avro",
-                "remotecongress.signeddata.bill",
+                "remotecongress.content.bill",
                 1
             );
 

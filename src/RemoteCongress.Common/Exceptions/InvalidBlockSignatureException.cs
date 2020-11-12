@@ -21,15 +21,21 @@ using System.Diagnostics.CodeAnalysis;
 namespace RemoteCongress.Common.Exceptions
 {
     /// <summary>
+    /// <param>
     /// An <see cref="Exception"/> to throw when a <see cref="ISignedData"/>'s <see cref="ISignedData.Signature"/> isn't
     ///     valid for it's <see cref="ISignedData.PublicKey"/> and <see cref="ISignedData.BlockContent"/>.
-    ///
+    /// </param>
+    /// <param>
     /// This indicates that either:
-    ///     * The block was tampered with.
-    ///     * Is being sent by someone claming to be someone else.
-    ///     * Was corrupted over the network.
-    /// 
-    /// In any case this is an exception, because our system only operates on immutabe, valid, and signed data.
+    /// <list>
+    ///     <item>The block was tampered with.</item>
+    ///     <item>Is being sent by someone claming to be someone else.</item>
+    ///     <item>Was corrupted over the network.</item>
+    /// </list>
+    /// </param>
+    /// <param>
+    /// In any case this is an exception, because our system only operates on immutable, valid, and signed data.
+    /// </param>
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class InvalidBlockSignatureException: Exception

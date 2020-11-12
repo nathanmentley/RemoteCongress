@@ -25,41 +25,23 @@ namespace RemoteCongress.Common.Repositories.Queries
     public interface IQueryProcessor<TData>
     {
         /// <summary>
-        /// 
+        /// Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches everything defined <paramref name="query"/>.
         /// </summary>
         /// <param name="query">
-        /// 
+        /// A collection of <see cref="IQuery"/>s to filter on.
+        /// </param>
+        /// <param name="signedData">
+        /// The <see cref="SignedData"/> to test against <paramref name="query"/> against.
         /// </param>
         /// <param name="data">
-        /// 
+        /// The <typeparamref name="TData"/> to test against <paramref name="query"/> against.
         /// </param>
         /// <returns>
-        /// 
+        /// <list>
+        ///     <item>true, if the block matches everything in <paramref name="query"/>.</item>
+        ///     <item>false, if the block does not matches everything in <paramref name="query"/>.</item>
+        /// </list>
         /// </returns>
         bool BlockMatchesQuery(IEnumerable<IQuery> query, SignedData signedData, TData data);
-        /*
-        private bool BlockMatchesQuery(IList<IQuery> query, TData data)
-        {
-            bool result = true;
-
-            foreach(IQuery clause in query)
-            {
-                result &= clause switch {
-                    PublicKeyQuery publicKey =>
-                        true,
-                    BillIdQuery billIdQuery =>
-                        true,
-                    _ =>
-                        false
-                };
-
-                if (!result)
-                {
-                    break;
-                }
-            }
-
-            return result;
-        }*/
     }
 }

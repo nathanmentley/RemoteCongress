@@ -70,8 +70,8 @@ kwMRyHisc6diIMoNAgMBAAE=";
         private static ServiceProvider GetServiceProvider(ClientConfig config) =>
             new ServiceCollection()
                 .AddSingleton<IKeyGenerator, KeyGenerator>()
-                .AddSingleton<IDataSeeder>(provider => 
-                    new SenateDataSeeder(
+                .AddSingleton<IDataProvider>(provider => 
+                    new SenateDataProvider(
                         provider.GetRequiredService<IKeyGenerator>(),
                         Congress,
                         Session
@@ -83,7 +83,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
                         AdminPrivateKey,
                         AdminPublicKey,
                         provider.GetRequiredService<IRemoteCongressClient>(),
-                        provider.GetRequiredService<IDataSeeder>()
+                        provider.GetRequiredService<IDataProvider>()
                     )
                 )
                 .AddRemoteCongressClient(config)

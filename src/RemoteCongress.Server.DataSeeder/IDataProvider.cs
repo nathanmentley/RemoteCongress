@@ -21,7 +21,10 @@ using System.Threading;
 
 namespace RemoteCongress.Server.DataSeeder
 {
-    public interface IDataSeeder
+    /// <summary>
+    /// An interface that defines a type that's able to provide data for seeding
+    /// </summary>
+    public interface IDataProvider
     {
         IAsyncEnumerable<Member> GetMembers(CancellationToken cancellationToken);
 

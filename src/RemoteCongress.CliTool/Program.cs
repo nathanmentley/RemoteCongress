@@ -28,6 +28,11 @@ using System.Threading.Tasks;
 
 namespace RemoteCongress.CliTool
 {
+    //TODO: This whole class is garbage.
+    //  Refactor.
+    //  Replace the key parsing hacks with something cleaner.
+    //  Cleanup. There is a ~160 line method. That shouldn't ever happen.
+    //  Document.
     class Program
     {
         public static async Task<int> Main(string[] args)

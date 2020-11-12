@@ -25,7 +25,7 @@ using System.Xml.Linq;
 
 namespace RemoteCongress.Server.DataSeeder
 {
-    public class SenateDataSeeder: IDataSeeder
+    public class SenateDataProvider: IDataProvider
     {
         private readonly IDictionary<string, (string, string)> _keys =
             new Dictionary<string, (string, string)>();
@@ -34,7 +34,7 @@ namespace RemoteCongress.Server.DataSeeder
         private readonly int _congress;
         private readonly int _session;
 
-        public SenateDataSeeder(
+        public SenateDataProvider(
             IKeyGenerator keyGenerator,
             int congress,
             int session

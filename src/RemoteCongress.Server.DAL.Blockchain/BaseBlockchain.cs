@@ -24,9 +24,10 @@ namespace RemoteCongress.Server.DAL.Blockchain
 
         /// <summary>
         /// A <see cref="TBlockchain"/> is valid if:
-        ///     * Every <see cref="TBlockchain"/>'s <see cref="TBlockchain.IsValid"/> is true
-        ///     * Every <see cref="TBlockchain"/>'s <see cref="TBlockchain.LastBlockHash"/> matches the
-        ///         previous <see cref="TBlockchain"/>'s <see cref="TBlockchain.Hash"/>.
+        /// <list>
+        ///     <item>Every <see cref="TBlockchain"/>'s <see cref="TBlockchain.IsValid"/> is true</item>
+        ///     <item>Every <see cref="TBlockchain"/>'s <see cref="TBlockchain.LastBlockHash"/> matches the previous <see cref="TBlockchain"/>'s <see cref="TBlockchain.Hash"/>.</item>
+        /// </list>
         /// </summary>
         public bool IsValid => !_blocks.Any(block => !block.IsValid);
 
@@ -100,8 +101,6 @@ namespace RemoteCongress.Server.DAL.Blockchain
         public TBlock FetchFromChain(string id) =>
             _blocks.FirstOrDefault(block => block.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
-        #pragma warning disable CS1998
-
         /// <summary>
         /// Fetches all matching blocks from the chain
         /// </summary>
@@ -114,6 +113,7 @@ namespace RemoteCongress.Server.DAL.Blockchain
         /// <returns>
         /// The matching blocks from the chain
         /// </returns>
+        #pragma warning disable CS1998 //We want this to be an async method in the interface, but it's not here.
         public async IAsyncEnumerable<TBlock> FetchAllFromChain(
             IList<IQuery> query,
             [EnumeratorCancellation] CancellationToken cancellationToken
@@ -126,7 +126,6 @@ namespace RemoteCongress.Server.DAL.Blockchain
                 yield return block;
             }
         }
-
         #pragma warning restore CS1998
     }
 }

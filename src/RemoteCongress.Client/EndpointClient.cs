@@ -21,6 +21,7 @@ using RemoteCongress.Common.Encryption;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
+using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
@@ -71,6 +72,9 @@ namespace RemoteCongress.Client
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="repository"/> is null.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <paramref name="codecs"/> contains zero <see cref="ICodec{TModel}"/>s.
+        /// </exception>
         public EndpointClient(
             ILogger<EndpointClient<TModel>> logger,
             IEnumerable<ICodec<TModel>> codecs,
@@ -89,6 +93,16 @@ namespace RemoteCongress.Client
                 throw _logger.LogException(
                     new ArgumentNullException(nameof(repository))
                 );
+
+            if (_codecs.Count() < 1)
+            {
+                throw _logger.LogException(
+                    new ArgumentException(
+                        $"{nameof(codecs)} must contain atleast one {nameof(ICodec<TModel>)}.",
+                        nameof(codecs)
+                    )
+                );
+            }
         }
 
         /// <summary>
@@ -110,6 +124,18 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="TModel"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="privateKey"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="publicKey"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="data"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is null.
+        /// </exception>
         public async Task<VerifiedData<TModel>> Create(
             string privateKey,
             string publicKey,
@@ -171,7 +197,13 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="TModel"/>.
         /// </returns>
-        public async Task<VerifiedData<TModel>> Get(string id, CancellationToken cancellationToken)
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="id"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is null.
+        /// </exception>
+        public Task<VerifiedData<TModel>> Get(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -182,7 +214,42 @@ namespace RemoteCongress.Client
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _repository.Fetch(id, cancellationToken);
+            return _repository.Fetch(id, cancellationToken);
+        }
+
+        /// <summary>
+        /// Fetches a collection of signed, and verified <see cref="TModel"/>s by <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// A collection of <see cref="IQuery"/>s to filter <see cref="TModel"/> by.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// A collection of persisted <see cref="TModel"/> that matches <paramref name="query"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="query"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is null.
+        /// </exception>
+        public IAsyncEnumerable<VerifiedData<TModel>> Get(
+            IList<IQuery> query,
+            CancellationToken cancellationToken
+        )
+        {
+            if (query is null)
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(query))
+                );
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return _repository.Fetch(query, cancellationToken);
         }
 
         /// <summary>

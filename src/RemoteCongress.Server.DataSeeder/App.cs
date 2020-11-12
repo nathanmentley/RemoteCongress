@@ -31,7 +31,7 @@ namespace RemoteCongress.Server.DataSeeder
         private readonly string _adminPrivateKey;
         private readonly string _adminPublicKey;
         private readonly IRemoteCongressClient _client;
-        private readonly IDataSeeder _dataSeeder;
+        private readonly IDataProvider _dataProvider;
         private readonly ILogger<App> _logger;
 
         public App(
@@ -39,7 +39,7 @@ namespace RemoteCongress.Server.DataSeeder
             string adminPrivateKey,
             string adminPublicKey,
             IRemoteCongressClient client,
-            IDataSeeder dataSeeder
+            IDataProvider dataProvider
         )
         {
             _logger = logger ??
@@ -66,17 +66,17 @@ namespace RemoteCongress.Server.DataSeeder
                 );
             }
 
-            if (dataSeeder is null)
+            if (dataProvider is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(dataSeeder))
+                    new ArgumentNullException(nameof(dataProvider))
                 );
             }
 
             _adminPrivateKey = adminPrivateKey;
             _adminPublicKey = adminPublicKey;
             _client = client;
-            _dataSeeder = dataSeeder;
+            _dataProvider = dataProvider;
         }
 
         public async Task Run(CancellationToken cancellationToken)
@@ -84,7 +84,7 @@ namespace RemoteCongress.Server.DataSeeder
             cancellationToken.ThrowIfCancellationRequested();
 
 
-            await foreach(Member member in _dataSeeder.GetMembers(cancellationToken))
+            await foreach(Member member in _dataProvider.GetMembers(cancellationToken))
             {
                 _logger.LogDebug(
                     "Creating Member: {firstName} {lastName} ({party}) - {seat}",
@@ -103,7 +103,7 @@ namespace RemoteCongress.Server.DataSeeder
             }
 
             IList<Task> tasks = new List<Task>();
-            await foreach((Bill bill, string id) in _dataSeeder.GetBills(cancellationToken))
+            await foreach((Bill bill, string id) in _dataProvider.GetBills(cancellationToken))
             {
                 _logger.LogDebug(
                     "Creating bill: {title}",
@@ -135,7 +135,7 @@ namespace RemoteCongress.Server.DataSeeder
             IList<Task> tasks = new List<Task>();
             await foreach(
                 (Vote vote, string memberPrivateKey, string memberPublicKey) in
-                    _dataSeeder.GetVotes(id, billData, cancellationToken))
+                    _dataProvider.GetVotes(id, billData, cancellationToken))
             {
                 _logger.LogDebug(
                     "Creating vote for bill: {billId}",

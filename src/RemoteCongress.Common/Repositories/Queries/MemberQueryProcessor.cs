@@ -46,19 +46,22 @@ namespace RemoteCongress.Common.Repositories.Queries
         }
 
         /// <summary>
-        /// 
+        /// Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches everything defined <paramref name="query"/>.
         /// </summary>
         /// <param name="query">
-        /// 
+        /// A collection of <see cref="IQuery"/>s to filter on.
         /// </param>
         /// <param name="signedData">
-        /// 
+        /// The <see cref="SignedData"/> to test against <paramref name="query"/> against.
         /// </param>
         /// <param name="data">
-        /// 
+        /// The <see cref="Member"/> to test against <paramref name="query"/> against.
         /// </param>
         /// <returns>
-        /// 
+        /// <list>
+        ///     <item>true, if the block matches everything in <paramref name="query"/>.</item>
+        ///     <item>false, if the block does not matches everything in <paramref name="query"/>.</item>
+        /// </list>
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="query"/> is null.
@@ -90,19 +93,22 @@ namespace RemoteCongress.Common.Repositories.Queries
         }
 
         /// <summary>
-        /// 
+        /// Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches <paramref name="query"/>.
         /// </summary>
         /// <param name="query">
-        /// 
+        /// An <see cref="IQuery"/> to filter on.
         /// </param>
         /// <param name="signedData">
-        /// 
+        /// The <see cref="SignedData"/> to test against <paramref name="query"/> against.
         /// </param>
         /// <param name="data">
-        /// 
+        /// The <see cref="Member"/> to test against <paramref name="query"/> against.
         /// </param>
         /// <returns>
-        /// 
+        /// <list>
+        ///     <item>true, if the block matches <paramref name="query"/>.</item>
+        ///     <item>false, if the block does not matches <paramref name="query"/>.</item>
+        /// </list>
         /// </returns>
         private static bool BlockMatchesQuery(IQuery query, SignedData signedData, Member data) =>
             query switch {

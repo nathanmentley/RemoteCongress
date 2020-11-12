@@ -56,7 +56,7 @@ namespace RemoteCongress.Common.Serialization
             new RemoteCongressMediaType(
                 "application",
                 "json",
-                "remotecongress.signeddata.vote",
+                "remotecongress.content.vote",
                 1
             );
 

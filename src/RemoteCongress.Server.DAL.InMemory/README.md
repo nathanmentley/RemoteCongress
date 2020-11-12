@@ -1,5 +1,5 @@
 # In Memory implementation of IBlockchainClient
 
-An in memory blockchain client implementation for testing. Specifically for "Unit Integration" testing.
+An in memory blockchain client implementation for testing. It won't persist, and it doesn't ensure immutability.
 
-Injecting InMemoryBlockchainClient will allow testing the full implementation above the data access layer.
+A more real world solution would be the Ipfs DAL implementation.

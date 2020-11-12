@@ -61,6 +61,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// <paramref name="collection"/>
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="collection"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="config"/> is null.
+        /// </exception>
         public static IServiceCollection AddRemoteCongressClient(
             this IServiceCollection collection,
             ClientConfig config
@@ -94,22 +100,35 @@ namespace RemoteCongress.Client
                 .AddSingleton<IRemoteCongressClient, RemoteCongressClient>();
         }
 
+        /// <summary>
+        /// Registers a <see cref="HttpClient"/> to use for communicating over http.
+        /// </summary>
+        /// <param name="collection">
+        /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
+        /// </param>
+        /// <param name="client">
+        /// <see cref="ClientConfig"/> to configure <see cref="IRemoteCongressClient"/> with.
+        /// </param>
+        /// <returns>
+        /// <paramref name="collection"/>
+        /// </returns>
         private static IServiceCollection AddHttpClient(
             this IServiceCollection collection,
             ClientConfig config
         ) =>
             collection
                 .AddSingleton(config)
-                .AddSingleton(_ => {
-                    HttpClientHandler handler = new HttpClientHandler();
+                .AddSingleton(new HttpClient());
 
-                    handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                    handler.ServerCertificateCustomValidationCallback = 
-                        (httpRequestMessage, cert, cetChain, policyErrors) => true;
-
-                    return new HttpClient(handler);
-                });
-
+        /// <summary>
+        /// Registers all supported <see cref="ICodec"/>s.
+        /// </summary>
+        /// <param name="collection">
+        /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
+        /// </param>
+        /// <returns>
+        /// <paramref name="collection"/>
+        /// </returns>
         private static IServiceCollection AddCodecs(this IServiceCollection collection) =>
             collection
                 //.AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
@@ -122,6 +141,15 @@ namespace RemoteCongress.Client
                 .AddSingleton<ICodec<Vote>, VoteV1JsonCodec>()
                 .AddSingleton<ICodec<IQuery>, IQueryV1JsonCodec>();
 
+        /// <summary>
+        /// Registers a <see cref="IEndpointClient{Bill}"/> implementation.
+        /// </summary>
+        /// <param name="collection">
+        /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
+        /// </param>
+        /// <returns>
+        /// <paramref name="collection"/>
+        /// </returns>
         private static IServiceCollection AddBillClient(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IQueryProcessor<Bill>, BillQueryProcessor>()
@@ -146,6 +174,15 @@ namespace RemoteCongress.Client
                 )
                 .AddSingleton<IEndpointClient<Bill>, EndpointClient<Bill>>();
 
+        /// <summary>
+        /// Registers a <see cref="IEndpointClient{Member}"/> implementation.
+        /// </summary>
+        /// <param name="collection">
+        /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
+        /// </param>
+        /// <returns>
+        /// <paramref name="collection"/>
+        /// </returns>
         private static IServiceCollection AddMemberClient(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IQueryProcessor<Member>, MemberQueryProcessor>()
@@ -170,6 +207,15 @@ namespace RemoteCongress.Client
                 )
                 .AddSingleton<IEndpointClient<Member>, EndpointClient<Member>>();
 
+        /// <summary>
+        /// Registers a <see cref="IEndpointClient{Vote}"/> implementation.
+        /// </summary>
+        /// <param name="collection">
+        /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
+        /// </param>
+        /// <returns>
+        /// <paramref name="collection"/>
+        /// </returns>
         private static IServiceCollection AddVoteClient(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IQueryProcessor<Vote>, VoteQueryProcessor>()

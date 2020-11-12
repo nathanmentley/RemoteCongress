@@ -97,6 +97,7 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="endpoint"/> is null.
         /// </excpetion>
         public HttpDataClient(
+            // TODO: This has too many arguments. Refactor to make this more sane.
             ILogger<HttpDataClient> logger,
             ClientConfig config,
             HttpClient httpClient,
@@ -152,6 +153,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The unique id of the stored block.
         /// </returns>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is cancelled.
+        /// </exception>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if <see cref="SignedDataV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// </exception>
         public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -203,6 +210,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is cancelled.
+        /// </exception>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if <see cref="SignedDataV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// </exception>
         public async Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -241,6 +254,15 @@ namespace RemoteCongress.Client
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="queries"/> is null.
+        /// </excpetion>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if <paramref name="cancellationToken"/> is cancelled.
+        /// </exception>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if <see cref="SignedDataCollectionV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// </exception>
         public async IAsyncEnumerable<ISignedData> FetchAllFromChain(
             IList<IQuery> queries,
             [EnumeratorCancellation] CancellationToken cancellationToken
@@ -296,7 +318,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The codec
         /// </returns>
-        private ICodec<IEnumerable<SignedData>> GetSignedDataCollectionForMediaType(RemoteCongressMediaType mediaType) =>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if <paramref name="mediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// </exception>
+        private ICodec<IEnumerable<SignedData>> GetSignedDataCollectionForMediaType(
+            RemoteCongressMediaType mediaType
+        ) =>
             _collectionCodecs.FirstOrDefault(
                 codec => codec.CanHandle(mediaType)
             ) ??
@@ -315,7 +342,12 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The codec
         /// </returns>
-        private ICodec<SignedData> GetSignedDataForMediaType(RemoteCongressMediaType mediaType) =>
+        /// <exception cref="UnknownBlockMediaTypeException">
+        /// Thrown if <paramref name="mediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// </exception>
+        private ICodec<SignedData> GetSignedDataForMediaType(
+            RemoteCongressMediaType mediaType
+        ) =>
             _codecs.FirstOrDefault(
                 codec => codec.CanHandle(mediaType)
             ) ??

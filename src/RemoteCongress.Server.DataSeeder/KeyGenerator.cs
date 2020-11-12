@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.DataSeeder
 {
     /// <summary>
-    /// 
+    /// An implementation of <see cref="IKeyGenerator"/> that'll return RSA key pairs.
     /// </summary>
     public class KeyGenerator: IKeyGenerator
     {

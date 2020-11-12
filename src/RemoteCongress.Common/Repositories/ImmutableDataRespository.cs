@@ -50,7 +50,7 @@ namespace RemoteCongress.Common.Repositories
         private readonly IEnumerable<ICodec<TData>> _codecs;
 
         /// <summary>
-        /// 
+        /// A <see cref="IQueryProcessor{TData}"/> to process an <see cref="IQuery"/>s that need to be processed.
         /// </summary>
         private readonly IQueryProcessor<TData> _queryProcessor;
 
@@ -230,6 +230,9 @@ namespace RemoteCongress.Common.Repositories
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="query"/> is null.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
         public async IAsyncEnumerable<VerifiedData<TData>> Fetch(
             IList<IQuery> query,
