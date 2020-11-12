@@ -29,11 +29,11 @@
   - [CreateMember(privateKey,publicKey,data,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-CreateMember-System-String,System-String,RemoteCongress-Common-Member,System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.CreateMember(System.String,System.String,RemoteCongress.Common.Member,System.Threading.CancellationToken)')
   - [CreateVote(privateKey,publicKey,data,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-CreateVote-System-String,System-String,RemoteCongress-Common-Vote,System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.CreateVote(System.String,System.String,RemoteCongress.Common.Vote,System.Threading.CancellationToken)')
   - [GetBill(id,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetBill-System-String,System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetBill(System.String,System.Threading.CancellationToken)')
-  - [GetBills(id,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetBills-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetBills(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [GetBills(query,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetBills-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetBills(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [GetMember(id,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetMember-System-String,System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetMember(System.String,System.Threading.CancellationToken)')
-  - [GetMembers(id,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetMembers-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetMembers(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [GetMembers(query,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetMembers-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetMembers(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [GetVote(id,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetVote-System-String,System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetVote(System.String,System.Threading.CancellationToken)')
-  - [GetVotes(id,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetVotes-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetVotes(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [GetVotes(query,cancellationToken)](#M-RemoteCongress-Client-IRemoteCongressClient-GetVotes-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.IRemoteCongressClient.GetVotes(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
 - [IServiceCollectionExtensions](#T-RemoteCongress-Client-IServiceCollectionExtensions 'RemoteCongress.Client.IServiceCollectionExtensions')
   - [BillEndpoint](#F-RemoteCongress-Client-IServiceCollectionExtensions-BillEndpoint 'RemoteCongress.Client.IServiceCollectionExtensions.BillEndpoint')
   - [MemberEndpoint](#F-RemoteCongress-Client-IServiceCollectionExtensions-MemberEndpoint 'RemoteCongress.Client.IServiceCollectionExtensions.MemberEndpoint')
@@ -432,8 +432,7 @@ The persisted [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | privateKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The private key to use to generate the [Signature](#P-RemoteCongress-Common-ISignedData-Signature 'RemoteCongress.Common.ISignedData.Signature') of the [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill'). |
-| publicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The public key that matches `privateKey` to link the immutable [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') to
-    the producing individual. |
+| publicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The public key that matches `privateKey` to link the immutable [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') to the producing individual. |
 | data | [RemoteCongress.Common.Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') | The [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') data to persist. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
@@ -453,8 +452,7 @@ The persisted [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Me
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | privateKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The private key to use to generate the [Signature](#P-RemoteCongress-Common-ISignedData-Signature 'RemoteCongress.Common.ISignedData.Signature') of the [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member'). |
-| publicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The public key that matches `privateKey` to link the immutable [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') to
-    the producing individual. |
+| publicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The public key that matches `privateKey` to link the immutable [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') to the producing individual. |
 | data | [RemoteCongress.Common.Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') | The [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') data to persist. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
@@ -474,8 +472,7 @@ The persisted [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote')
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | privateKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The private key to use to generate the [Signature](#P-RemoteCongress-Common-ISignedData-Signature 'RemoteCongress.Common.ISignedData.Signature') of the [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote'). |
-| publicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The public key that matches `privateKey` to link the immutable [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') to
-    the producing individual. |
+| publicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The public key that matches `privateKey` to link the immutable [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') to the producing individual. |
 | data | [RemoteCongress.Common.Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') | The [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') data to persist. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
@@ -498,7 +495,7 @@ The persisted [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Client-IRemoteCongressClient-GetBills-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
-### GetBills(id,cancellationToken) `method`
+### GetBills(query,cancellationToken) `method`
 
 ##### Summary
 
@@ -512,7 +509,7 @@ The persisted [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| id | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The [Id](#P-RemoteCongress-Common-IIdentifiable-Id 'RemoteCongress.Common.IIdentifiable.Id') of the [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill'). |
+| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The [IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongress.Common.Repositories.Queries.IQuery') collection to filer [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')s on. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Client-IRemoteCongressClient-GetMember-System-String,System-Threading-CancellationToken-'></a>
@@ -534,7 +531,7 @@ The persisted [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Me
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Client-IRemoteCongressClient-GetMembers-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
-### GetMembers(id,cancellationToken) `method`
+### GetMembers(query,cancellationToken) `method`
 
 ##### Summary
 
@@ -548,7 +545,7 @@ The persisted [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Me
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| id | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The [Id](#P-RemoteCongress-Common-IIdentifiable-Id 'RemoteCongress.Common.IIdentifiable.Id') of the [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member'). |
+| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The [IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongress.Common.Repositories.Queries.IQuery') collection to filer [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')s on. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Client-IRemoteCongressClient-GetVote-System-String,System-Threading-CancellationToken-'></a>
@@ -570,7 +567,7 @@ The persisted [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote')
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Client-IRemoteCongressClient-GetVotes-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
-### GetVotes(id,cancellationToken) `method`
+### GetVotes(query,cancellationToken) `method`
 
 ##### Summary
 
@@ -584,7 +581,7 @@ The persisted [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote')
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| id | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The [Id](#P-RemoteCongress-Common-IIdentifiable-Id 'RemoteCongress.Common.IIdentifiable.Id') of the [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote'). |
+| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The [IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongress.Common.Repositories.Queries.IQuery') collection to filer [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote')s on. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='T-RemoteCongress-Client-IServiceCollectionExtensions'></a>

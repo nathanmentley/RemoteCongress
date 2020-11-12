@@ -35,8 +35,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Bill"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <see cref="Bill"/> data to persist.
@@ -71,8 +70,8 @@ namespace RemoteCongress.Client
         /// <summary>
         /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
         /// </summary>
-        /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/>.
+        /// <param name="query">
+        /// The <see cref="IQuery"/> collection to filer <see cref="Bill"/>s on.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -89,8 +88,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Member"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Member"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Member"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <see cref="Member"/> data to persist.
@@ -125,8 +123,8 @@ namespace RemoteCongress.Client
         /// <summary>
         /// Fetches a signed, and verified <see cref="Member"/> by it's <see cref="IIdentifiable.Id"/>.
         /// </summary>
-        /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Member"/>.
+        /// <param name="query">
+        /// The <see cref="IQuery"/> collection to filer <see cref="Member"/>s on.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
@@ -143,8 +141,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Vote"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <see cref="Vote"/> data to persist.
@@ -179,8 +176,8 @@ namespace RemoteCongress.Client
         /// <summary>
         /// Fetches a signed, and verified <see cref="Vote"/> by it's <see cref="IIdentifiable.Id"/>.
         /// </summary>
-        /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/>.
+        /// <param name="query">
+        /// The <see cref="IQuery"/> collection to filer <see cref="Vote"/>s on.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
