@@ -16,6 +16,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories.Queries;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -67,6 +69,20 @@ namespace RemoteCongress.Client
         Task<VerifiedData<Bill>> GetBill(string id, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Bill"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Bill"/>.
+        /// </returns>
+        IAsyncEnumerable<VerifiedData<Bill>> GetBills(IList<IQuery> query, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Creates, signs, and persists a <see cref="Member"/> instance.
         /// </summary>
         /// <param name="privateKey">
@@ -107,6 +123,20 @@ namespace RemoteCongress.Client
         Task<VerifiedData<Member>> GetMember(string id, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Fetches a signed, and verified <see cref="Member"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Member"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Member"/>.
+        /// </returns>
+        IAsyncEnumerable<VerifiedData<Member>> GetMembers(IList<IQuery> query, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
         /// </summary>
         /// <param name="privateKey">
@@ -145,5 +175,19 @@ namespace RemoteCongress.Client
         /// The persisted <see cref="Vote"/>.
         /// </returns>
         Task<VerifiedData<Vote>> GetVote(string id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Fetches a signed, and verified <see cref="Vote"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// </summary>
+        /// <param name="id">
+        /// The <see cref="IIdentifiable.Id"/> of the <see cref="Vote"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Vote"/>.
+        /// </returns>
+        IAsyncEnumerable<VerifiedData<Vote>> GetVotes(IList<IQuery> query, CancellationToken cancellationToken);
     }
 }

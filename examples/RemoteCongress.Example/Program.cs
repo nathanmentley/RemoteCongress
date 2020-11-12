@@ -18,8 +18,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories.Queries;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,6 +72,17 @@ kwMRyHisc6diIMoNAgMBAAE=";
                 serviceProvider.GetService<IRemoteCongressClient>();
 
             //create a bill
+            VerifiedData<Bill> bill = await CreateBill(remoteCongressClient);
+    
+            //create a yes vote against the bill
+            VerifiedData<Vote> vote = await CreateVote(remoteCongressClient, bill);
+
+            //fetch multiple votes with a query
+            await QueryVotes(remoteCongressClient, bill);
+        }
+
+        private static async Task<VerifiedData<Bill>> CreateBill(IRemoteCongressClient remoteCongressClient)
+        {
             VerifiedData<Bill> bill = await remoteCongressClient.CreateBill(
                 PrivateKey,
                 PublicKey,
@@ -85,7 +99,14 @@ kwMRyHisc6diIMoNAgMBAAE=";
             bill = await remoteCongressClient.GetBill(bill.Id, CancellationToken.None);
             Output($"fetched bill[{bill.Id}] {bill.BlockContent} Signed And Verified");
 
-            //create a yes vote against the bill
+            return bill;
+        }
+
+        private static async Task<VerifiedData<Vote>> CreateVote(
+            IRemoteCongressClient remoteCongressClient,
+            VerifiedData<Bill> bill
+        )
+        {
             VerifiedData<Vote> vote = await remoteCongressClient.CreateVote(
                 PrivateKey,
                 PublicKey,
@@ -102,6 +123,45 @@ kwMRyHisc6diIMoNAgMBAAE=";
             //pull the newly created vote from the api.
             vote = await remoteCongressClient.GetVote(vote.Id, CancellationToken.None);
             Output($"fetched vote[{vote.Id}] {vote.BlockContent} Signed And Verified");
+
+            return vote;
+        }
+
+        private static async Task QueryVotes(
+            IRemoteCongressClient remoteCongressClient,
+            VerifiedData<Bill> bill
+        )
+        {
+            //seed a few more votes against our bill for testing.
+            foreach(int i in Enumerable.Range(1, 10))
+            {
+                await remoteCongressClient.CreateVote(
+                    PrivateKey,
+                    PublicKey,
+                    new Vote()
+                    {
+                        BillId = bill.Id,
+                        Opinion = i % 2 == 0, //only even i in our loop is yes.
+                        Message = $"message for vote {i}"
+                    },
+                    CancellationToken.None
+                );
+            }
+
+            //Get an async Enumerable of Votes that match our query.
+            IAsyncEnumerable<VerifiedData<Vote>> votes = remoteCongressClient.GetVotes(
+                new List<IQuery>()
+                {
+                    new BillIdQuery(bill.Id), //filter votes to only votes against a bill id
+                    new OpinionQuery(true)      // only select the yes votes
+                },
+                CancellationToken.None
+            );
+
+            await foreach (VerifiedData<Vote> yesVote in votes)
+            {
+                Output($"fetched vote[{yesVote.Id}] {yesVote.BlockContent} Signed And Verified");
+            }
         }
 
         /// <summary>

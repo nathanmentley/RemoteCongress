@@ -4,9 +4,9 @@ A proof of concept platform for conducting small scale public voting remotely an
 
 ## Goal
 
-This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes. More recently State congresses have started cancelling sessions instead of using technology to remain agile and active. 
+This project was started as a result of the Covid19 pandemic and the United States Congress' inability to hold remote votes. More recently State congresses have started cancelling sessions. 
 
-We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no excuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time, or worse not having it's government functioning at all.
+We have proven technology that allows safe, transparent, public votes to be held remotely, and there is currently no excuse for a nation to be forcing it's government to meet in person during a pandemic to remain functional at this critical time, or worse not having it's government functioning at all. This is a point we need government to remain agile and functional.
 
 This project aims to build a simple proof of concept system that shows a working functional and safe system for holding remote votes. Ultimately this proof of concept will hopefully start conversation on how we modernize our government's ability to function at the most critical times.
 
@@ -19,9 +19,11 @@ Currently, this is a technical proof of concept that allows individuals to:
 * Produce signed and immutable data (bills and votes on bills).
 * Send that data to a server where it'll remained signed, get verified, and remain in an immutable state.
 * Have that data persisted in an immutable and decentralized storage system so it can't be lost or tampered with.
-* Pull any stored bills or votes, and ensure they're valid, and untampered with.
+* Pull any stored bills or votes, and ensure they're valid, and not tampered with.
 
 With this proof of concept we're able to show a system that'll allow representatives who cast votes publicly to do so remotely, and that anyone is able to verify the cast votes, and ensure they aren't tampered with.
+
+This system currently doesn't have a graphical interface. Currently to interact with it you must either use cli tools, write some code, or hit an http server. While a graphical interface would be useful it seems less critical than showing a working system.
 
 ## Design
 
@@ -44,6 +46,8 @@ To run the platform you currently need these installed:
 * [git](https://git-scm.com/)
 * [docker](https://www.docker.com/)
 * [docker compose](https://docs.docker.com/compose/)
+
+Optionally, you will need [dotnet](https://dotnet.microsoft.com/) to write any code against the client library, or to run the system outside of docker.
 
 ### Quick Start
 
@@ -70,7 +74,7 @@ This will run a simple example test that will:
 * Sign them
 * Send them over the network to the server to persist them in the immutable storage. (in this proof of concept the server is storing the signed content in a blockchain built on top of IPFS to ensure immutability)
 * Load the saved votes and bills from the api server
-* Finally, verify that the stored votes and bills are valid, and untampered with.
+* Finally, verify that the stored votes and bills are valid, and not tampered with.
 
 You should see an output that looks something like this:
 
@@ -95,6 +99,42 @@ You should see an output that looks something like this:
       "opinion": true,
       "message": "message"
     } Signed And Verified
+
+    fetched vote[df6552e3-7977-4020-82ac-0436a7e5545b] {
+      "billId": "b6b51b6c-3582-42dd-a278-2e8ceae5b24c",
+      "message": "message",
+      "opinion": true
+    } Signed And Verified
+
+    fetched vote[f391d639-cdb0-4bcd-b0a5-9a6046c85d6d] {
+      "billId": "b6b51b6c-3582-42dd-a278-2e8ceae5b24c",
+      "message": "message for vote 2",
+      "opinion": true
+    } Signed And Verified
+
+    fetched vote[6db2320b-00c2-4561-8e30-55f9da2e81be] {
+      "billId": "b6b51b6c-3582-42dd-a278-2e8ceae5b24c",
+      "message": "message for vote 4",
+      "opinion": true
+    } Signed And Verified
+
+    fetched vote[104305ae-d3bc-4ecd-ad73-cc2e7d7d9133] {
+      "billId": "b6b51b6c-3582-42dd-a278-2e8ceae5b24c",
+      "message": "message for vote 6",
+      "opinion": true
+    } Signed And Verified
+
+    fetched vote[be36c92e-b729-42ef-8b98-0149cdb12aa8] {
+      "billId": "b6b51b6c-3582-42dd-a278-2e8ceae5b24c",
+      "message": "message for vote 8",
+      "opinion": true
+    } Signed And Verified
+
+    fetched vote[262275a6-8b20-4328-b7f2-0ce5f92face0] {
+      "billId": "b6b51b6c-3582-42dd-a278-2e8ceae5b24c",
+      "message": "message for vote 10",
+      "opinion": true
+    }
 
 That shows a bill was submitted with the title: "title", and the content: "content".
 After submission that vote was fetched from the platform and was verified.
@@ -181,12 +221,3 @@ If you're fetching a single block you should pass a media type like one of these
 If you're fetching a collection you'll want to use a media type like this:
 
     application/json; structure=remotecongress.signeddatacollection; version=1
-
-
-## Next Steps
-
-This is a proof of concept, and the code is not production ready, and isn't suitable to be used a core of a more built out system in it's current state.
-
-A true system shouldn't be thrown together over a few weekends, it shouldn't reinvent the wheel as much as this project has done, and it should have more error handling and testing code than the almost nonexistent amount in this codebase.
-
-This code could possibly be used as a base to built out those changes, but first we'll need congress and the american public to understand how a system like this would function, what makes it secure, and why it's essential in or out of a crisis.

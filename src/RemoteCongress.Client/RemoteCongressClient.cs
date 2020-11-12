@@ -16,7 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories.Queries;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -104,6 +106,24 @@ namespace RemoteCongress.Client
             _billClient.Create(privateKey, publicKey, data, cancellationToken);
 
         /// <summary>
+        /// Fetches a signed, and verified <see cref="Bill"/>s that match <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// A collection of <see cref="IQuery"/>s to filter on.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Bill"/>s that match <paramref name="query"/>.
+        /// </returns>
+        public IAsyncEnumerable<VerifiedData<Bill>> GetBills(
+            IList<IQuery> query,
+            CancellationToken cancellationToken
+        ) =>
+            _billClient.Get(query, cancellationToken);
+
+        /// <summary>
         /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
         /// </summary>
         /// <param name="id">
@@ -161,6 +181,24 @@ namespace RemoteCongress.Client
             _memberClient.Get(id, cancellationToken);
 
         /// <summary>
+        /// Fetches a signed, and verified <see cref="Member"/>s that match <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// A collection of <see cref="IQuery"/>s to filter on.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Member"/>s that match <paramref name="query"/>.
+        /// </returns>
+        public IAsyncEnumerable<VerifiedData<Member>> GetMembers(
+            IList<IQuery> query,
+            CancellationToken cancellationToken
+        ) =>
+            _memberClient.Get(query, cancellationToken);
+
+        /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
         /// </summary>
         /// <param name="privateKey">
@@ -201,5 +239,23 @@ namespace RemoteCongress.Client
         /// </returns>
         public Task<VerifiedData<Vote>> GetVote(string id, CancellationToken cancellationToken) =>
             _voteClient.Get(id, cancellationToken);
+
+        /// <summary>
+        /// Fetches a signed, and verified <see cref="Vote"/>s that match <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// A collection of <see cref="IQuery"/>s to filter on.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation requests.
+        /// </param>
+        /// <returns>
+        /// The persisted <see cref="Vote"/>s that match <paramref name="query"/>.
+        /// </returns>
+        public IAsyncEnumerable<VerifiedData<Vote>> GetVotes(
+            IList<IQuery> query,
+            CancellationToken cancellationToken
+        ) =>
+            _voteClient.Get(query, cancellationToken);
     }
 }

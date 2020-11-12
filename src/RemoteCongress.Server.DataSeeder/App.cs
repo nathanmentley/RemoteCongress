@@ -102,7 +102,6 @@ namespace RemoteCongress.Server.DataSeeder
                 );
             }
 
-            IList<Task> tasks = new List<Task>();
             await foreach((Bill bill, string id) in _dataProvider.GetBills(cancellationToken))
             {
                 _logger.LogDebug(
@@ -111,16 +110,8 @@ namespace RemoteCongress.Server.DataSeeder
                 );
 
                 //await SeedBill(bill, id, cancellationToken);
-                tasks.Add(SeedBill(bill, id, cancellationToken));
-
-                if(tasks.Count >= 5)
-                {
-                    await Task.WhenAll(tasks);
-                    tasks.Clear();
-                }
+                await SeedBill(bill, id, cancellationToken);
             }
-
-            await Task.WhenAll(tasks);
         }
 
         private async Task SeedBill(Bill bill, string id, CancellationToken cancellationToken)
@@ -132,7 +123,6 @@ namespace RemoteCongress.Server.DataSeeder
                 cancellationToken
             );
 
-            IList<Task> tasks = new List<Task>();
             await foreach(
                 (Vote vote, string memberPrivateKey, string memberPublicKey) in
                     _dataProvider.GetVotes(id, billData, cancellationToken))
@@ -142,22 +132,13 @@ namespace RemoteCongress.Server.DataSeeder
                     vote.BillId
                 );
 
-                tasks.Add(
-                    _client.CreateVote(
-                        memberPrivateKey,
-                        memberPublicKey,
-                        vote,
-                        cancellationToken
-                    )
+                await _client.CreateVote(
+                    memberPrivateKey,
+                    memberPublicKey,
+                    vote,
+                    cancellationToken
                 );
-
-                if(tasks.Count >= 25)
-                {
-                    await Task.WhenAll(tasks);
-                    tasks.Clear();
-                }
             }
-            await Task.WhenAll(tasks);
         }
     }
 }

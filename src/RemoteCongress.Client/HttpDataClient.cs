@@ -281,14 +281,16 @@ namespace RemoteCongress.Client
             Url url = new Url($"{_config.Protocol}://{_config.ServerHostName}")
                 .AppendPathSegment(_endpoint);
 
+            IList<string> encodedQueries = new List<string>();
             foreach(IQuery query in queries)
             {
                 string queryData = await _queryCodec.EncodeToString(
                     _queryCodec.GetPreferredMediaType(),
                     query
                 );
-                url.SetQueryParam(QueryKey, queryData);
+                encodedQueries.Add(queryData);
             }
+            url.SetQueryParam(QueryKey, encodedQueries);
 
             using HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
