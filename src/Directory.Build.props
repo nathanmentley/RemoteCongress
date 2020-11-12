@@ -1,0 +1,14 @@
+<Project>
+  <ItemGroup>
+    <PackageReference Include="Vsxmd" Version="1.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>$(MSBuildProjectDirectory)\API.xml</DocumentationFile>
+    <DocumentationMarkdown>$(SolutionDir)\docs\$(MSBuildProjectName).md</DocumentationMarkdown>
+    <VsxmdAutoDeleteXml>True</VsxmdAutoDeleteXml>
+  </PropertyGroup>
+</Project>
