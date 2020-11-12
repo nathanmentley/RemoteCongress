@@ -74,7 +74,8 @@ This will run a simple example test that will:
 * Sign them
 * Send them over the network to the server to persist them in the immutable storage. (in this proof of concept the server is storing the signed content in a blockchain built on top of IPFS to ensure immutability)
 * Load the saved votes and bills from the api server
-* Finally, verify that the stored votes and bills are valid, and not tampered with.
+* verifies that the stored votes and bills are valid, and not tampered with.
+* It'll then seed ten more votes, and queries all the yes votes for the seeded bill. All those votes are signed and verified.
 
 You should see an output that looks something like this:
 
@@ -148,7 +149,13 @@ There is a data seeder tool that can be used to load real senate voting data fro
 
 Once there is a server running, either locally or in docker, you can run the dataloader tool located at src/RemoteCongress.Server.DataSeeder
 
+Running locally:
+
     dotnet run --project src/RemoteCongress.Server.DataSeeder/RemoteCongress.Server.DataSeeder.csproj
+
+Running from a docker container
+
+    docker run --entrypoint /app/RemoteCongress.Server.DataSeeder --net=host remote-congress/api
 
 The data seeder will parse included xml files to generate public private key pairs for each senator, then it'll post bill and vote data using the RemoteCongress.Client library.
 
@@ -180,7 +187,7 @@ Viewing a vote:
 
 ### Using RemoteCongress.Client to programmically interact with the platform
 
-You can use the client assembly project to build tools in any .net language to fetch and create votes using this platform using code.
+You can use the client assembly project to build tools in any dotnet language to fetch and create votes using this platform using code.
 
 Right now there isn't much documentation outside of code, but for an example you should be able to look at:
     examples/RemoteCongress.Example/Program.cs
