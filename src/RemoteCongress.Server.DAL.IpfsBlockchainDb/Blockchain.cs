@@ -187,7 +187,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
             string content = await FromBlock(block);
             IFileSystemNode result = await _engine.FileSystem.AddTextAsync(
                 content,
-                null,
                 cancellationToken
             );
 

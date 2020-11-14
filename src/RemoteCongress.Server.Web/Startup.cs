@@ -15,8 +15,6 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using Ipfs.CoreApi;
-using Ipfs.Engine;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +22,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Nito.AsyncEx;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Repositories.Queries;
@@ -36,17 +33,31 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Web
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration">
+        /// 
+        /// </param>
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services">
+        /// 
+        /// </param>
         public void ConfigureServices(IServiceCollection services)
         {
             IpfsBlockchainConfig ipfsConfig = _configuration
@@ -55,7 +66,7 @@ namespace RemoteCongress.Server.Web
 
             services
                 .AddLogging()
-
+/*
                 .AddSingleton<IpfsBlockchainConfig>(ipfsConfig)
                 .AddSingleton<ICoreApi>(provider => {
                     IpfsBlockchainConfig config = provider.GetRequiredService<IpfsBlockchainConfig>();
@@ -68,7 +79,7 @@ namespace RemoteCongress.Server.Web
 
                     return engine;
                 })
-
+*/
                 .AddSingleton<ICodec<SignedData>, SignedDataV1JsonCodec>()
                 .AddSingleton<ICodec<SignedData>, SignedDataV1AvroCodec>()
                 .AddSingleton<ICodec<IEnumerable<SignedData>>, SignedDataCollectionV1JsonCodec>()
@@ -98,7 +109,15 @@ namespace RemoteCongress.Server.Web
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="app">
+        /// 
+        /// </param>
+        /// <param name="env">
+        /// 
+        /// </param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();

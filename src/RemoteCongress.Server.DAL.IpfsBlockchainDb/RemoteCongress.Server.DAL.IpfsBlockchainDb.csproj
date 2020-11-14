@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Nito.AsyncEx.Context" Version="5.0.0" />
-    <PackageReference Include="Ipfs.Engine" Version="0.13.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="$(JsonVersion)" />
+    <PackageReference Include="Nito.AsyncEx.Context" Version="$(AsyncExVersion)" />
+    <PackageReference Include="Ipfs.Engine" Version="$(IpfsVersion)" />
   </ItemGroup>
 
   <ItemGroup>

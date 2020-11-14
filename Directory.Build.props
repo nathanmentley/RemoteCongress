@@ -1,5 +1,20 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <FlurlVersion>3.0.0</FlurlVersion>
+    <DependencyInjectionVersion>5.0.0</DependencyInjectionVersion>
+
+    <AvroVersion>1.10.0</AvroVersion>
+    <LoggingVersion>5.0.0</LoggingVersion>
+    <JsonVersion>12.0.3</JsonVersion>
+    <AlgorithmsVersion>4.3.1</AlgorithmsVersion>
+
+    <AsyncExVersion>5.1.0</AsyncExVersion>
+    <IpfsVersion>0.13.0</IpfsVersion>
+
+    <LinqAsyncVersion>5.0.0</LinqAsyncVersion>
   </PropertyGroup>
 </Project>

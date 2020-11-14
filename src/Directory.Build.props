@@ -1,4 +1,5 @@
 <Project>
+<!--
   <ItemGroup>
     <PackageReference Include="Vsxmd" Version="1.4.5">
       <PrivateAssets>all</PrivateAssets>
@@ -11,4 +12,5 @@
     <DocumentationMarkdown>$(SolutionDir)\docs\$(MSBuildProjectName).md</DocumentationMarkdown>
     <VsxmdAutoDeleteXml>True</VsxmdAutoDeleteXml>
   </PropertyGroup>
+-->
 </Project>

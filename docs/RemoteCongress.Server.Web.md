@@ -28,6 +28,10 @@
   - [#ctor(message,innerException)](#M-RemoteCongress-Server-Web-Exceptions-MissingPathParameterException-#ctor-System-String,System-Exception- 'RemoteCongress.Server.Web.Exceptions.MissingPathParameterException.#ctor(System.String,System.Exception)')
   - [#ctor(message)](#M-RemoteCongress-Server-Web-Exceptions-MissingPathParameterException-#ctor-System-String- 'RemoteCongress.Server.Web.Exceptions.MissingPathParameterException.#ctor(System.String)')
   - [#ctor()](#M-RemoteCongress-Server-Web-Exceptions-MissingPathParameterException-#ctor 'RemoteCongress.Server.Web.Exceptions.MissingPathParameterException.#ctor')
+- [Startup](#T-RemoteCongress-Server-Web-Startup 'RemoteCongress.Server.Web.Startup')
+  - [#ctor(configuration)](#M-RemoteCongress-Server-Web-Startup-#ctor-Microsoft-Extensions-Configuration-IConfiguration- 'RemoteCongress.Server.Web.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)')
+  - [Configure(app,env)](#M-RemoteCongress-Server-Web-Startup-Configure-Microsoft-AspNetCore-Builder-IApplicationBuilder,Microsoft-AspNetCore-Hosting-IWebHostEnvironment- 'RemoteCongress.Server.Web.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)')
+  - [ConfigureServices(services)](#M-RemoteCongress-Server-Web-Startup-ConfigureServices-Microsoft-Extensions-DependencyInjection-IServiceCollection- 'RemoteCongress.Server.Web.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)')
 - [UnacceptableMediaTypeException](#T-RemoteCongress-Server-Web-Exceptions-UnacceptableMediaTypeException 'RemoteCongress.Server.Web.Exceptions.UnacceptableMediaTypeException')
   - [#ctor(message,innerException)](#M-RemoteCongress-Server-Web-Exceptions-UnacceptableMediaTypeException-#ctor-System-String,System-Exception- 'RemoteCongress.Server.Web.Exceptions.UnacceptableMediaTypeException.#ctor(System.String,System.Exception)')
   - [#ctor(message)](#M-RemoteCongress-Server-Web-Exceptions-UnacceptableMediaTypeException-#ctor-System-String- 'RemoteCongress.Server.Web.Exceptions.UnacceptableMediaTypeException.#ctor(System.String)')
@@ -369,6 +373,57 @@ Constructor
 ##### Parameters
 
 This constructor has no parameters.
+
+<a name='T-RemoteCongress-Server-Web-Startup'></a>
+## Startup `type`
+
+##### Namespace
+
+RemoteCongress.Server.Web
+
+##### Summary
+
+
+
+<a name='M-RemoteCongress-Server-Web-Startup-#ctor-Microsoft-Extensions-Configuration-IConfiguration-'></a>
+### #ctor(configuration) `constructor`
+
+##### Summary
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| configuration | [Microsoft.Extensions.Configuration.IConfiguration](#T-Microsoft-Extensions-Configuration-IConfiguration 'Microsoft.Extensions.Configuration.IConfiguration') |  |
+
+<a name='M-RemoteCongress-Server-Web-Startup-Configure-Microsoft-AspNetCore-Builder-IApplicationBuilder,Microsoft-AspNetCore-Hosting-IWebHostEnvironment-'></a>
+### Configure(app,env) `method`
+
+##### Summary
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| app | [Microsoft.AspNetCore.Builder.IApplicationBuilder](#T-Microsoft-AspNetCore-Builder-IApplicationBuilder 'Microsoft.AspNetCore.Builder.IApplicationBuilder') |  |
+| env | [Microsoft.AspNetCore.Hosting.IWebHostEnvironment](#T-Microsoft-AspNetCore-Hosting-IWebHostEnvironment 'Microsoft.AspNetCore.Hosting.IWebHostEnvironment') |  |
+
+<a name='M-RemoteCongress-Server-Web-Startup-ConfigureServices-Microsoft-Extensions-DependencyInjection-IServiceCollection-'></a>
+### ConfigureServices(services) `method`
+
+##### Summary
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| services | [Microsoft.Extensions.DependencyInjection.IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') |  |
 
 <a name='T-RemoteCongress-Server-Web-Exceptions-UnacceptableMediaTypeException'></a>
 ## UnacceptableMediaTypeException `type`

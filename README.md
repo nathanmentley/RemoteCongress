@@ -161,7 +161,7 @@ Once run you should be able to use the api to search through votes and bills. Al
 
 Optionally, if you want to interact with the RemoteCongress platform in a more dynamic way you can use a command line tool included with the project.
 
-There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
+There is a [dotnet core 5.0](https://dotnet.microsoft.com/download/dotnet-core/5.0) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
 
 #### cli tool examples
 

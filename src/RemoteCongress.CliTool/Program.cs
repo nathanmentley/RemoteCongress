@@ -15,15 +15,6 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using Microsoft.Extensions.DependencyInjection;
-using RemoteCongress.Client;
-using RemoteCongress.Common;
-using System;
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.IO;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.CliTool
@@ -35,8 +26,9 @@ namespace RemoteCongress.CliTool
     //  Document.
     class Program
     {
-        public static async Task<int> Main(string[] args)
+        public static Task<int> Main(string[] args)
         {
+            /*
             Command castVoteCommand = new Command("cast-vote", "cast a vote")
             {
                 Handler = CommandHandler.Create<string, string, string, string, bool, string>(
@@ -203,8 +195,11 @@ namespace RemoteCongress.CliTool
             });
 
             return await rootCommand.InvokeAsync(args);
+            */
+            return Task.FromResult(0);
         }
 
+        /*
         public static IRemoteCongressClient SetupApp(string protocol, string hostname)
         {
             // Setup client in DI
@@ -249,5 +244,6 @@ namespace RemoteCongress.CliTool
             new ServiceCollection()
                 .AddRemoteCongressClient(config)
                 .BuildServiceProvider();
+        */
     }
 }

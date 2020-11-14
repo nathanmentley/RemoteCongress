@@ -68,7 +68,28 @@ namespace RemoteCongress.Common.Logging
                 );
             }
 
-            logger.Log(logLevel, exception, exception.Message);
+            string message = $"Found an exception of type {exception.GetType()} with message {exception.Message}.";
+            switch (logLevel)
+            {
+                case LogLevel.Critical:
+                    logger.LogCritical(message);
+                    break;
+                case LogLevel.Error:
+                    logger.LogError(message);
+                    break;
+                case LogLevel.Warning:
+                    logger.LogWarning(message);
+                    break;
+                case LogLevel.Information:
+                    logger.LogInformation(message);
+                    break;
+                case LogLevel.Debug:
+                    logger.LogDebug(message);
+                    break;
+                case LogLevel.Trace:
+                    logger.LogTrace(message);
+                    break;
+            }
 
             return exception;
         }

@@ -18,6 +18,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Client;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,7 +59,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
 
         public static async Task Main(string[] args)
         {
-            using ServiceProvider serviceProvider = GetServiceProvider(
+            IServiceProvider serviceProvider = GetServiceProvider(
                 new ClientConfig(Protocol, Hostname)
             );
 
@@ -67,7 +68,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
             await app.Run(CancellationToken.None);
         }
 
-        private static ServiceProvider GetServiceProvider(ClientConfig config) =>
+        private static IServiceProvider GetServiceProvider(ClientConfig config) =>
             new ServiceCollection()
                 .AddSingleton<IKeyGenerator, KeyGenerator>()
                 .AddSingleton<IDataProvider>(provider => 

@@ -15,15 +15,10 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using FluentAssertions;
-using Ipfs;
 using Ipfs.CoreApi;
-using Ipfs.Engine.UnixFileSystem;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RemoteCongress.Server.DAL.IpfsBlockchainDb;
-using System;
-using System.Threading;
 
 namespace RemoteCongress.Tests.Server.DAL.IpfsBlockchainDb
 {
@@ -51,7 +46,7 @@ namespace RemoteCongress.Tests.Server.DAL.IpfsBlockchainDb
         [Ignore]
         [TestMethod]
         public void CtorSuccess()
-        {
+        {/*
             var config = GetConfig();
             var (engineMock, fileSystemApiMock) = GetIpfsMocks();
 
@@ -71,7 +66,7 @@ namespace RemoteCongress.Tests.Server.DAL.IpfsBlockchainDb
 
             //Assert
                 .Should()
-                .NotThrow();
+                .NotThrow();*/
         }
     }
 }

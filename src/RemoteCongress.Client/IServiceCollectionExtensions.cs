@@ -83,10 +83,10 @@ namespace RemoteCongress.Client
             }
 
             return collection
-                .AddLogging(configure =>
+                .AddLogging(/*configure =>
                     configure
                         .SetMinimumLevel(LogLevel.Debug)
-                        .AddConsole()
+                        .AddConsole()*/
                 )
 
                 .AddCodecs()
