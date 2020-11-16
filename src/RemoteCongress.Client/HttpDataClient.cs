@@ -77,25 +77,25 @@ namespace RemoteCongress.Client
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="config"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="httpClient"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="queryCodec"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="codecs"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="collectionCodecs"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="endpoint"/> is null.
-        /// </excpetion>
+        /// </exception>
         public HttpDataClient(
             // TODO: This has too many arguments. Refactor to make this more sane.
             ILogger<HttpDataClient> logger,
@@ -142,7 +142,7 @@ namespace RemoteCongress.Client
         }
 
         /// <summary>
-        /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
+        /// Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
         /// </summary>
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.
@@ -157,7 +157,7 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
         /// <exception cref="UnknownBlockMediaTypeException">
-        /// Thrown if <see cref="SignedDataV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// Thrown if <see cref="SignedDataV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec{TModel}"/>.
         /// </exception>
         public async Task<string> AppendToChain(ISignedData data, CancellationToken cancellationToken)
         {
@@ -214,7 +214,7 @@ namespace RemoteCongress.Client
         /// Thrown if <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
         /// <exception cref="UnknownBlockMediaTypeException">
-        /// Thrown if <see cref="SignedDataV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// Thrown if <see cref="SignedDataV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec{TModel}"/>.
         /// </exception>
         public async Task<ISignedData> FetchFromChain(string id, CancellationToken cancellationToken)
         {
@@ -256,12 +256,12 @@ namespace RemoteCongress.Client
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="queries"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="OperationCanceledException">
         /// Thrown if <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
         /// <exception cref="UnknownBlockMediaTypeException">
-        /// Thrown if <see cref="SignedDataCollectionV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// Thrown if <see cref="SignedDataCollectionV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec{TModel}"/>.
         /// </exception>
         public async IAsyncEnumerable<ISignedData> FetchAllFromChain(
             IList<IQuery> queries,
@@ -321,7 +321,7 @@ namespace RemoteCongress.Client
         /// The codec
         /// </returns>
         /// <exception cref="UnknownBlockMediaTypeException">
-        /// Thrown if <paramref name="mediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// Thrown if <paramref name="mediaType"/> doesn't have a registered <see cref="ICodec{TModel}"/>.
         /// </exception>
         private ICodec<IEnumerable<SignedData>> GetSignedDataCollectionForMediaType(
             RemoteCongressMediaType mediaType
@@ -345,7 +345,7 @@ namespace RemoteCongress.Client
         /// The codec
         /// </returns>
         /// <exception cref="UnknownBlockMediaTypeException">
-        /// Thrown if <paramref name="mediaType"/> doesn't have a registered <see cref="ICodec"/>.
+        /// Thrown if <paramref name="mediaType"/> doesn't have a registered <see cref="ICodec{TModel}"/>.
         /// </exception>
         private ICodec<SignedData> GetSignedDataForMediaType(
             RemoteCongressMediaType mediaType

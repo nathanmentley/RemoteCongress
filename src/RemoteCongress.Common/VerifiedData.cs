@@ -73,7 +73,7 @@ namespace RemoteCongress.Common
         /// The <see cref="Id"/> of the persisted data.
         /// </param>
         /// <param name="data">
-        /// The <see cref="ISignedData"/> data to use to construct the <see cref="BaseBlockModel"/>.
+        /// The <see cref="ISignedData"/> data to use to construct the <see cref="ISignedData"/>.
         /// </param>
         /// <param name="model">
         /// The <typeparamref name="TModel"/> that contains the <see cref="ISignedData.BlockContent"/>.
@@ -90,12 +90,6 @@ namespace RemoteCongress.Common
         /// <exception cref="InvalidBlockSignatureException">
         /// Thrown if <see cref="Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
         /// </exception>
-        /// <remarks>
-        /// This will populate <see cref="PublicKey"/>, <see cref="BlockContent"/>, and <see cref="Signature"/>
-        ///     from <paramref name="data"/>, and check if the signature is valid.
-        /// It'll then call the abstract method <see cref="Decode"/> to populate any properties from the
-        ///     <see cref="BlockContent"/> data for the specific implementation of <see cref="BaseBlockModel"/>.
-        /// </remarks>
         public VerifiedData(string id, ISignedData data, TModel model): this(data, model)
         {
             if(string.IsNullOrWhiteSpace(id))
@@ -110,7 +104,7 @@ namespace RemoteCongress.Common
         /// Constructor for a non-persisted version of the data.
         /// </summary>
         /// <param name="data">
-        /// The <see cref="ISignedData"/> data to use to construct the <see cref="BaseBlockModel"/>.
+        /// The <see cref="ISignedData"/> data to use to construct the <see cref="ISignedData"/>.
         /// </param>
         /// <param name="model">
         /// The <typeparamref name="TModel"/> that contains the <see cref="ISignedData.BlockContent"/>.
@@ -124,12 +118,6 @@ namespace RemoteCongress.Common
         /// <exception cref="InvalidBlockSignatureException">
         /// Thrown if <see cref="Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
         /// </exception>
-        /// <remarks>
-        /// This will populate <see cref="PublicKey"/>, <see cref="BlockContent"/>, and <see cref="Signature"/>
-        ///     from <paramref name="data"/>, and check if the signature is valid.
-        /// It'll then call the abstract method <see cref="Decode"/> to populate any properties from the
-        ///     <see cref="BlockContent"/> data for the specific implementation of <see cref="BaseBlockModel"/>.
-        /// </remarks>
         public VerifiedData(ISignedData data, TModel model)
         {
             if (data is null)

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Common.Serialization
 {
     /// <summary>
-    /// An <see cref="ICodec"/> for a version 1 avro representation of a <see cref="SignedData"/>.
+    /// An <see cref="ICodec{TData}"/> for a version 1 avro representation of a <see cref="SignedData"/>.
     /// </summary>
     public class SignedDataV1AvroCodec: ICodec<SignedData>
     {
@@ -81,7 +81,7 @@ namespace RemoteCongress.Common.Serialization
             MediaType.Equals(mediaType);
 
         /// <summary>
-        /// Decodes a <paramref name="data"/> into a <typeparamref name="TData"/>.
+        /// Decodes a <paramref name="data"/> into a <see cref="SignedData"/>.
         /// </summary>
         /// <param name="mediaType">
         /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
@@ -90,15 +90,15 @@ namespace RemoteCongress.Common.Serialization
         /// The <see cref="Stream"/> to decode dat from.
         /// </param>
         /// <returns>
-        /// The <typeparamref name="TData"/> from <paramref name="data"/>.
+        /// The <see cref="SignedData"/> from <paramref name="data"/>.
         /// </returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
         public Task<SignedData> Decode(RemoteCongressMediaType mediaType, Stream data)
@@ -144,13 +144,13 @@ namespace RemoteCongress.Common.Serialization
         /// <returns>
         /// A <see cref="Stream"/> containing the encoded data.
         /// </returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, SignedData data)

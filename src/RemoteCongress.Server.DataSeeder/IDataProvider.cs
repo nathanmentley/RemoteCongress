@@ -26,10 +26,43 @@ namespace RemoteCongress.Server.DataSeeder
     /// </summary>
     public interface IDataProvider
     {
+        /// <summary>
+        /// Fetches all <see cref="Member"/>s to seed.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> that triggers a cancellation.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="Member"/>s to seed.
+        /// </returns>
         IAsyncEnumerable<Member> GetMembers(CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Fetches all <see cref="Bill"/>s to seed.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> that triggers a cancellation.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="Bill"/>s to seed.
+        /// </returns>
         IAsyncEnumerable<(Bill, string)> GetBills(CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Fetches all <see cref="Vote"/>s for a <see cref="Bill"/> to seed.
+        /// </summary>
+        /// <param name="id">
+        /// The unique id of the bill.
+        /// </param>
+        /// <param name="bill">
+        /// The seeded <see cref="Bill"/> wrapped in a <see cref="VerifiedData{TModel}"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> that triggers a cancellation.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="Vote"/>s to seed.
+        /// </returns>
         IAsyncEnumerable<(Vote vote, string memberPrivateKey, string memberPublicKey)> GetVotes(
             string id,
             VerifiedData<Bill> bill,

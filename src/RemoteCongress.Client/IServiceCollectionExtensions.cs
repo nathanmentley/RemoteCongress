@@ -55,7 +55,7 @@ namespace RemoteCongress.Client
         /// <param name="collection">
         /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
         /// </param>
-        /// <param name="client">
+        /// <param name="config">
         /// <see cref="ClientConfig"/> to configure <see cref="IRemoteCongressClient"/> with.
         /// </param>
         /// <returns>
@@ -106,7 +106,7 @@ namespace RemoteCongress.Client
         /// <param name="collection">
         /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
         /// </param>
-        /// <param name="client">
+        /// <param name="config">
         /// <see cref="ClientConfig"/> to configure <see cref="IRemoteCongressClient"/> with.
         /// </param>
         /// <returns>
@@ -121,7 +121,7 @@ namespace RemoteCongress.Client
                 .AddSingleton(new HttpClient());
 
         /// <summary>
-        /// Registers all supported <see cref="ICodec"/>s.
+        /// Registers all supported <see cref="ICodec{TModel}"/>s.
         /// </summary>
         /// <param name="collection">
         /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.

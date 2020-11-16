@@ -4,7 +4,7 @@
 ## Contents
 
 - [InMemoryBlock](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlock 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock')
-  - [#ctor(previousBlock,content)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-#ctor-RemoteCongress-Server-DAL-InMemory-InMemoryBlock,System-String,RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock.#ctor(RemoteCongress.Server.DAL.InMemory.InMemoryBlock,System.String,RemoteCongress.Common.RemoteCongressMediaType)')
+  - [#ctor(previousBlock,content,mediaType)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-#ctor-RemoteCongress-Server-DAL-InMemory-InMemoryBlock,System-String,RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock.#ctor(RemoteCongress.Server.DAL.InMemory.InMemoryBlock,System.String,RemoteCongress.Common.RemoteCongressMediaType)')
   - [#ctor()](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-#ctor 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock.#ctor')
   - [Content](#P-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-Content 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Content')
   - [Hash](#P-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-Hash 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Hash')
@@ -21,6 +21,7 @@
   - [GenerateGenisysBlock()](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchain-GenerateGenisysBlock 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain.GenerateGenisysBlock')
 - [InMemoryBlockchainClient](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient')
   - [#ctor(codecs)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-#ctor-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-SignedData}}- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.#ctor(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}})')
+  - [AppendToChain(data,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)')
   - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [FetchFromChain(id,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchFromChain-System-String,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchFromChain(System.String,System.Threading.CancellationToken)')
 
@@ -36,7 +37,7 @@ RemoteCongress.Server.DAL.InMemory
 A simple class to exist as a block inside a blockchain.
 
 <a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-#ctor-RemoteCongress-Server-DAL-InMemory-InMemoryBlock,System-String,RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### #ctor(previousBlock,content) `constructor`
+### #ctor(previousBlock,content,mediaType) `constructor`
 
 ##### Summary
 
@@ -48,6 +49,7 @@ Constructor
 | ---- | ---- | ----------- |
 | previousBlock | [RemoteCongress.Server.DAL.InMemory.InMemoryBlock](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlock 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock') | The previous [InMemoryBlock](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlock 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock') in the [InMemoryBlockchain](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchain 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain'). |
 | content | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The content to be stored in the [InMemoryBlock](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlock 'RemoteCongress.Server.DAL.InMemory.InMemoryBlock'). |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') of the block. |
 
 <a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlock-#ctor'></a>
 ### #ctor() `constructor`
@@ -212,7 +214,7 @@ RemoteCongress.Server.DAL.InMemory
 
 ##### Summary
 
-An In Memory implementation of [](#!-IBlockchainClient 'IBlockchainClient') for testing.
+An In Memory implementation of [IDataClient](#T-RemoteCongress-Common-Repositories-IDataClient 'RemoteCongress.Common.Repositories.IDataClient') for testing.
 
 ##### Remarks
 
@@ -233,13 +235,31 @@ Constructor
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| codecs | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}}') | The [](#!-ICodec 'ICodec') to use for [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData') data. |
+| codecs | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}}') | The [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1') to use for [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData') data. |
 
 ##### Exceptions
 
 | Name | Description |
 | ---- | ----------- |
 | [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `codecs` is null. |
+
+<a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken-'></a>
+### AppendToChain(data,cancellationToken) `method`
+
+##### Summary
+
+Creates a new block containing the verified content in `data` in the blockchain.
+
+##### Returns
+
+The unique id of the stored block.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| data | [RemoteCongress.Common.ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') | The signed and verified data structure to store in the blockchain. |
+| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### FetchAllFromChain(query,cancellationToken) `method`

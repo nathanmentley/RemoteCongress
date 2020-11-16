@@ -80,6 +80,9 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// <param name="content">
         /// The content to be stored in the <see cref="InMemoryBlock"/>.
         /// </param>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> of the block.
+        /// </param>
         internal InMemoryBlock(InMemoryBlock previousBlock, string content, RemoteCongressMediaType mediaType)
         {
             if (previousBlock is null)

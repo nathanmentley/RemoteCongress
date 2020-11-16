@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
 {
     /// <summary>
-    /// An <see cref="ICodec"/> for a version 1 json representation of a <see cref="Block"/>.
+    /// An <see cref="ICodec{TData}"/> for a version 1 json representation of a <see cref="Block"/>.
     /// </summary>
     internal class BlockV1JsonCodec: ICodec<Block>
     {
@@ -61,7 +61,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
             MediaType.Equals(mediaType);
 
         /// <summary>
-        /// Decodes a <paramref name="data"/> into a <typeparamref name="TData"/>.
+        /// Decodes a <paramref name="data"/> into a <see cref="Block"/>.
         /// </summary>
         /// <param name="mediaType">
         /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
@@ -70,15 +70,15 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// The <see cref="Stream"/> to decode dat from.
         /// </param>
         /// <returns>
-        /// The <typeparamref name="TData"/> from <paramref name="data"/>.
+        /// The <see cref="Block"/> from <paramref name="data"/>.
         /// </returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
         public async Task<Block> Decode(RemoteCongressMediaType mediaType, Stream data)
@@ -129,13 +129,13 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// <returns>
         /// A <see cref="Stream"/> containing the encoded data.
         /// </returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, Block data)

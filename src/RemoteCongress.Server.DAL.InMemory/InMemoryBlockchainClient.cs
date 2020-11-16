@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.DAL.InMemory
 {
     /// <summary>
-    /// An In Memory implementation of <see cref="IBlockchainClient"/> for testing.
+    /// An In Memory implementation of <see cref="IDataClient"/> for testing.
     /// </summary>
     /// <remarks>
     /// This data store is not distributed, and since it's in memory it's also not immutable.
@@ -50,7 +50,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// Constructor
         /// </summary>
         /// <param name="codecs">
-        /// The <see cref="ICodec"/> to use for <see cref="SignedData"/> data.
+        /// The <see cref="ICodec{TData}"/> to use for <see cref="SignedData"/> data.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="codecs"/> is null.
@@ -62,7 +62,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         }
 
         /// <summary>
-        /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
+        /// Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
         /// </summary>
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.

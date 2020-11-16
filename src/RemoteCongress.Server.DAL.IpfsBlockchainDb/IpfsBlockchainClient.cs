@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
 {
     /// <summary>
-    /// An Ipfs Blockchain implementation of <see cref="IBlockchainClient"/>.
+    /// An Ipfs Blockchain implementation of <see cref="IDataClient"/>.
     /// </summary>
     /// <remarks>
     /// This implementation is also pretty naive. It's really meant for a proof of concept.
@@ -51,7 +51,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// The IPFS configuration data.
         /// </param>
         /// <param name="codecs">
-        /// The <see cref="ICodec"/> to use for <see cref="SignedData"/> data.
+        /// The <see cref="ICodec{TData}"/> to use for <see cref="SignedData"/> data.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="coreApi"/> is null.
@@ -81,7 +81,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         }
 
         /// <summary>
-        /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
+        /// Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
         /// </summary>
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.

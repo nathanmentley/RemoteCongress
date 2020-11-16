@@ -89,13 +89,13 @@ namespace RemoteCongress.Common.Serialization
         /// <returns>
         /// A <see cref="string"/> containing the encoded data.
         /// </returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
         public async Task<string> EncodeToString(RemoteCongressMediaType mediaType, TData data)
@@ -131,13 +131,13 @@ namespace RemoteCongress.Common.Serialization
         /// <returns>
         /// The <typeparamref name="TData"/> from <paramref name="data"/>.
         /// </returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="data"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
         public async Task<TData> DecodeFromString(RemoteCongressMediaType mediaType, string data)

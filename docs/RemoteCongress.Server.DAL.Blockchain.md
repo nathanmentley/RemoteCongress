@@ -10,7 +10,7 @@
   - [#ctor()](#M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-#ctor 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.#ctor')
   - [_blocks](#F-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-_blocks 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1._blocks')
   - [IsValid](#P-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-IsValid 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.IsValid')
-  - [AppendToChain(content)](#M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-AppendToChain-System-String,RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.AppendToChain(System.String,RemoteCongress.Common.RemoteCongressMediaType)')
+  - [AppendToChain(content,mediaType)](#M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-AppendToChain-System-String,RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.AppendToChain(System.String,RemoteCongress.Common.RemoteCongressMediaType)')
   - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [FetchFromChain(id)](#M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-FetchFromChain-System-String- 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.FetchFromChain(System.String)')
   - [GenerateBlock(last,content,mediaType)](#M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-GenerateBlock-`0,System-String,RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.GenerateBlock(`0,System.String,RemoteCongress.Common.RemoteCongressMediaType)')
@@ -81,10 +81,10 @@ The in memory collection of blocks in the chain.
 
 ##### Summary
 
-A [](#!-TBlockchain 'TBlockchain') is valid if:
+A `TBlock` is valid if:
 
 <a name='M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-AppendToChain-System-String,RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### AppendToChain(content) `method`
+### AppendToChain(content,mediaType) `method`
 
 ##### Summary
 
@@ -92,13 +92,14 @@ Appends data to the blockchain.
 
 ##### Returns
 
-The created [](#!-TBlock 'TBlock') that contains `content`.
+The created `TBlock` that contains `content`.
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | content | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The raw content to append to the blockchain. |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') of the block to append. |
 
 <a name='M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### FetchAllFromChain(query,cancellationToken) `method`
@@ -123,18 +124,18 @@ The matching blocks from the chain
 
 ##### Summary
 
-Fetches a [](#!-TBlock 'TBlock') by `id`.
+Fetches a `TBlock` by `id`.
 
 ##### Returns
 
-The matching [](#!-TBlock 'TBlock'), or null if it's not found.
+The matching `TBlock`, or null if it's not found.
 ///
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The unique identifier to look up the [](#!-TBlock 'TBlock') by. |
+| id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The unique identifier to look up the `TBlock` by. |
 
 <a name='M-RemoteCongress-Server-DAL-Blockchain-BaseBlockchain`1-GenerateBlock-`0,System-String,RemoteCongress-Common-RemoteCongressMediaType-'></a>
 ### GenerateBlock(last,content,mediaType) `method`

@@ -99,15 +99,6 @@ namespace RemoteCongress.Server.DataSeeder
             );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="csp">
-        /// 
-        /// </param>
-        /// <returns>
-        /// 
-        /// </returns>
         private StringWriter ExportPublicKey(RSACryptoServiceProvider csp)
         {
             StringWriter outputStream = new StringWriter();
@@ -128,15 +119,6 @@ namespace RemoteCongress.Server.DataSeeder
             return outputStream;
         }
 
-        /// /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="csp">
-        /// 
-        /// </param>
-        /// <returns>
-        /// 
-        /// </returns>
         private StringWriter ExportPrivateKey(RSACryptoServiceProvider csp)
         {
             if (csp.PublicOnly)

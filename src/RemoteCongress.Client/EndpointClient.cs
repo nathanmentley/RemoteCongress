@@ -58,10 +58,10 @@ namespace RemoteCongress.Client
         /// An <see cref="ILogger"/> to log against.
         /// </param>
         /// <param name="codecs">
-        /// An <see cref="ICodec"/> for <see cref="TModel"/>s.
+        /// An <see cref="ICodec{TModel}"/> for <typeparamref name="TModel"/>s.
         /// </param>
         /// <param name="repository">
-        /// An <see cref="IImmutableDataRepository<TModelData>"/> instance to use to interact with <see cref="TModel"/>s.
+        /// An <see cref="IImmutableDataRepository{TModelData}"/> instance to use to interact with <typeparamref name="TModel"/>s.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
@@ -106,23 +106,23 @@ namespace RemoteCongress.Client
         }
 
         /// <summary>
-        /// Creates, signs, and persists a <see cref="TModel"/> instance.
+        /// Creates, signs, and persists a <typeparamref name="TModel"/> instance.
         /// </summary>
         /// <param name="privateKey">
-        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="TModel"/>.
+        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <typeparamref name="TModel"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="TModel"/> to
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <typeparamref name="TModel"/> to
         ///     the producing individual.
         /// </param>
         /// <param name="data">
-        /// The <see cref="TModel"/> data to persist.
+        /// The <typeparamref name="TModel"/> data to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The persisted <see cref="TModel"/>.
+        /// The persisted <typeparamref name="TModel"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="privateKey"/> is null.
@@ -186,16 +186,16 @@ namespace RemoteCongress.Client
         }
 
         /// <summary>
-        /// Fetches a signed, and verified <see cref="TModel"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// Fetches a signed, and verified <typeparamref name="TModel"/> by it's <see cref="IIdentifiable.Id"/>.
         /// </summary>
         /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="TModel"/>.
+        /// The <see cref="IIdentifiable.Id"/> of the <typeparamref name="TModel"/>.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The persisted <see cref="TModel"/>.
+        /// The persisted <typeparamref name="TModel"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="id"/> is null.
@@ -218,16 +218,16 @@ namespace RemoteCongress.Client
         }
 
         /// <summary>
-        /// Fetches a collection of signed, and verified <see cref="TModel"/>s by <paramref name="query"/>.
+        /// Fetches a collection of signed, and verified <typeparamref name="TModel"/>s by <paramref name="query"/>.
         /// </summary>
         /// <param name="query">
-        /// A collection of <see cref="IQuery"/>s to filter <see cref="TModel"/> by.
+        /// A collection of <see cref="IQuery"/>s to filter <typeparamref name="TModel"/> by.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// A collection of persisted <see cref="TModel"/> that matches <paramref name="query"/>.
+        /// A collection of persisted <typeparamref name="TModel"/> that matches <paramref name="query"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="query"/> is null.

@@ -36,12 +36,10 @@ namespace RemoteCongress.Common.Encryption
         /// The message to generate the signature for.
         /// </param>
         /// <returns>
-        /// A <see cref="byte[]"/> containing the signature.
+        /// A <see cref="byte"/> array containing the signature.
         /// </returns>
         /// <remarks>
-        /// We're using this signature hash to ensure the message that is signed is tied to who created it, and 
-        ///  so we can make this message immutable. If any of the content of <paramref name="message"/> changes
-        ///  later on, the signature verification will fail.
+        /// We're using this signature hash to ensure the message that is signed is tied to who created it, and so we can make this message immutable. If any of the content of <paramref name="message"/> changes later on, the signature verification will fail.
         /// </remarks>
         /// <exception cref="ArgumentNullException">
         /// Throw if <paramref name="privateKey"/> is null.
@@ -84,12 +82,10 @@ namespace RemoteCongress.Common.Encryption
         /// The signature to test against <paramref name="publicKey"/> and <paramref name="message"/>.
         /// </param>
         /// <returns>
-        /// <see cref="true"/> if <paramref name="signatureBytes"/> is a valid signature for <paramref name="publicKey"/>
-        ///     and <paramref name="message"/>.
+        /// true, if <paramref name="signatureBytes"/> is a valid signature for <paramref name="publicKey"/> and <paramref name="message"/>.
         /// </returns>
         /// <remarks>
-        /// We're using this verification to know that our signed data content is coming from the individual who is
-        ///  represnted by <paramref name="publicKey"/> and that their <paramref name="message"/> isn't tampered with.
+        /// We're using this verification to know that our signed data content is coming from the individual who is represnted by <paramref name="publicKey"/> and that their <paramref name="message"/> isn't tampered with.
         /// </remarks>
         /// <exception cref="ArgumentNullException">
         /// Throw if <paramref name="publicKey"/> is null.

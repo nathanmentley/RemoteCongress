@@ -29,23 +29,23 @@ namespace RemoteCongress.Client
     public interface IEndpointClient<TModel>
     {
         /// <summary>
-        /// Creates, signs, and persists a <see cref="TModel"/> instance.
+        /// Creates, signs, and persists a <typeparamref name="TModel"/> instance.
         /// </summary>
         /// <param name="privateKey">
-        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="TModel"/>.
+        /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <typeparamref name="TModel"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="TModel"/> to
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <typeparamref name="TModel"/> to
         ///     the producing individual.
         /// </param>
         /// <param name="data">
-        /// The <see cref="TModel"/> data to persist.
+        /// The <typeparamref name="TModel"/> data to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The persisted <see cref="TModel"/>.
+        /// The persisted <typeparamref name="TModel"/>.
         /// </returns>
         Task<VerifiedData<TModel>> Create(
             string privateKey,
@@ -55,30 +55,30 @@ namespace RemoteCongress.Client
         );
 
         /// <summary>
-        /// Fetches a signed, and verified <see cref="TModel"/> by it's <see cref="IIdentifiable.Id"/>.
+        /// Fetches a signed, and verified <typeparamref name="TModel"/> by it's <see cref="IIdentifiable.Id"/>.
         /// </summary>
         /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <see cref="TModel"/>.
+        /// The <see cref="IIdentifiable.Id"/> of the <typeparamref name="TModel"/>.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The persisted <see cref="TModel"/>.
+        /// The persisted <typeparamref name="TModel"/>.
         /// </returns>
         Task<VerifiedData<TModel>> Get(string id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Fetches a collection of signed, and verified <see cref="TModel"/>s by <paramref name="query"/>.
+        /// Fetches a collection of signed, and verified <typeparamref name="TModel"/>s by <paramref name="query"/>.
         /// </summary>
         /// <param name="query">
-        /// A collection of <see cref="IQuery"/>s to filter <see cref="TModel"/> by.
+        /// A collection of <see cref="IQuery"/>s to filter <typeparamref name="TModel"/> by.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// A collection of persisted <see cref="TModel"/> that matches <paramref name="query"/>.
+        /// A collection of persisted <typeparamref name="TModel"/> that matches <paramref name="query"/>.
         /// </returns>
         IAsyncEnumerable<VerifiedData<TModel>> Get(IList<IQuery> query, CancellationToken cancellationToken);
     }

@@ -28,7 +28,7 @@ namespace RemoteCongress.Common.Repositories
     public interface IDataClient
     {
         /// <summary>
-        /// Creates a new block containing the verified content in <paramref="data"/> in the blockchain.
+        /// Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
         /// </summary>
         /// <param name="data">
         /// The signed and verified data structure to store in the blockchain.

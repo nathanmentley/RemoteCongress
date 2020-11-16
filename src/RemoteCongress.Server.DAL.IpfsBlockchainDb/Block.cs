@@ -81,6 +81,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="content">
         /// The content to be stored in the <see cref="Block"/>.
         /// </param>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> of the block.
+        /// </param>
         public Block(Block previousBlock, string content, RemoteCongressMediaType mediaType)
         {
             if (previousBlock is null)
@@ -141,9 +144,13 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </param>
         /// <param name="lastBlockId">
         /// </param>
+        /// <param name="timestampUtc">
+        /// </param>
         /// <param name="lastBlockHash">
         /// </param>
         /// <param name="content">
+        /// </param>
+        /// <param name="mediaType">
         /// </param>
         /// <param name="hash">
         /// </param>

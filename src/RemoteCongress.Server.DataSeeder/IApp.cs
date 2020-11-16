@@ -20,8 +20,20 @@ using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DataSeeder
 {
+    /// <summary>
+    /// Application logic.
+    /// </summary>
     public interface IApp
     {
-        Task Run(CancellationToken cancellationToken);
+        /// <summary>
+        /// Runs application logic.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
+        /// <returns>
+        /// The result code from the logic.
+        /// </returns>
+        Task<int> Run(CancellationToken cancellationToken);
     }
 }

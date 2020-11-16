@@ -20,7 +20,7 @@ using System.Collections.Generic;
 namespace RemoteCongress.Common.Repositories.Queries
 {
     /// <summary>
-    /// Query processing logic for <see cref="TData"/>.
+    /// Query processing logic for <typeparmref name="TData"/>.
     /// </summary>
     public interface IQueryProcessor<TData>
     {

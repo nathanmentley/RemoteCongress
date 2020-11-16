@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Common.Repositories
 {
     /// <summary>
-    /// An immutable data repository for <see cref="TData"/>.
+    /// An immutable data repository for <typeparamref name="TData"/>.
     /// </summary>
     public class ImmutableDataRepository<TData>: IImmutableDataRepository<TData>
     {
@@ -64,23 +64,23 @@ namespace RemoteCongress.Common.Repositories
         /// A <see cref="IDataClient"/> instance to use to communicate with the data store.
         /// </param>
         /// <param name="codecs">
-        /// <see cref="ICodec"/>s for <typeparamref name="TData"/> to process block content.
+        /// <see cref="ICodec{TData}"/>s for <typeparamref name="TData"/> to process block content.
         /// </param>
         /// <param name="queryProcessor">
         /// <see cref="IQueryProcessor{TData}"/> to filter <typeparamref name="TData"/> on for queries.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="client"/> is null.
-        /// </excpetion>
+        /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="codec"/> is null.
-        /// </excpetion>
+        /// Thrown if <paramref name="codecs"/> is null.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="queryProcessor"/> is null.
-        /// </excpetion>
+        /// </exception>
         public ImmutableDataRepository(
             ILogger<IImmutableDataRepository<TData>> logger,
             IDataClient client,
@@ -108,16 +108,16 @@ namespace RemoteCongress.Common.Repositories
         }
 
         /// <summary>
-        /// Creates and persist the signed and verified <paramref name="instance"/>.
+        /// Creates and persist the signed and verified <paramref name="model"/>.
         /// </summary>
-        /// <param name="instance">
-        /// A signed and verified instance of type <typeparamref cref="TData"/> to persist.
+        /// <param name="model">
+        /// A signed and verified instance of type <typeparamref name="TData"/> to persist.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.
         /// </param>
         /// <returns>
-        /// The persisted <paramref name="instance"/> model.
+        /// The persisted <paramref name="model"/> model.
         /// </returns>
         /// <exception cref="BlockNotStorableException">
         /// Thrown if the <paramref name="model"/> cannot be stored.
@@ -159,7 +159,7 @@ namespace RemoteCongress.Common.Repositories
         ///     matches <paramref name="id"/>.
         /// </summary>
         /// <param name="id">
-        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="TBlock"/> instance to fetch.
+        /// The unique <see cref="IIdentifiable.Id"/> of an <typeparamref name="TData"/> instance to fetch.
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation requests.

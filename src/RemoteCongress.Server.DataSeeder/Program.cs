@@ -18,11 +18,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Client;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.DataSeeder
 {
+    /// <summary>
+    /// Entry point class.
+    /// </summary>
     class Program
     {
         /// <remarks>
@@ -50,23 +54,58 @@ FTwpq3tjtOwR6jj9zzWG6o3Sd6V/XmJhrAzuyvnZP+779nhvuUaT7ks2hZXOEV40
 FKdqbPS9sqAz1op32vOHHvB1rc8HVopFY5UqpN1SJ/15BMImaAb/ucGe/YBpNTkw
 kwMRyHisc6diIMoNAgMBAAE=";
 
+        /// <summary>
+        /// The congress to seed.
+        /// </summary>
         private static readonly int Congress = 116;
+
+        /// <summary>
+        /// The session to seed.
+        /// </summary>
         private static readonly int Session = 2;
 
+        /// <summary>
+        /// The hardcoded hostname to seed against
+        /// </summary>
+        /// <remarks>
+        /// TODO: Provide this from the cli.
+        /// </remarks>
         private static readonly string Hostname = "127.0.0.1:8000";
+
+        /// <summary>
+        /// The hardcoded protocol to seed against
+        /// </summary>
+        /// <remarks>
+        /// TODO: Provide this from the cli.
+        /// </remarks>
         private static readonly string Protocol = "http";
 
-        public static async Task Main(string[] args)
+        /// <summary>
+        /// Runs the application logic
+        /// </summary>
+        /// <param name="args">
+        /// Command line arguments
+        /// </param>
+        /// <returns>
+        /// Result code
+        /// </returns>
+        public static async Task<int> Main(string[] args)
         {
-            using ServiceProvider serviceProvider = GetServiceProvider(
-                new ClientConfig(Protocol, Hostname)
-            );
+            using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+            using ServiceProvider serviceProvider = GetServiceProvider(new ClientConfig(Protocol, Hostname));
 
-            IApp app = serviceProvider.GetRequiredService<IApp>();
-
-            await app.Run(CancellationToken.None);
+            return await serviceProvider.GetRequiredService<IApp>().Run(cancellationTokenSource.Token);
         }
 
+        /// <summary>
+        /// Sets up the <see cref="ServiceProvider"/> and registers the Remote Congress client in DI.
+        /// </summary>
+        /// <param name="config">
+        /// The <see cref="ClientConfig"/> to use to configure the RemoteCongress client instances.
+        /// </param>
+        /// <returns>
+        /// The DI <see cref="ServiceProvider"/>.
+        /// </returns>
         private static ServiceProvider GetServiceProvider(ClientConfig config) =>
             new ServiceCollection()
                 .AddSingleton<IKeyGenerator, KeyGenerator>()
@@ -88,5 +127,23 @@ kwMRyHisc6diIMoNAgMBAAE=";
                 )
                 .AddRemoteCongressClient(config)
                 .BuildServiceProvider();
+
+        /// <summary>
+        /// Sets up the <see cref="CancellationTokenSource"/> for the cli application.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="CancellationTokenSource"/> linked to the application cancellation event.
+        /// </returns>
+        private static CancellationTokenSource GetCancellationTokenSource()
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            Console.CancelKeyPress += (_, @event) => {
+                @event.Cancel = false;
+                cancellationTokenSource.Cancel();
+            };
+
+            return cancellationTokenSource;
+        }
     }
 }

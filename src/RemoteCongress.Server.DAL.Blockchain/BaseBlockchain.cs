@@ -23,10 +23,10 @@ namespace RemoteCongress.Server.DAL.Blockchain
         private readonly IList<TBlock> _blocks;
 
         /// <summary>
-        /// A <see cref="TBlockchain"/> is valid if:
+        /// A <typeparamref name="TBlock"/> is valid if:
         /// <list>
-        ///     <item>Every <see cref="TBlockchain"/>'s <see cref="TBlockchain.IsValid"/> is true</item>
-        ///     <item>Every <see cref="TBlockchain"/>'s <see cref="TBlockchain.LastBlockHash"/> matches the previous <see cref="TBlockchain"/>'s <see cref="TBlockchain.Hash"/>.</item>
+        ///     <item>Every <typeparamref name="TBlock"/>'s <typeparamref name="TBlock.IsValid"/> is true</item>
+        ///     <item>Every <typeparamref name="TBlock"/>'s <typeparamref name="TBlock.LastBlockHash"/> matches the previous <typeparamref name="TBlock"/>'s <typeparamref name="TBlock.Hash"/>.</item>
         /// </list>
         /// </summary>
         public bool IsValid => !_blocks.Any(block => !block.IsValid);
@@ -74,8 +74,11 @@ namespace RemoteCongress.Server.DAL.Blockchain
         /// <param name="content">
         /// The raw content to append to the blockchain.
         /// </param>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> of the block to append.
+        /// </param>
         /// <returns>
-        /// The created <see cref="TBlock"/> that contains <paramref name="content"/>.
+        /// The created <typeparamref name="TBlock"/> that contains <paramref name="content"/>.
         /// </returns>
         public TBlock AppendToChain(string content, RemoteCongressMediaType mediaType)
         {
@@ -90,13 +93,13 @@ namespace RemoteCongress.Server.DAL.Blockchain
         }
 
         /// <summary>
-        /// Fetches a <see cref="TBlock"/> by <paramref name="id"/>.
+        /// Fetches a <typeparamref name="TBlock"/> by <paramref name="id"/>.
         /// </summary>
         /// <param name="id">
-        /// The unique identifier to look up the <see cref="TBlock"/> by.
+        /// The unique identifier to look up the <typeparamref name="TBlock"/> by.
         /// </param>
         /// <returns>
-        /// The matching <see cref="TBlock"/>, or null if it's not found.
+        /// The matching <typeparamref name="TBlock"/>, or null if it's not found.
         /// /// </returns>
         public TBlock FetchFromChain(string id) =>
             _blocks.FirstOrDefault(block => block.Id.Equals(id, StringComparison.OrdinalIgnoreCase));

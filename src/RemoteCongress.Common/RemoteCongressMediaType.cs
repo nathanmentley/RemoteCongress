@@ -79,7 +79,7 @@ namespace RemoteCongress.Common
         /// <param name="type">
         /// The mediatype type
         /// </param>
-        /// <param name="subtype">
+        /// <param name="subType">
         /// The mediatype subtype
         /// </param>
         /// <param name="structure">

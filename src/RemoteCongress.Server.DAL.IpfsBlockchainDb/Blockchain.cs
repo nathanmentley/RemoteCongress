@@ -49,14 +49,17 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <summary>
         /// A <see cref="Blockchain"/> is valid if:
         ///     * Every <see cref="Blockchain"/>'s <see cref="Blockchain.IsValid"/> is true
-        ///     * Every <see cref="Blockchain"/>'s <see cref="Blockchain.LastBlockHash"/> matches the
-        ///         previous <see cref="Blockchain"/>'s <see cref="Blockchain.Hash"/>.
+        ///     * Every <see cref="Blockchain"/>'s <see cref="Block.LastBlockHash"/> matches the
+        ///         previous <see cref="Blockchain"/>'s <see cref="Block.Hash"/>.
         /// </summary>
         public bool IsValid => !_blocks.Any(block => !block.IsValid);
 
         /// <summary>
         /// Ctor
         /// </summary>
+        /// <param name="coreApi">
+        /// The IPFS api interface
+        /// </param>
         /// <param name="config">
         /// An <see cref="IpfsBlockchainConfig"/> instance to use to configure Ipfs
         /// </param>
@@ -95,6 +98,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// <param name="id">
         /// The previous <see cref="Block"/>'s <see cref="Block.Id"/>.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
         internal async Task LoadPreviousBlockIntoChain(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -114,6 +120,12 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </summary>
         /// <param name="content">
         /// The raw content to append to the blockchain.
+        /// </param>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> of the block to append.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
         /// </param>
         /// <returns>
         /// The created <see cref="Block"/> that contains <paramref name="content"/>.
@@ -176,6 +188,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </summary>
         /// <param name="block">
         /// The <see cref="Block"/> to persist in the chain
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
         /// </param>
         /// <returns>
         /// The peristed version of <paramref name="block"/>.

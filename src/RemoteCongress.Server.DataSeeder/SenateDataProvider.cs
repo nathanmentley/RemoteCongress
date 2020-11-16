@@ -25,15 +25,47 @@ using System.Xml.Linq;
 
 namespace RemoteCongress.Server.DataSeeder
 {
+    /// <summary>
+    /// A <see cref="IDataProvider"/> for fetching data for the US Senate from xml files.
+    /// </summary>
     public class SenateDataProvider: IDataProvider
     {
+        /// <summary>
+        /// A local in memory cache of members, and their pub/priv keys.
+        /// </summary>
         private readonly IDictionary<string, (string, string)> _keys =
             new Dictionary<string, (string, string)>();
 
+        /// <summary>
+        /// A <see cref="IKeyGenerator"/> to create keys for seeded <see cref="Member"/>s.
+        /// </summary>
         private readonly IKeyGenerator _keyGenerator;
+
+        /// <summary>
+        /// The congress number to seed.
+        /// </summary>
         private readonly int _congress;
+
+        /// <summary>
+        /// The session number to seed.
+        /// </summary>
         private readonly int _session;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="keyGenerator">
+        /// A <see cref="IKeyGenerator"/> to create keys for seeded <see cref="Member"/>s.
+        /// </param>
+        /// <param name="congress">
+        /// The congress number to seed.
+        /// </param>
+        /// <param name="session">
+        /// The session number to seed.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="keyGenerator"/> is null.
+        /// </exception>
         public SenateDataProvider(
             IKeyGenerator keyGenerator,
             int congress,
@@ -48,13 +80,20 @@ namespace RemoteCongress.Server.DataSeeder
             _session = session;
         }
 
+        /// <summary>
+        /// Fetches all <see cref="Member"/>s to seed.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> that triggers a cancellation.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="Member"/>s to seed.
+        /// </returns>
         public async IAsyncEnumerable<Member> GetMembers([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             string path = AppDomain.CurrentDomain.BaseDirectory;
-
-            Directory.CreateDirectory(Path.Combine(path, "workspace"));
 
             XElement senatorsData = XElement.Load(
                 Path.Combine(path, "data/cvc_member_data.xml")
@@ -62,6 +101,8 @@ namespace RemoteCongress.Server.DataSeeder
 
             foreach(XElement senatorData in senatorsData.Descendants("senator"))
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 string id = senatorData.Attribute("lis_member_id").Value;
 
                 (string privateKey, string publicKey) = await _keyGenerator.GenerateKeys(1024, cancellationToken);
@@ -79,6 +120,15 @@ namespace RemoteCongress.Server.DataSeeder
             }
         }
 
+        /// <summary>
+        /// Fetches all <see cref="Bill"/>s to seed.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> that triggers a cancellation.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="Bill"/>s to seed.
+        /// </returns>
         public async IAsyncEnumerable<(Bill, string)> GetBills([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -89,6 +139,8 @@ namespace RemoteCongress.Server.DataSeeder
 
             foreach(FileInfo file in directoryInfo.GetFiles(searchPattern))
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 using MemoryStream stream = new MemoryStream(
                     await File.ReadAllBytesAsync(file.FullName, cancellationToken)
                 );
@@ -96,7 +148,7 @@ namespace RemoteCongress.Server.DataSeeder
                 XElement voteData = await XElement.LoadAsync(
                     stream,
                     new LoadOptions(),
-                    CancellationToken.None
+                    cancellationToken
                 );
 
                 yield return (
@@ -110,6 +162,21 @@ namespace RemoteCongress.Server.DataSeeder
             }
         }
 
+        /// <summary>
+        /// Fetches all <see cref="Vote"/>s for a <see cref="Bill"/> to seed.
+        /// </summary>
+        /// <param name="id">
+        /// The unique id of the bill.
+        /// </param>
+        /// <param name="bill">
+        /// The seeded <see cref="Bill"/> wrapped in a <see cref="VerifiedData{TModel}"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> that triggers a cancellation.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="Vote"/>s to seed.
+        /// </returns>
         public async IAsyncEnumerable<(Vote vote, string memberPrivateKey, string memberPublicKey)> GetVotes(
             string id,
             VerifiedData<Bill> bill,
@@ -124,6 +191,8 @@ namespace RemoteCongress.Server.DataSeeder
 
             foreach(FileInfo file in directoryInfo.GetFiles(searchPattern))
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 using MemoryStream stream = new MemoryStream(
                     await File.ReadAllBytesAsync(file.FullName, cancellationToken)
                 );
@@ -131,35 +200,48 @@ namespace RemoteCongress.Server.DataSeeder
                 XElement voteData = await XElement.LoadAsync(
                     stream,
                     new LoadOptions(),
-                    CancellationToken.None
+                    cancellationToken
                 );
 
                 foreach(XElement member in voteData.Element("members").Descendants("member"))
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     string memberId = member.Element("lis_member_id").Value;
                     (string memberPrivateKey, string memberPublicKey) = _keys[memberId];
-                    string voteCast = member.Element("vote_cast").Value;
-                    string memberFull = member.Element("member_full").Value;
-                    bool? opinion = voteCast switch
+                    Vote vote = BuildVote(bill, member);
+
+                    yield return (vote, memberPrivateKey, memberPublicKey);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a <see cref="Vote"/> poco.
+        /// </summary>
+        /// <param name="bill">
+        /// The <see cref="Bill"/> related to the <see cref="Vote"/>.
+        /// </param>
+        /// <param name="member">
+        /// The XML element containing the vote data.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Vote"/> poco to use.
+        /// </returns>
+        private static Vote BuildVote(VerifiedData<Bill> bill, XElement member) =>
+            new Vote()
+            {
+                BillId = bill.Id,
+                Opinion =
+                    member.Element("vote_cast")?.Value switch
                     {
                         "Yea" => true,
                         "Guilty" => true,
                         "Nay" => false,
                         "Not Guilty" => false,
                         _ => null
-                    };
-                    string message = $"{memberFull} voted {voteCast}";
-
-                    Vote vote = new Vote()
-                    {
-                        BillId = bill.Id,
-                        Opinion = opinion,
-                        Message = message
-                    };
-
-                    yield return (vote, memberPrivateKey, memberPublicKey);
-                }
-            }
-        }
+                    },
+                Message = $"{member.Element("member_full")?.Value} voted {member.Element("vote_cast")?.Value}"
+            };
     }
 }

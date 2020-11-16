@@ -25,14 +25,6 @@ namespace RemoteCongress.Common
     /// <summary>
     /// A simple data transfer object that contains signed data.
     /// </summary>
-    /// <remarks>
-    /// This class just contains the signed data. It's not gareneteed to be valid and untampered.
-    /// If you're using data in a way you want it to be validated you must convert this to a type
-    ///     that inherits from <see cref="BaseBlockModel"/>.
-    /// 
-    /// This class is meant to be used to pull raw data from the persistence layer or to pull data
-    ///     from the api. It should be transfered to a verifiable, and immutable type right away.
-    /// </remarks>
     [ExcludeFromCodeCoverage]
     public class SignedData: ISignedData, IIdentifiable
     {
