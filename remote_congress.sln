@@ -7,11 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{74893211-53F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Common", "src\RemoteCongress.Common\RemoteCongress.Common.csproj", "{611A2A28-50AA-4D23-BB8D-E3A5E601A3D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Server.Web", "src\RemoteCongress.Server.Web\RemoteCongress.Server.Web.csproj", "{7CD81B1C-BBDF-44CF-8832-3EDE3824F0A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Server.Api", "src\RemoteCongress.Server.Api\RemoteCongress.Server.Api.csproj", "{7CD81B1C-BBDF-44CF-8832-3EDE3824F0A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CBF700B8-6241-44D3-B493-47EC1D98F5C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.CliTool", "src\RemoteCongress.CliTool\RemoteCongress.CliTool.csproj", "{73E13DF8-D327-4D80-BB93-026E447258BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Utils.CliTool", "src\RemoteCongress.Utils.CliTool\RemoteCongress.Utils.CliTool.csproj", "{73E13DF8-D327-4D80-BB93-026E447258BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Client", "src\RemoteCongress.Client\RemoteCongress.Client.csproj", "{D822C023-33B8-4B61-BA6C-8A026061CA25}"
 EndProject
@@ -27,9 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Example", "e
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Tests", "tests\RemoteCongress.Tests\RemoteCongress.Tests.csproj", "{72A2D611-2D62-4577-BB27-D9330E06B4B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Server.DataSeeder", "src\RemoteCongress.Server.DataSeeder\RemoteCongress.Server.DataSeeder.csproj", "{89EB14FC-26A0-4FCE-A154-810FC51B9076}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Utils.DataSeeder", "src\RemoteCongress.Utils.DataSeeder\RemoteCongress.Utils.DataSeeder.csproj", "{89EB14FC-26A0-4FCE-A154-810FC51B9076}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Server.DAL.Blockchain", "src\RemoteCongress.Server.DAL.Blockchain\RemoteCongress.Server.DAL.Blockchain.csproj", "{D0A777FF-8ED5-4769-9A1F-80DDEADA1778}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteCongress.Client.DAL.Http", "src\RemoteCongress.Client.DAL.Http\RemoteCongress.Client.DAL.Http.csproj", "{9404BE7E-743E-4461-8D9C-A571FBF8F39B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -176,6 +178,18 @@ Global
 		{D0A777FF-8ED5-4769-9A1F-80DDEADA1778}.Release|x64.Build.0 = Release|Any CPU
 		{D0A777FF-8ED5-4769-9A1F-80DDEADA1778}.Release|x86.ActiveCfg = Release|Any CPU
 		{D0A777FF-8ED5-4769-9A1F-80DDEADA1778}.Release|x86.Build.0 = Release|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Debug|x64.Build.0 = Debug|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Debug|x86.Build.0 = Debug|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Release|x64.ActiveCfg = Release|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Release|x64.Build.0 = Release|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Release|x86.ActiveCfg = Release|Any CPU
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{611A2A28-50AA-4D23-BB8D-E3A5E601A3D4} = {74893211-53F2-401C-A374-198D812361F2}
@@ -189,5 +203,6 @@ Global
 		{72A2D611-2D62-4577-BB27-D9330E06B4B8} = {CBF700B8-6241-44D3-B493-47EC1D98F5C5}
 		{89EB14FC-26A0-4FCE-A154-810FC51B9076} = {74893211-53F2-401C-A374-198D812361F2}
 		{D0A777FF-8ED5-4769-9A1F-80DDEADA1778} = {74893211-53F2-401C-A374-198D812361F2}
+		{9404BE7E-743E-4461-8D9C-A571FBF8F39B} = {74893211-53F2-401C-A374-198D812361F2}
 	EndGlobalSection
 EndGlobal

@@ -143,15 +143,15 @@ You should see an output that looks something like this:
 
 There is a data seeder tool that can be used to load real senate voting data from the second session of the 116th congress.
 
-Once there is a server running, either locally or in docker, you can run the dataloader tool located at src/RemoteCongress.Server.DataSeeder
+Once there is a server running, either locally or in docker, you can run the dataloader tool located at src/RemoteCongress.Utils.DataSeeder
 
 Running locally:
 
-    dotnet run --project src/RemoteCongress.Server.DataSeeder/RemoteCongress.Server.DataSeeder.csproj
+    dotnet run --project src/RemoteCongress.Utils.DataSeeder/RemoteCongress.Utils.DataSeeder.csproj
 
 Running from a docker container
 
-    docker run --entrypoint /app/RemoteCongress.Server.DataSeeder --net=host remote-congress/api
+    docker run --entrypoint /app/RemoteCongress.Utils.DataSeeder --net=host remote-congress/api
 
 The data seeder will parse included xml files to generate public private key pairs for each senator, then it'll submit signed bill and vote data using the RemoteCongress.Client library.
 
@@ -161,25 +161,25 @@ Once run you should be able to use the api to search through votes and bills. Al
 
 Optionally, if you want to interact with the RemoteCongress platform in a more dynamic way you can use a command line tool included with the project.
 
-There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
+There is a [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) command line tool under the src/RemoteCongress.Utils.CliTool directory that can be compiled and used to cast votes, submit bills, fetch saved votes, and fetch saved bills. This tool can use what ever public / private key pair you supply. Example keys are in the keys directory of this git repo.
 
 #### cli tool examples
 
 Creating a new bill:
 
-    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj submit-bill --key keys/example --title "Title of new bill" --content "The content of the new bill."
+    dotnet run --project src/RemoteCongress.Utils.CliTool/RemoteCongress.Utils.CliTool.csproj submit-bill --key keys/example --title "Title of new bill" --content "The content of the new bill."
 
 Voting on a bill:
 
-    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj cast-vote --key keys/example --billId QmXJ7Zwpr2S6rbRb2wSMU6pAhWjU7RH7HHiykgWzWd4bdA --opinion False --message "Some short reason on why a vote was cast the way it was"
+    dotnet run --project src/RemoteCongress.Utils.CliTool/RemoteCongress.Utils.CliTool.csproj cast-vote --key keys/example --billId QmXJ7Zwpr2S6rbRb2wSMU6pAhWjU7RH7HHiykgWzWd4bdA --opinion False --message "Some short reason on why a vote was cast the way it was"
 
 Viewing a bill:
 
-    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj view-bill --id QmXJ7Zwpr2S6rbRb2wSMU6pAhWjU7RH7HHiykgWzWd4bdA
+    dotnet run --project src/RemoteCongress.Utils.CliTool/RemoteCongress.Utils.CliTool.csproj view-bill --id QmXJ7Zwpr2S6rbRb2wSMU6pAhWjU7RH7HHiykgWzWd4bdA
 
 Viewing a vote:
 
-    dotnet run --project src/RemoteCongress.CliTool/RemoteCongress.CliTool.csproj view-vote --id QmPnfkTnEYxVotRHtCLS4g3q4otAmAYKvtbtKbWZ34brXF
+    dotnet run --project src/RemoteCongress.Utils.CliTool/RemoteCongress.Utils.CliTool.csproj view-vote --id QmPnfkTnEYxVotRHtCLS4g3q4otAmAYKvtbtKbWZ34brXF
 
 ### Using RemoteCongress.Client library to programmically interact with the platform
 

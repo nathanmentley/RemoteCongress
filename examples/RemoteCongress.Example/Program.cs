@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using RemoteCongress.Client;
+using RemoteCongress.Client.DAL.Http;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories.Queries;
 using System;
@@ -152,7 +153,7 @@ kwMRyHisc6diIMoNAgMBAAE=";
             IAsyncEnumerable<VerifiedData<Vote>> votes = remoteCongressClient.GetVotes(
                 new List<IQuery>()
                 {
-                    new BillIdQuery(bill.Id), //filter votes to only votes against a bill id
+                    new BillIdQuery(bill.Id),   //filter votes to only votes against a bill id
                     new OpinionQuery(true)      // only select the yes votes
                 },
                 CancellationToken.None

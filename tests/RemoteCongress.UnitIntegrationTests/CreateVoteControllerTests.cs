@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RemoteCongress.Common;
-using RemoteCongress.Server.Web.Controllers.Votes;
+using RemoteCongress.Server.Api.Controllers.Votes;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

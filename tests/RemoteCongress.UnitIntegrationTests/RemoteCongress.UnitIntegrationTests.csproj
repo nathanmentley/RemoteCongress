@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\RemoteCongress.Server.DAL.InMemory\RemoteCongress.Server.DAL.InMemory.csproj" />
-    <ProjectReference Include="..\..\src\RemoteCongress.Server.Web\RemoteCongress.Server.Web.csproj" />
+    <ProjectReference Include="..\..\src\RemoteCongress.Server.Api\RemoteCongress.Server.Api.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RemoteCongress.Client.DAL.Http;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Repositories.Queries;

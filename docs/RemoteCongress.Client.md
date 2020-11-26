@@ -3,10 +3,6 @@
 
 ## Contents
 
-- [ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig')
-  - [#ctor(protocol,serverHostName)](#M-RemoteCongress-Client-ClientConfig-#ctor-System-String,System-String- 'RemoteCongress.Client.ClientConfig.#ctor(System.String,System.String)')
-  - [Protocol](#P-RemoteCongress-Client-ClientConfig-Protocol 'RemoteCongress.Client.ClientConfig.Protocol')
-  - [ServerHostName](#P-RemoteCongress-Client-ClientConfig-ServerHostName 'RemoteCongress.Client.ClientConfig.ServerHostName')
 - [EndpointClient\`1](#T-RemoteCongress-Client-EndpointClient`1 'RemoteCongress.Client.EndpointClient`1')
   - [#ctor(logger,codecs,repository)](#M-RemoteCongress-Client-EndpointClient`1-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Client-EndpointClient{`0}},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{`0}},RemoteCongress-Common-Repositories-IImmutableDataRepository{`0}- 'RemoteCongress.Client.EndpointClient`1.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Client.EndpointClient{`0}},System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{`0}},RemoteCongress.Common.Repositories.IImmutableDataRepository{`0})')
   - [_codecs](#F-RemoteCongress-Client-EndpointClient`1-_codecs 'RemoteCongress.Client.EndpointClient`1._codecs')
@@ -17,13 +13,6 @@
   - [Get(query,cancellationToken)](#M-RemoteCongress-Client-EndpointClient`1-Get-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.EndpointClient`1.Get(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Client-EndpointClient`1-GetPreferredMediaType 'RemoteCongress.Client.EndpointClient`1.GetPreferredMediaType')
   - [GetTModelCodec(mediaType)](#M-RemoteCongress-Client-EndpointClient`1-GetTModelCodec-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Client.EndpointClient`1.GetTModelCodec(RemoteCongress.Common.RemoteCongressMediaType)')
-- [HttpDataClient](#T-RemoteCongress-Client-HttpDataClient 'RemoteCongress.Client.HttpDataClient')
-  - [#ctor(logger,config,httpClient,queryCodec,codecs,collectionCodecs,endpoint)](#M-RemoteCongress-Client-HttpDataClient-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Client-HttpDataClient},RemoteCongress-Client-ClientConfig,System-Net-Http-HttpClient,RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-Repositories-Queries-IQuery},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-SignedData}},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{System-Collections-Generic-IEnumerable{RemoteCongress-Common-SignedData}}},System-String- 'RemoteCongress.Client.HttpDataClient.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Client.HttpDataClient},RemoteCongress.Client.ClientConfig,System.Net.Http.HttpClient,RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.Repositories.Queries.IQuery},System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}},System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData}}},System.String)')
-  - [AppendToChain(data,cancellationToken)](#M-RemoteCongress-Client-HttpDataClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken- 'RemoteCongress.Client.HttpDataClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)')
-  - [FetchAllFromChain(queries,cancellationToken)](#M-RemoteCongress-Client-HttpDataClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.HttpDataClient.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
-  - [FetchFromChain(id,cancellationToken)](#M-RemoteCongress-Client-HttpDataClient-FetchFromChain-System-String,System-Threading-CancellationToken- 'RemoteCongress.Client.HttpDataClient.FetchFromChain(System.String,System.Threading.CancellationToken)')
-  - [GetSignedDataCollectionForMediaType(mediaType)](#M-RemoteCongress-Client-HttpDataClient-GetSignedDataCollectionForMediaType-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Client.HttpDataClient.GetSignedDataCollectionForMediaType(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [GetSignedDataForMediaType(mediaType)](#M-RemoteCongress-Client-HttpDataClient-GetSignedDataForMediaType-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Client.HttpDataClient.GetSignedDataForMediaType(RemoteCongress.Common.RemoteCongressMediaType)')
 - [IEndpointClient\`1](#T-RemoteCongress-Client-IEndpointClient`1 'RemoteCongress.Client.IEndpointClient`1')
   - [Create(privateKey,publicKey,data,cancellationToken)](#M-RemoteCongress-Client-IEndpointClient`1-Create-System-String,System-String,`0,System-Threading-CancellationToken- 'RemoteCongress.Client.IEndpointClient`1.Create(System.String,System.String,`0,System.Threading.CancellationToken)')
   - [Get(id,cancellationToken)](#M-RemoteCongress-Client-IEndpointClient`1-Get-System-String,System-Threading-CancellationToken- 'RemoteCongress.Client.IEndpointClient`1.Get(System.String,System.Threading.CancellationToken)')
@@ -44,9 +33,9 @@
   - [VoteEndpoint](#F-RemoteCongress-Client-IServiceCollectionExtensions-VoteEndpoint 'RemoteCongress.Client.IServiceCollectionExtensions.VoteEndpoint')
   - [AddBillClient(collection)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddBillClient-Microsoft-Extensions-DependencyInjection-IServiceCollection- 'RemoteCongress.Client.IServiceCollectionExtensions.AddBillClient(Microsoft.Extensions.DependencyInjection.IServiceCollection)')
   - [AddCodecs(collection)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddCodecs-Microsoft-Extensions-DependencyInjection-IServiceCollection- 'RemoteCongress.Client.IServiceCollectionExtensions.AddCodecs(Microsoft.Extensions.DependencyInjection.IServiceCollection)')
-  - [AddHttpClient(collection,config)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddHttpClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-ClientConfig- 'RemoteCongress.Client.IServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,RemoteCongress.Client.ClientConfig)')
+  - [AddHttpClient(collection,config)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddHttpClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-DAL-Http-ClientConfig- 'RemoteCongress.Client.IServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,RemoteCongress.Client.DAL.Http.ClientConfig)')
   - [AddMemberClient(collection)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddMemberClient-Microsoft-Extensions-DependencyInjection-IServiceCollection- 'RemoteCongress.Client.IServiceCollectionExtensions.AddMemberClient(Microsoft.Extensions.DependencyInjection.IServiceCollection)')
-  - [AddRemoteCongressClient(collection,config)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddRemoteCongressClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-ClientConfig- 'RemoteCongress.Client.IServiceCollectionExtensions.AddRemoteCongressClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,RemoteCongress.Client.ClientConfig)')
+  - [AddRemoteCongressClient(collection,config)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddRemoteCongressClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-DAL-Http-ClientConfig- 'RemoteCongress.Client.IServiceCollectionExtensions.AddRemoteCongressClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,RemoteCongress.Client.DAL.Http.ClientConfig)')
   - [AddVoteClient(collection)](#M-RemoteCongress-Client-IServiceCollectionExtensions-AddVoteClient-Microsoft-Extensions-DependencyInjection-IServiceCollection- 'RemoteCongress.Client.IServiceCollectionExtensions.AddVoteClient(Microsoft.Extensions.DependencyInjection.IServiceCollection)')
 - [RemoteCongressClient](#T-RemoteCongress-Client-RemoteCongressClient 'RemoteCongress.Client.RemoteCongressClient')
   - [#ctor(billClient,memberClient,voteClient)](#M-RemoteCongress-Client-RemoteCongressClient-#ctor-RemoteCongress-Client-IEndpointClient{RemoteCongress-Common-Bill},RemoteCongress-Client-IEndpointClient{RemoteCongress-Common-Member},RemoteCongress-Client-IEndpointClient{RemoteCongress-Common-Vote}- 'RemoteCongress.Client.RemoteCongressClient.#ctor(RemoteCongress.Client.IEndpointClient{RemoteCongress.Common.Bill},RemoteCongress.Client.IEndpointClient{RemoteCongress.Common.Member},RemoteCongress.Client.IEndpointClient{RemoteCongress.Common.Vote})')
@@ -62,52 +51,6 @@
   - [GetMembers(query,cancellationToken)](#M-RemoteCongress-Client-RemoteCongressClient-GetMembers-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.RemoteCongressClient.GetMembers(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [GetVote(id,cancellationToken)](#M-RemoteCongress-Client-RemoteCongressClient-GetVote-System-String,System-Threading-CancellationToken- 'RemoteCongress.Client.RemoteCongressClient.GetVote(System.String,System.Threading.CancellationToken)')
   - [GetVotes(query,cancellationToken)](#M-RemoteCongress-Client-RemoteCongressClient-GetVotes-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Client.RemoteCongressClient.GetVotes(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
-
-<a name='T-RemoteCongress-Client-ClientConfig'></a>
-## ClientConfig `type`
-
-##### Namespace
-
-RemoteCongress.Client
-
-##### Summary
-
-Configuration data defining how to connect to the RemoteCongress api server.
-
-<a name='M-RemoteCongress-Client-ClientConfig-#ctor-System-String,System-String-'></a>
-### #ctor(protocol,serverHostName) `constructor`
-
-##### Summary
-
-Constructor
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| protocol | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The protocol to connect to the server with. Example: http or https |
-| serverHostName | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The hostname of the server running the RemoteCongress Api |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `protocol` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `serverHostName` is null. |
-
-<a name='P-RemoteCongress-Client-ClientConfig-Protocol'></a>
-### Protocol `property`
-
-##### Summary
-
-Protocol to use to connect to the Api.
-
-<a name='P-RemoteCongress-Client-ClientConfig-ServerHostName'></a>
-### ServerHostName `property`
-
-##### Summary
-
-The hostname of the server running the RemoteCongress Api
 
 <a name='T-RemoteCongress-Client-EndpointClient`1'></a>
 ## EndpointClient\`1 `type`
@@ -282,170 +225,6 @@ The codec.
 | Name | Description |
 | ---- | ----------- |
 | [RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException') | Thrown if a codec could not be found for the media type. |
-
-<a name='T-RemoteCongress-Client-HttpDataClient'></a>
-## HttpDataClient `type`
-
-##### Namespace
-
-RemoteCongress.Client
-
-##### Summary
-
-An [IDataClient](#T-RemoteCongress-Common-Repositories-IDataClient 'RemoteCongress.Common.Repositories.IDataClient') that operates over http.
-
-<a name='M-RemoteCongress-Client-HttpDataClient-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Client-HttpDataClient},RemoteCongress-Client-ClientConfig,System-Net-Http-HttpClient,RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-Repositories-Queries-IQuery},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-SignedData}},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{System-Collections-Generic-IEnumerable{RemoteCongress-Common-SignedData}}},System-String-'></a>
-### #ctor(logger,config,httpClient,queryCodec,codecs,collectionCodecs,endpoint) `constructor`
-
-##### Summary
-
-Constructor
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| logger | [Microsoft.Extensions.Logging.ILogger{RemoteCongress.Client.HttpDataClient}](#T-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Client-HttpDataClient} 'Microsoft.Extensions.Logging.ILogger{RemoteCongress.Client.HttpDataClient}') | An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') to log against. |
-| config | [RemoteCongress.Client.ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig') | A [ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig') instance that holds configuration data on connecting to the server. |
-| httpClient | [System.Net.Http.HttpClient](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Net.Http.HttpClient 'System.Net.Http.HttpClient') | A [HttpClient](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Net.Http.HttpClient 'System.Net.Http.HttpClient') instance to use to communicate with the server. |
-| queryCodec | [RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.Repositories.Queries.IQuery}](#T-RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-Repositories-Queries-IQuery} 'RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.Repositories.Queries.IQuery}') | A [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1') instance to use. |
-| codecs | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}}') | An [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1') for [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData'). |
-| collectionCodecs | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData}}}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData}}}') | An [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1') for a collection of [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData')s. |
-| endpoint | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The endpoint to this client should hit. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `logger` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `config` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `httpClient` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `queryCodec` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `codecs` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `collectionCodecs` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `endpoint` is null. |
-
-<a name='M-RemoteCongress-Client-HttpDataClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken-'></a>
-### AppendToChain(data,cancellationToken) `method`
-
-##### Summary
-
-Creates a new block containing the verified content in `data` in the blockchain.
-
-##### Returns
-
-The unique id of the stored block.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| data | [RemoteCongress.Common.ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') | The signed and verified data structure to store in the blockchain. |
-| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.OperationCanceledException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.OperationCanceledException 'System.OperationCanceledException') | Thrown if `cancellationToken` is cancelled. |
-| [RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException') | Thrown if [MediaType](#F-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.MediaType') doesn't have a registered [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1'). |
-
-<a name='M-RemoteCongress-Client-HttpDataClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
-### FetchAllFromChain(queries,cancellationToken) `method`
-
-##### Summary
-
-Fetches all matching verified data in the form of [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') from the blockchain.
-
-##### Returns
-
-An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') instance containing the block data.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| queries | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
-| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `queries` is null. |
-| [System.OperationCanceledException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.OperationCanceledException 'System.OperationCanceledException') | Thrown if `cancellationToken` is cancelled. |
-| [RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException') | Thrown if [MediaType](#F-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.MediaType') doesn't have a registered [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1'). |
-
-<a name='M-RemoteCongress-Client-HttpDataClient-FetchFromChain-System-String,System-Threading-CancellationToken-'></a>
-### FetchFromChain(id,cancellationToken) `method`
-
-##### Summary
-
-Fetches the verified data in the form of [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') from the blockchain by block id.
-
-##### Returns
-
-An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') instance containing the block data.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The unique block id to pull verified data from. |
-| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.OperationCanceledException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.OperationCanceledException 'System.OperationCanceledException') | Thrown if `cancellationToken` is cancelled. |
-| [RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException') | Thrown if [MediaType](#F-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.MediaType') doesn't have a registered [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1'). |
-
-<a name='M-RemoteCongress-Client-HttpDataClient-GetSignedDataCollectionForMediaType-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### GetSignedDataCollectionForMediaType(mediaType) `method`
-
-##### Summary
-
-Fetches the codec for a collection data for a mediatype
-
-##### Returns
-
-The codec
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The media type to fetch a collection codec for |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException') | Thrown if `mediaType` doesn't have a registered [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1'). |
-
-<a name='M-RemoteCongress-Client-HttpDataClient-GetSignedDataForMediaType-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### GetSignedDataForMediaType(mediaType) `method`
-
-##### Summary
-
-Fetches the codec for a mediatype
-
-##### Returns
-
-The codec
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The media type to fetch a codec for |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException') | Thrown if `mediaType` doesn't have a registered [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1'). |
 
 <a name='T-RemoteCongress-Client-IEndpointClient`1'></a>
 ## IEndpointClient\`1 `type`
@@ -760,7 +539,7 @@ Registers all supported [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICode
 | ---- | ---- | ----------- |
 | collection | [Microsoft.Extensions.DependencyInjection.IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') | [IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') to define [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') in. |
 
-<a name='M-RemoteCongress-Client-IServiceCollectionExtensions-AddHttpClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-ClientConfig-'></a>
+<a name='M-RemoteCongress-Client-IServiceCollectionExtensions-AddHttpClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-DAL-Http-ClientConfig-'></a>
 ### AddHttpClient(collection,config) `method`
 
 ##### Summary
@@ -776,7 +555,7 @@ Registers a [HttpClient](http://msdn.microsoft.com/query/dev14.query?appId=Dev14
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | collection | [Microsoft.Extensions.DependencyInjection.IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') | [IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') to define [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') in. |
-| config | [RemoteCongress.Client.ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig') | [ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig') to configure [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') with. |
+| config | [RemoteCongress.Client.DAL.Http.ClientConfig](#T-RemoteCongress-Client-DAL-Http-ClientConfig 'RemoteCongress.Client.DAL.Http.ClientConfig') | [ClientConfig](#T-RemoteCongress-Client-DAL-Http-ClientConfig 'RemoteCongress.Client.DAL.Http.ClientConfig') to configure [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') with. |
 
 <a name='M-RemoteCongress-Client-IServiceCollectionExtensions-AddMemberClient-Microsoft-Extensions-DependencyInjection-IServiceCollection-'></a>
 ### AddMemberClient(collection) `method`
@@ -795,7 +574,7 @@ Registers a [IEndpointClient\`1](#T-RemoteCongress-Client-IEndpointClient`1 'Rem
 | ---- | ---- | ----------- |
 | collection | [Microsoft.Extensions.DependencyInjection.IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') | [IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') to define [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') in. |
 
-<a name='M-RemoteCongress-Client-IServiceCollectionExtensions-AddRemoteCongressClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-ClientConfig-'></a>
+<a name='M-RemoteCongress-Client-IServiceCollectionExtensions-AddRemoteCongressClient-Microsoft-Extensions-DependencyInjection-IServiceCollection,RemoteCongress-Client-DAL-Http-ClientConfig-'></a>
 ### AddRemoteCongressClient(collection,config) `method`
 
 ##### Summary
@@ -811,7 +590,7 @@ Sets up an [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClien
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | collection | [Microsoft.Extensions.DependencyInjection.IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') | [IServiceCollection](#T-Microsoft-Extensions-DependencyInjection-IServiceCollection 'Microsoft.Extensions.DependencyInjection.IServiceCollection') to define [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') in. |
-| config | [RemoteCongress.Client.ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig') | [ClientConfig](#T-RemoteCongress-Client-ClientConfig 'RemoteCongress.Client.ClientConfig') to configure [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') with. |
+| config | [RemoteCongress.Client.DAL.Http.ClientConfig](#T-RemoteCongress-Client-DAL-Http-ClientConfig 'RemoteCongress.Client.DAL.Http.ClientConfig') | [ClientConfig](#T-RemoteCongress-Client-DAL-Http-ClientConfig 'RemoteCongress.Client.DAL.Http.ClientConfig') to configure [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') with. |
 
 ##### Exceptions
 
