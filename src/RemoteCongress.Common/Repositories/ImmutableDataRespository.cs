@@ -235,7 +235,7 @@ namespace RemoteCongress.Common.Repositories
         /// Thrown if the <paramref name="cancellationToken"/> is cancelled.
         /// </exception>
         public async IAsyncEnumerable<VerifiedData<TData>> Fetch(
-            IList<IQuery> query,
+            IEnumerable<IQuery> query,
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             if (query is null)

@@ -1,0 +1,391 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteCongress.Server.DAL.IpfsBlockchainDb</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block">
+            <summary>
+            A block POCO inside a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Id">
+            <summary>
+            The unique Identifier from the block.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.LastBlockId">
+            <summary>
+            The <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Id"/> of the previous <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> in the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Timestamp">
+            <summary>
+            A UTC timestamp for when the block was created.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.LastBlockHash">
+            <summary>
+            The <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Hash"/> of the previous <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> in the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Content">
+            <summary>
+            The raw content of the block.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Hash">
+            <summary>
+            The SHA256 hash of the concatinated:
+                * <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Timestamp"/>
+                * <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.LastBlockHash"/>
+                * <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Content"/>
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.MediaType">
+            <summary>
+            media type of <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Content"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.IsValid">
+            <summary>
+            An <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> is valid if the <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Hash"/> equals the result from <see cref="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.GenerateHash"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.#ctor(RemoteCongress.Server.DAL.IpfsBlockchainDb.Block,System.String,RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="previousBlock">
+            The previous <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> in the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>.
+            </param>
+            <param name="content">
+            The content to be stored in the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/>.
+            </param>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of the block.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <remarks>
+            This private constructor is used to generate the Genisys block.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.GenerateHash">
+            <summary>
+            Generates a Hash based on the block content.
+            </summary>
+            <returns>
+            A SHA256 Hash for the current <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> state.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.CreateGenisysBlock">
+            <summary>
+            Logic to generate a root <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/>.
+            </summary>
+            <returns>
+            A special <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> that can be used as the root of a blockchain.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.CreateFromData(System.String,System.String,System.DateTime,System.String,System.String,RemoteCongress.Common.RemoteCongressMediaType,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="id">
+            </param>
+            <param name="lastBlockId">
+            </param>
+            <param name="timestampUtc">
+            </param>
+            <param name="lastBlockHash">
+            </param>
+            <param name="content">
+            </param>
+            <param name="mediaType">
+            </param>
+            <param name="hash">
+            </param>
+            <returns>
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain">
+            <summary>
+            A simple proof of concept blockchain implementation that is persisted in Ipfs.
+            </summary>
+            <remarks>
+            This is not production ready code. It's fine for a proof of concept, but it needs to be
+                updating and to be much better thoughtout before it is really ready to be running
+                production level data.
+            </remarks>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.IsValid">
+            <summary>
+            A <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/> is valid if:
+                * Every <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>'s <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.IsValid"/> is true
+                * Every <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>'s <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.LastBlockHash"/> matches the
+                    previous <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>'s <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Hash"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.#ctor(Ipfs.CoreApi.ICoreApi,RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="coreApi">
+            The IPFS api interface
+            </param>
+            <param name="config">
+            An <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig"/> instance to use to configure Ipfs
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.InitializeIpfs(RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig)">
+            <summary>
+            Sets the absolute path for Ipfs, and starts the the ipfs engine.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.LoadPreviousBlockIntoChain(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Loads a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> into the first position of the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/> by <paramref name="id"/>.
+            </summary>
+            <param name="id">
+            The previous <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/>'s <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Id"/>.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.AppendToChain(System.String,RemoteCongress.Common.RemoteCongressMediaType,System.Threading.CancellationToken)">
+            <summary>
+            Appends data to the blockchain.
+            </summary>
+            <param name="content">
+            The raw content to append to the blockchain.
+            </param>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of the block to append.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+            <returns>
+            The created <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> that contains <paramref name="content"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FetchFromChain(System.String)">
+            <summary>
+            Fetches a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> by <paramref name="id"/>.
+            </summary>
+            <param name="id">
+            The unique identifier to look up the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> by.
+            </param>
+            <returns>
+            The matching <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/>, or null if it's not found.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            </summary>
+            <param name="query">
+            </param>
+            <param name="cancellationToken">
+            </param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.PersistBlock(RemoteCongress.Server.DAL.IpfsBlockchainDb.Block,System.Threading.CancellationToken)">
+            <summary>"
+            Persists a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> inside the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain"/>.
+            </summary>
+            <param name="block">
+            The <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> to persist in the chain
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+            <returns>
+            The peristed version of <paramref name="block"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FromString(System.String)">
+            <summary>
+            Generates a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> from a <see cref="T:System.String"/>.
+            </summary>
+            <param name="data">
+            </param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FromBlock(RemoteCongress.Server.DAL.IpfsBlockchainDb.Block)">
+            <summary>
+            </summary>
+            <param name="data">
+            </param>
+            <returns>
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient">
+            <summary>
+            An Ipfs Blockchain implementation of <see cref="T:RemoteCongress.Common.Repositories.IDataClient"/>.
+            </summary>
+            <remarks>
+            This implementation is also pretty naive. It's really meant for a proof of concept.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.#ctor(Ipfs.CoreApi.ICoreApi,RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig,System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="coreApi">
+            A <see cref="T:Ipfs.CoreApi.ICoreApi"/> to use to interact with IPFS
+            </param>
+            <param name="config">
+            The IPFS configuration data.
+            </param>
+            <param name="codecs">
+            The <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> to use for <see cref="T:RemoteCongress.Common.SignedData"/> data.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="coreApi"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="config"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="codecs"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
+            </summary>
+            <param name="data">
+            The signed and verified data structure to store in the blockchain.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The unique id of the stored block.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.FetchFromChain(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Fetches the verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain by block id.
+            </summary>
+            <param name="id">
+            The unique block id to pull verified data from.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all matching verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain.
+            </summary>
+            <param name="query">
+            The query to pull data by.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig">
+            <summary>
+            Configuration data for Ipfs
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig.AbsoluteDataDirectoryPath">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig.LastBlockId">
+            <summary>
+            The ending <see cref="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block.Id"/>  of the <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain" />
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig.Password">
+            <summary>
+            The ipfs node password
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization.BlockV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization.BlockV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization.BlockV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization.BlockV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Server.DAL.IpfsBlockchainDb.Block"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization.BlockV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Server.DAL.IpfsBlockchainDb.Block)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+    </members>
+</doc>

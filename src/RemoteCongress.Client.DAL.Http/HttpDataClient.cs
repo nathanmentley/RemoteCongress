@@ -97,7 +97,6 @@ namespace RemoteCongress.Client.DAL.Http
         /// Thrown if <paramref name="endpoint"/> is null.
         /// </exception>
         public HttpDataClient(
-            // TODO: This has too many arguments. Refactor to make this more sane.
             ILogger<HttpDataClient> logger,
             ClientConfig config,
             HttpClient httpClient,
@@ -163,16 +162,16 @@ namespace RemoteCongress.Client.DAL.Http
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            ICodec<SignedData> jsonCodec = GetSignedDataForMediaType(SignedDataV1JsonCodec.MediaType);
+            ICodec<SignedData> codec = GetSignedDataForMediaType(SignedDataV1JsonCodec.MediaType);
 
-            using Stream jsonStream = await jsonCodec.Encode(
-                jsonCodec.GetPreferredMediaType(),
+            using Stream stream = await codec.Encode(
+                codec.GetPreferredMediaType(),
                 new SignedData(data)
             );
-            using StreamContent streamContent = new StreamContent(jsonStream)
+            using StreamContent streamContent = new StreamContent(stream)
             {
                 Headers = {
-                    { ContentTypeHeaderKey, jsonCodec.GetPreferredMediaType().ToString() }
+                    { ContentTypeHeaderKey, codec.GetPreferredMediaType().ToString() }
                 }
             };
 
@@ -185,15 +184,17 @@ namespace RemoteCongress.Client.DAL.Http
             )
             {
                 Headers = {
-                    { AcceptHeaderKey, jsonCodec.GetPreferredMediaType().ToString() }
+                    //TODO: pass all acceptable media types
+                    { AcceptHeaderKey, codec.GetPreferredMediaType().ToString() }
                 },
                 Content = streamContent
             };
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
-            using Stream body = await response.Content.ReadAsStreamAsync();
+            using Stream responseBodyStream = await response.Content.ReadAsStreamAsync();
 
-            SignedData result = await jsonCodec.Decode(jsonCodec.GetPreferredMediaType(), body);
+            //TODO: Get MediaType from response
+            SignedData result = await codec.Decode(codec.GetPreferredMediaType(), responseBodyStream);
 
             return result.Id;
         }
@@ -232,6 +233,7 @@ namespace RemoteCongress.Client.DAL.Http
             )
             {
                 Headers = {
+                    //TODO: pass all acceptable media types
                     { AcceptHeaderKey, codec.GetPreferredMediaType().ToString() }
                 }
             };
@@ -239,6 +241,7 @@ namespace RemoteCongress.Client.DAL.Http
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
             using Stream body = await response.Content.ReadAsStreamAsync();
 
+            //TODO: Get MediaType from response
             return await codec.Decode(codec.GetPreferredMediaType(), body);
         }
 
@@ -264,7 +267,7 @@ namespace RemoteCongress.Client.DAL.Http
         /// Thrown if <see cref="SignedDataCollectionV1JsonCodec.MediaType"/> doesn't have a registered <see cref="ICodec{TModel}"/>.
         /// </exception>
         public async IAsyncEnumerable<ISignedData> FetchAllFromChain(
-            IList<IQuery> queries,
+            IEnumerable<IQuery> queries,
             [EnumeratorCancellation] CancellationToken cancellationToken
         )
         {
@@ -298,6 +301,7 @@ namespace RemoteCongress.Client.DAL.Http
             )
             {
                 Headers = {
+                    //TODO: pass all acceptable media types
                     { AcceptHeaderKey, codec.GetPreferredMediaType().ToString() }
                 }
             };
@@ -305,8 +309,11 @@ namespace RemoteCongress.Client.DAL.Http
             using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
             using Stream body = await response.Content.ReadAsStreamAsync();
 
+            //TODO: Get MediaType from response
             foreach(SignedData data in await codec.Decode(codec.GetPreferredMediaType(), body))
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 yield return data;
             }
         }

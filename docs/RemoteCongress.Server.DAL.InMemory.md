@@ -22,7 +22,7 @@
 - [InMemoryBlockchainClient](#T-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient')
   - [#ctor(codecs)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-#ctor-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-SignedData}}- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.#ctor(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}})')
   - [AppendToChain(data,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)')
-  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [FetchFromChain(id,cancellationToken)](#M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchFromChain-System-String,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchFromChain(System.String,System.Threading.CancellationToken)')
 
 <a name='T-RemoteCongress-Server-DAL-InMemory-InMemoryBlock'></a>
@@ -261,7 +261,7 @@ The unique id of the stored block.
 | data | [RemoteCongress.Common.ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') | The signed and verified data structure to store in the blockchain. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
-<a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
+<a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### FetchAllFromChain(query,cancellationToken) `method`
 
 ##### Summary
@@ -276,7 +276,7 @@ An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISi
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
+| query | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Server-DAL-InMemory-InMemoryBlockchainClient-FetchFromChain-System-String,System-Threading-CancellationToken-'></a>

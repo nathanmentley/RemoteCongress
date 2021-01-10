@@ -94,11 +94,21 @@ namespace RemoteCongress.Client
 
                 .AddHttpClient(config)
 
-                .AddBillClient()
-                .AddMemberClient()
-                .AddVoteClient()
+                .AddBillDependencies()
+                .AddMemberDependencies()
+                .AddVoteDependencies()
 
-                .AddSingleton<IRemoteCongressClient, RemoteCongressClient>();
+                .AddSingleton<IRemoteCongressClient, RemoteCongressClient>(
+                    provider => new RemoteCongressClient(
+                        provider.GetRequiredService<ILogger<RemoteCongressClient>>(),
+                        provider.GetRequiredService<IDataSigner<Bill>>(),
+                        provider.GetRequiredService<IDataSigner<Member>>(),
+                        provider.GetRequiredService<IDataSigner<Vote>>(),
+                        provider.GetRequiredService<IImmutableDataRepository<Bill>>(),
+                        provider.GetRequiredService<IImmutableDataRepository<Member>>(),
+                        provider.GetRequiredService<IImmutableDataRepository<Vote>>()
+                    )
+                );
         }
 
         /// <summary>
@@ -143,7 +153,7 @@ namespace RemoteCongress.Client
                 .AddSingleton<ICodec<IQuery>, IQueryV1JsonCodec>();
 
         /// <summary>
-        /// Registers a <see cref="IEndpointClient{Bill}"/> implementation.
+        /// Registers a <see cref="IDataSigner{Bill}"/> and <see cref="IImmutableDataRepository{Bill}"/> implementation.
         /// </summary>
         /// <param name="collection">
         /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
@@ -151,7 +161,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// <paramref name="collection"/>
         /// </returns>
-        private static IServiceCollection AddBillClient(this IServiceCollection collection) =>
+        private static IServiceCollection AddBillDependencies(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IQueryProcessor<Bill>, BillQueryProcessor>()
                 .AddSingleton<
@@ -173,10 +183,15 @@ namespace RemoteCongress.Client
                         provider.GetRequiredService<IQueryProcessor<Bill>>()
                     )
                 )
-                .AddSingleton<IEndpointClient<Bill>, EndpointClient<Bill>>();
+                .AddSingleton<IDataSigner<Bill>, DataSigner<Bill>>(
+                    provider => new DataSigner<Bill>(
+                        provider.GetRequiredService<ILogger<DataSigner<Bill>>>(),
+                        provider.GetRequiredService<IEnumerable<ICodec<Bill>>>()
+                    )
+                );
 
         /// <summary>
-        /// Registers a <see cref="IEndpointClient{Member}"/> implementation.
+        /// Registers a <see cref="IDataSigner{Member}"/> and <see cref="IImmutableDataRepository{Member}"/> implementation.
         /// </summary>
         /// <param name="collection">
         /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
@@ -184,7 +199,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// <paramref name="collection"/>
         /// </returns>
-        private static IServiceCollection AddMemberClient(this IServiceCollection collection) =>
+        private static IServiceCollection AddMemberDependencies(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IQueryProcessor<Member>, MemberQueryProcessor>()
                 .AddSingleton<
@@ -206,10 +221,15 @@ namespace RemoteCongress.Client
                         provider.GetRequiredService<IQueryProcessor<Member>>()
                     )
                 )
-                .AddSingleton<IEndpointClient<Member>, EndpointClient<Member>>();
+                .AddSingleton<IDataSigner<Member>, DataSigner<Member>>(
+                    provider => new DataSigner<Member>(
+                        provider.GetRequiredService<ILogger<DataSigner<Member>>>(),
+                        provider.GetRequiredService<IEnumerable<ICodec<Member>>>()
+                    )
+                );
 
         /// <summary>
-        /// Registers a <see cref="IEndpointClient{Vote}"/> implementation.
+        /// Registers a <see cref="IDataSigner{Vote}"/> and <see cref="IImmutableDataRepository{Vote}"/> implementation.
         /// </summary>
         /// <param name="collection">
         /// <see cref="IServiceCollection"/> to define <see cref="IRemoteCongressClient"/> in.
@@ -217,7 +237,7 @@ namespace RemoteCongress.Client
         /// <returns>
         /// <paramref name="collection"/>
         /// </returns>
-        private static IServiceCollection AddVoteClient(this IServiceCollection collection) =>
+        private static IServiceCollection AddVoteDependencies(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IQueryProcessor<Vote>, VoteQueryProcessor>()
                 .AddSingleton<
@@ -239,6 +259,11 @@ namespace RemoteCongress.Client
                         provider.GetRequiredService<IQueryProcessor<Vote>>()
                     )
                 )
-                .AddSingleton<IEndpointClient<Vote>, EndpointClient<Vote>>();
+                .AddSingleton<IDataSigner<Vote>, DataSigner<Vote>>(
+                    provider => new DataSigner<Vote>(
+                        provider.GetRequiredService<ILogger<DataSigner<Vote>>>(),
+                        provider.GetRequiredService<IEnumerable<ICodec<Vote>>>()
+                    )
+                );
     }
 }

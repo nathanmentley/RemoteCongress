@@ -72,6 +72,6 @@ namespace RemoteCongress.Common.Repositories
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        IAsyncEnumerable<VerifiedData<TData>> Fetch(IList<IQuery> query, CancellationToken cancellationToken);
+        IAsyncEnumerable<VerifiedData<TData>> Fetch(IEnumerable<IQuery> query, CancellationToken cancellationToken);
     }
 }

@@ -12,6 +12,11 @@
   - [_logger](#F-RemoteCongress-Utils-DataSeeder-App-_logger 'RemoteCongress.Utils.DataSeeder.App._logger')
   - [Logic(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-Logic-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.Logic(System.Threading.CancellationToken)')
   - [Run(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-Run-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.Run(System.Threading.CancellationToken)')
+  - [SeedBill(bill,id,cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-SeedBill-RemoteCongress-Common-Bill,System-String,System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.SeedBill(RemoteCongress.Common.Bill,System.String,System.Threading.CancellationToken)')
+- [AppResultCode](#T-RemoteCongress-Utils-DataSeeder-AppResultCode 'RemoteCongress.Utils.DataSeeder.AppResultCode')
+  - [OperationCancelled](#F-RemoteCongress-Utils-DataSeeder-AppResultCode-OperationCancelled 'RemoteCongress.Utils.DataSeeder.AppResultCode.OperationCancelled')
+  - [Success](#F-RemoteCongress-Utils-DataSeeder-AppResultCode-Success 'RemoteCongress.Utils.DataSeeder.AppResultCode.Success')
+  - [UnknownError](#F-RemoteCongress-Utils-DataSeeder-AppResultCode-UnknownError 'RemoteCongress.Utils.DataSeeder.AppResultCode.UnknownError')
 - [IApp](#T-RemoteCongress-Utils-DataSeeder-IApp 'RemoteCongress.Utils.DataSeeder.IApp')
   - [Run(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-IApp-Run-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.IApp.Run(System.Threading.CancellationToken)')
 - [IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider')
@@ -150,6 +155,53 @@ The result code
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation. |
+
+<a name='M-RemoteCongress-Utils-DataSeeder-App-SeedBill-RemoteCongress-Common-Bill,System-String,System-Threading-CancellationToken-'></a>
+### SeedBill(bill,id,cancellationToken) `method`
+
+##### Summary
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| bill | [RemoteCongress.Common.Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') |  |
+| id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation. |
+
+<a name='T-RemoteCongress-Utils-DataSeeder-AppResultCode'></a>
+## AppResultCode `type`
+
+##### Namespace
+
+RemoteCongress.Utils.DataSeeder
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Utils-DataSeeder-AppResultCode-OperationCancelled'></a>
+### OperationCancelled `constants`
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Utils-DataSeeder-AppResultCode-Success'></a>
+### Success `constants`
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Utils-DataSeeder-AppResultCode-UnknownError'></a>
+### UnknownError `constants`
+
+##### Summary
+
+
 
 <a name='T-RemoteCongress-Utils-DataSeeder-IApp'></a>
 ## IApp `type`

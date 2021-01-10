@@ -26,7 +26,7 @@
   - [#ctor(coreApi,config)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-#ctor-Ipfs-CoreApi-ICoreApi,RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainConfig- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.#ctor(Ipfs.CoreApi.ICoreApi,RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig)')
   - [IsValid](#P-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-IsValid 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.IsValid')
   - [AppendToChain(content,mediaType,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-AppendToChain-System-String,RemoteCongress-Common-RemoteCongressMediaType,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.AppendToChain(System.String,RemoteCongress.Common.RemoteCongressMediaType,System.Threading.CancellationToken)')
-  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [FetchFromChain(id)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FetchFromChain-System-String- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FetchFromChain(System.String)')
   - [FromBlock(data)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FromBlock-RemoteCongress-Server-DAL-IpfsBlockchainDb-Block- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FromBlock(RemoteCongress.Server.DAL.IpfsBlockchainDb.Block)')
   - [FromString(data)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FromString-System-String- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.Blockchain.FromString(System.String)')
@@ -36,7 +36,7 @@
 - [IpfsBlockchainClient](#T-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient')
   - [#ctor(coreApi,config,codecs)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-#ctor-Ipfs-CoreApi-ICoreApi,RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainConfig,System-Collections-Generic-IEnumerable{RemoteCongress-Common-Serialization-ICodec{RemoteCongress-Common-SignedData}}- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.#ctor(Ipfs.CoreApi.ICoreApi,RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig,System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}})')
   - [AppendToChain(data,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)')
-  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [FetchFromChain(id,cancellationToken)](#M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-FetchFromChain-System-String,System-Threading-CancellationToken- 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainClient.FetchFromChain(System.String,System.Threading.CancellationToken)')
 - [IpfsBlockchainConfig](#T-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainConfig 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig')
   - [AbsoluteDataDirectoryPath](#F-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainConfig-AbsoluteDataDirectoryPath 'RemoteCongress.Server.DAL.IpfsBlockchainDb.IpfsBlockchainConfig.AbsoluteDataDirectoryPath')
@@ -351,7 +351,7 @@ The created [Block](#T-RemoteCongress-Server-DAL-IpfsBlockchainDb-Block 'RemoteC
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') of the block to append. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation. |
 
-<a name='M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
+<a name='M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### FetchAllFromChain(query,cancellationToken) `method`
 
 ##### Summary
@@ -366,7 +366,7 @@ The created [Block](#T-RemoteCongress-Server-DAL-IpfsBlockchainDb-Block 'RemoteC
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') |  |
+| query | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}') |  |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') |  |
 
 <a name='M-RemoteCongress-Server-DAL-IpfsBlockchainDb-Blockchain-FetchFromChain-System-String-'></a>
@@ -520,7 +520,7 @@ The unique id of the stored block.
 | data | [RemoteCongress.Common.ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') | The signed and verified data structure to store in the blockchain. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
-<a name='M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
+<a name='M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### FetchAllFromChain(query,cancellationToken) `method`
 
 ##### Summary
@@ -535,7 +535,7 @@ An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISi
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
+| query | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Server-DAL-IpfsBlockchainDb-IpfsBlockchainClient-FetchFromChain-System-String,System-Threading-CancellationToken-'></a>

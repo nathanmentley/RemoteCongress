@@ -18,6 +18,7 @@
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Client;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using System;
 using System.Threading;
@@ -135,7 +136,7 @@ namespace RemoteCongress.Utils.DataSeeder
             _client = client;
             _dataProvider = dataProvider;
         }
-
+ 
         /// <summary>
         /// Runs the seed data logic.
         /// </summary>
@@ -151,16 +152,22 @@ namespace RemoteCongress.Utils.DataSeeder
             {
                 await Logic(cancellationToken);
             }
-            catch(OperationCanceledException)
+            catch(Exception exception)
             {
-                return 2;
-            }
-            catch(Exception)
-            {
-                return 1;
+                _logger.LogException(exception);
+
+                return exception switch
+                {
+                    BaseRemoteCongressException _ =>
+                        AppResultCode.UnknownError,
+                    OperationCanceledException _ =>
+                        AppResultCode.OperationCancelled,
+                    _ =>
+                        AppResultCode.UnknownError
+                };
             }
 
-            return 0;
+            return AppResultCode.Success;
         }
 
         /// <summary>
@@ -202,6 +209,18 @@ namespace RemoteCongress.Utils.DataSeeder
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bill">
+        /// 
+        /// </param>
+        /// <param name="id">
+        /// 
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
         private async Task SeedBill(Bill bill, string id, CancellationToken cancellationToken)
         {
             VerifiedData<Bill> billData = await _client.CreateBill(

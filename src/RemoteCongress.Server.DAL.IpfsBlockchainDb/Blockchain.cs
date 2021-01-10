@@ -158,7 +158,6 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         internal Block FetchFromChain(string id) =>
             _blocks.FirstOrDefault(block => block.Id.Equals(id));
 
-        #pragma warning disable CS1998
 
         /// <summary>
         /// </summary>
@@ -168,8 +167,9 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb
         /// </param>
         /// <returns>
         /// </returns>
+        #pragma warning disable CS1998
         internal async IAsyncEnumerable<Block> FetchAllFromChain(
-            IList<IQuery> query,
+            IEnumerable<IQuery> query,
             [EnumeratorCancellation] CancellationToken cancellationToken
         )
         {

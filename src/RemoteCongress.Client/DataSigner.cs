@@ -20,8 +20,6 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Encryption;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
-using RemoteCongress.Common.Repositories;
-using RemoteCongress.Common.Repositories.Queries;
 using RemoteCongress.Common.Serialization;
 using System;
 using System.Collections.Generic;
@@ -34,23 +32,18 @@ namespace RemoteCongress.Client
     /// <summary>
     /// A client used to interact an endpoint of the api.
     /// </summary>
-    public class EndpointClient<TModel>: IEndpointClient<TModel>
+    internal class DataSigner<TModel>: IDataSigner<TModel>
     {
         /// <summary>
         /// An <see cref="ILogger"/> instance to log against.
         /// </summary>
-        private readonly ILogger<EndpointClient<TModel>> _logger;
+        private readonly ILogger<DataSigner<TModel>> _logger;
 
         /// <summary>
         /// A collection of codecs to endode and decode data.
         /// </summary>
         private readonly IEnumerable<ICodec<TModel>> _codecs;
-
-        /// <summary>
-        /// A repository to interact with data.
-        /// </summary>
-        private readonly IImmutableDataRepository<TModel> _repository;
-
+        
         /// <summary>
         /// Ctor
         /// </summary>
@@ -60,25 +53,18 @@ namespace RemoteCongress.Client
         /// <param name="codecs">
         /// An <see cref="ICodec{TModel}"/> for <typeparamref name="TModel"/>s.
         /// </param>
-        /// <param name="repository">
-        /// An <see cref="IImmutableDataRepository{TModelData}"/> instance to use to interact with <typeparamref name="TModel"/>s.
-        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="codecs"/> is null.
         /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="repository"/> is null.
-        /// </exception>
         /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="codecs"/> contains zero <see cref="ICodec{TModel}"/>s.
         /// </exception>
-        public EndpointClient(
-            ILogger<EndpointClient<TModel>> logger,
-            IEnumerable<ICodec<TModel>> codecs,
-            IImmutableDataRepository<TModel> repository
+        internal DataSigner(
+            ILogger<DataSigner<TModel>> logger,
+            IEnumerable<ICodec<TModel>> codecs
         )
         {
             _logger = logger ??
@@ -87,11 +73,6 @@ namespace RemoteCongress.Client
             _codecs = codecs ??
                 throw _logger.LogException(
                     new ArgumentNullException(nameof(codecs))
-                );
-
-            _repository = repository ??
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(repository))
                 );
 
             if (_codecs.Count() < 1)
@@ -112,8 +93,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <typeparamref name="TModel"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <typeparamref name="TModel"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <typeparamref name="TModel"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <typeparamref name="TModel"/> data to persist.
@@ -166,7 +146,7 @@ namespace RemoteCongress.Client
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            ICodec<TModel> codec = GetTModelCodec(GetPreferredMediaType());
+            ICodec<TModel> codec = GetCodec(GetPreferredMediaType());
 
             string blockContent = await codec.EncodeToString(
                 codec.GetPreferredMediaType(),
@@ -180,76 +160,7 @@ namespace RemoteCongress.Client
                 codec.GetPreferredMediaType()
             );
 
-            VerifiedData<TModel> vote = new VerifiedData<TModel>(signedData, data);
-
-            return await _repository.Create(vote, cancellationToken);
-        }
-
-        /// <summary>
-        /// Fetches a signed, and verified <typeparamref name="TModel"/> by it's <see cref="IIdentifiable.Id"/>.
-        /// </summary>
-        /// <param name="id">
-        /// The <see cref="IIdentifiable.Id"/> of the <typeparamref name="TModel"/>.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="CancellationToken"/> to handle cancellation requests.
-        /// </param>
-        /// <returns>
-        /// The persisted <typeparamref name="TModel"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="id"/> is null.
-        /// </exception>
-        /// <exception cref="OperationCanceledException">
-        /// Thrown if <paramref name="cancellationToken"/> is null.
-        /// </exception>
-        public Task<VerifiedData<TModel>> Get(string id, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(id))
-                );
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return _repository.Fetch(id, cancellationToken);
-        }
-
-        /// <summary>
-        /// Fetches a collection of signed, and verified <typeparamref name="TModel"/>s by <paramref name="query"/>.
-        /// </summary>
-        /// <param name="query">
-        /// A collection of <see cref="IQuery"/>s to filter <typeparamref name="TModel"/> by.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="CancellationToken"/> to handle cancellation requests.
-        /// </param>
-        /// <returns>
-        /// A collection of persisted <typeparamref name="TModel"/> that matches <paramref name="query"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="query"/> is null.
-        /// </exception>
-        /// <exception cref="OperationCanceledException">
-        /// Thrown if <paramref name="cancellationToken"/> is null.
-        /// </exception>
-        public IAsyncEnumerable<VerifiedData<TModel>> Get(
-            IList<IQuery> query,
-            CancellationToken cancellationToken
-        )
-        {
-            if (query is null)
-            {
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(query))
-                );
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return _repository.Fetch(query, cancellationToken);
+            return new VerifiedData<TModel>(signedData, data);
         }
 
         /// <summary>
@@ -273,7 +184,7 @@ namespace RemoteCongress.Client
         /// <exception cref="UnknownBlockMediaTypeException">
         /// Thrown if a codec could not be found for the media type.
         /// </exception>
-        private ICodec<TModel> GetTModelCodec(RemoteCongressMediaType mediaType) =>
+        private ICodec<TModel> GetCodec(RemoteCongressMediaType mediaType) =>
             _codecs.FirstOrDefault(
                 codec => codec.CanHandle(mediaType)
             ) ??

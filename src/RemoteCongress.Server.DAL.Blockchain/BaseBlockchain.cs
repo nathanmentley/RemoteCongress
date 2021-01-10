@@ -118,7 +118,7 @@ namespace RemoteCongress.Server.DAL.Blockchain
         /// </returns>
         #pragma warning disable CS1998 //We want this to be an async method in the interface, but it's not here.
         public async IAsyncEnumerable<TBlock> FetchAllFromChain(
-            IList<IQuery> query,
+            IEnumerable<IQuery> query,
             [EnumeratorCancellation] CancellationToken cancellationToken
         )
         {

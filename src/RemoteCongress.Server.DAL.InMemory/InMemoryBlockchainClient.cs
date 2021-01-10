@@ -142,7 +142,7 @@ namespace RemoteCongress.Server.DAL.InMemory
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
         public async IAsyncEnumerable<ISignedData> FetchAllFromChain(
-            IList<IQuery> query,
+            IEnumerable<IQuery> query,
             [EnumeratorCancellation] CancellationToken cancellationToken
         )
         {

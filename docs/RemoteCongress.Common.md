@@ -3,6 +3,7 @@
 
 ## Contents
 
+- [BaseRemoteCongressException](#T-RemoteCongress-Common-Exceptions-BaseRemoteCongressException 'RemoteCongress.Common.Exceptions.BaseRemoteCongressException')
 - [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
   - [Content](#P-RemoteCongress-Common-Bill-Content 'RemoteCongress.Common.Bill.Content')
   - [Title](#P-RemoteCongress-Common-Bill-Title 'RemoteCongress.Common.Bill.Title')
@@ -50,14 +51,14 @@
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-ICodec`1-GetPreferredMediaType 'RemoteCongress.Common.Serialization.ICodec`1.GetPreferredMediaType')
 - [IDataClient](#T-RemoteCongress-Common-Repositories-IDataClient 'RemoteCongress.Common.Repositories.IDataClient')
   - [AppendToChain(data,cancellationToken)](#M-RemoteCongress-Common-Repositories-IDataClient-AppendToChain-RemoteCongress-Common-ISignedData,System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IDataClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)')
-  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Common-Repositories-IDataClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IDataClient.FetchAllFromChain(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [FetchAllFromChain(query,cancellationToken)](#M-RemoteCongress-Common-Repositories-IDataClient-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IDataClient.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
   - [FetchFromChain(id,cancellationToken)](#M-RemoteCongress-Common-Repositories-IDataClient-FetchFromChain-System-String,System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IDataClient.FetchFromChain(System.String,System.Threading.CancellationToken)')
 - [IIdentifiable](#T-RemoteCongress-Common-IIdentifiable 'RemoteCongress.Common.IIdentifiable')
   - [Id](#P-RemoteCongress-Common-IIdentifiable-Id 'RemoteCongress.Common.IIdentifiable.Id')
 - [IImmutableDataRepository\`1](#T-RemoteCongress-Common-Repositories-IImmutableDataRepository`1 'RemoteCongress.Common.Repositories.IImmutableDataRepository`1')
   - [Create(instance,cancellationToken)](#M-RemoteCongress-Common-Repositories-IImmutableDataRepository`1-Create-RemoteCongress-Common-VerifiedData{`0},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Create(RemoteCongress.Common.VerifiedData{`0},System.Threading.CancellationToken)')
   - [Fetch(id,cancellationToken)](#M-RemoteCongress-Common-Repositories-IImmutableDataRepository`1-Fetch-System-String,System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Fetch(System.String,System.Threading.CancellationToken)')
-  - [Fetch(query,cancellationToken)](#M-RemoteCongress-Common-Repositories-IImmutableDataRepository`1-Fetch-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Fetch(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [Fetch(query,cancellationToken)](#M-RemoteCongress-Common-Repositories-IImmutableDataRepository`1-Fetch-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Fetch(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
 - [ILoggerExtensions](#T-RemoteCongress-Common-Logging-ILoggerExtensions 'RemoteCongress.Common.Logging.ILoggerExtensions')
   - [LogException\`\`1(logger,logLevel,exception)](#M-RemoteCongress-Common-Logging-ILoggerExtensions-LogException``1-Microsoft-Extensions-Logging-ILogger,``0,Microsoft-Extensions-Logging-LogLevel- 'RemoteCongress.Common.Logging.ILoggerExtensions.LogException``1(Microsoft.Extensions.Logging.ILogger,``0,Microsoft.Extensions.Logging.LogLevel)')
 - [IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongress.Common.Repositories.Queries.IQuery')
@@ -85,7 +86,7 @@
   - [_queryProcessor](#F-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-_queryProcessor 'RemoteCongress.Common.Repositories.ImmutableDataRepository`1._queryProcessor')
   - [Create(model,cancellationToken)](#M-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-Create-RemoteCongress-Common-VerifiedData{`0},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Create(RemoteCongress.Common.VerifiedData{`0},System.Threading.CancellationToken)')
   - [Fetch(id,cancellationToken)](#M-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-Fetch-System-String,System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Fetch(System.String,System.Threading.CancellationToken)')
-  - [Fetch(query,cancellationToken)](#M-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-Fetch-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Fetch(System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
+  - [Fetch(query,cancellationToken)](#M-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-Fetch-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken- 'RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Fetch(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)')
 - [InvalidBlockSignatureException](#T-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException')
   - [#ctor(message,innerException)](#M-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException-#ctor-System-String,System-Exception- 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor(System.String,System.Exception)')
   - [#ctor(message)](#M-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException-#ctor-System-String- 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor(System.String)')
@@ -206,6 +207,17 @@
   - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
   - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.GetPreferredMediaType')
+
+<a name='T-RemoteCongress-Common-Exceptions-BaseRemoteCongressException'></a>
+## BaseRemoteCongressException `type`
+
+##### Namespace
+
+RemoteCongress.Common.Exceptions
+
+##### Summary
+
+
 
 <a name='T-RemoteCongress-Common-Bill'></a>
 ## Bill `type`
@@ -914,7 +926,7 @@ The unique id of the stored block.
 | data | [RemoteCongress.Common.ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData') | The signed and verified data structure to store in the blockchain. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
-<a name='M-RemoteCongress-Common-Repositories-IDataClient-FetchAllFromChain-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
+<a name='M-RemoteCongress-Common-Repositories-IDataClient-FetchAllFromChain-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### FetchAllFromChain(query,cancellationToken) `method`
 
 ##### Summary
@@ -929,7 +941,7 @@ An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISi
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
+| query | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='M-RemoteCongress-Common-Repositories-IDataClient-FetchFromChain-System-String,System-Threading-CancellationToken-'></a>
@@ -1023,7 +1035,7 @@ The immutable, and verified `TData` instance with an [Id](#P-RemoteCongress-Comm
 | id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The unique [Id](#P-RemoteCongress-Common-IIdentifiable-Id 'RemoteCongress.Common.IIdentifiable.Id') of an `TData` instance to fetch. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
-<a name='M-RemoteCongress-Common-Repositories-IImmutableDataRepository`1-Fetch-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
+<a name='M-RemoteCongress-Common-Repositories-IImmutableDataRepository`1-Fetch-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### Fetch(query,cancellationToken) `method`
 
 ##### Summary
@@ -1038,7 +1050,7 @@ An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISi
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
+| query | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 <a name='T-RemoteCongress-Common-Logging-ILoggerExtensions'></a>
@@ -1422,7 +1434,7 @@ The immutable, and verified `TData` instance with an [Id](#P-RemoteCongress-Comm
 | [System.OperationCanceledException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.OperationCanceledException 'System.OperationCanceledException') | Thrown if the `cancellationToken` is cancelled. |
 | [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `id` is null. |
 
-<a name='M-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-Fetch-System-Collections-Generic-IList{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
+<a name='M-RemoteCongress-Common-Repositories-ImmutableDataRepository`1-Fetch-System-Collections-Generic-IEnumerable{RemoteCongress-Common-Repositories-Queries-IQuery},System-Threading-CancellationToken-'></a>
 ### Fetch(query,cancellationToken) `method`
 
 ##### Summary
@@ -1437,7 +1449,7 @@ An [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISi
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| query | [System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IList 'System.Collections.Generic.IList{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
+| query | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery}') | The query to pull data by. |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation requests. |
 
 ##### Exceptions

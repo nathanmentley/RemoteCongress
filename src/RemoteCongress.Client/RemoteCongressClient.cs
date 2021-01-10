@@ -15,7 +15,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Repositories.Queries;
 using System;
 using System.Collections.Generic;
@@ -27,55 +29,118 @@ namespace RemoteCongress.Client
     /// <summary>
     /// A client used to interact with the RemoteCongress api.
     /// </summary>
-    public class RemoteCongressClient: IRemoteCongressClient
+    internal class RemoteCongressClient: IRemoteCongressClient
     {
         /// <summary>
-        /// An <see cref="IEndpointClient{Bill}"/> to interact with <see cref="Bill"/>s.
+        /// An <see cref="ILogger"/> instance to log against.
         /// </summary>
-        private readonly IEndpointClient<Bill> _billClient;
+        private readonly ILogger<RemoteCongressClient> _logger;
 
         /// <summary>
-        /// An <see cref="IEndpointClient{Member}"/> to interact with <see cref="Member"/>s.
+        /// An <see cref="IDataSigner{Bill}"/> to sign <see cref="Bill"/>s.
         /// </summary>
-        private readonly IEndpointClient<Member> _memberClient;
+        private readonly IDataSigner<Bill> _billDataSigner;
 
         /// <summary>
-        /// An <see cref="IEndpointClient{Vote}"/> to interact with <see cref="Vote"/>s.
+        /// An <see cref="IDataSigner{Member}"/> to sign <see cref="Member"/>s.
         /// </summary>
-        private readonly IEndpointClient<Vote> _voteClient;
+        private readonly IDataSigner<Member> _memberDataSigner;
+
+        /// <summary>
+        /// An <see cref="IDataSigner{Vote}"/> to sign <see cref="Vote"/>s.
+        /// </summary>
+        private readonly IDataSigner<Vote> _voteDataSigner;
+
+        /// <summary>
+        /// An <see cref="IImmutableDataRepository{Bill}"/> to interact with <see cref="Bill"/>s.
+        /// </summary>
+        private readonly IImmutableDataRepository<Bill> _billRepo;
+
+        /// <summary>
+        /// An <see cref="IImmutableDataRepository{Member}"/> to interact with <see cref="Member"/>s.
+        /// </summary>
+        private readonly IImmutableDataRepository<Member> _memberRepo;
+
+        /// <summary>
+        /// An <see cref="IImmutableDataRepository{Vote}"/> to interact with <see cref="Vote"/>s.
+        /// </summary>
+        private readonly IImmutableDataRepository<Vote> _voteRepo;
 
         /// <summary>
         /// Ctor
         /// </summary>
-        /// <param name="billClient">
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
         /// </param>
-        /// <param name="memberClient">
+        /// <param name="billDataSigner">
+        /// An <see cref="IDataSigner{Bill}"/> to sign <see cref="Bill"/>s.
         /// </param>
-        /// <param name="voteClient">
+        /// <param name="memberDataSigner">
+        /// An <see cref="IDataSigner{Member}"/> to sign <see cref="Member"/>s.
+        /// </param>
+        /// <param name="voteDataSigner">
+        /// An <see cref="IDataSigner{Vote}"/> to sign <see cref="Vote"/>s.
+        /// </param>
+        /// <param name="billRepo">
+        /// An <see cref="IImmutableDataRepository{Bill}"/> to interact with <see cref="Bill"/>s.
+        /// </param>
+        /// <param name="memberRepo">
+        /// An <see cref="IImmutableDataRepository{Member}"/> to interact with <see cref="Member"/>s.
+        /// </param>
+        /// <param name="voteRepo">
+        /// An <see cref="IImmutableDataRepository{Vote}"/> to interact with <see cref="Vote"/>s.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="billClient"/> is null.
+        /// Thrown if <paramref name="logger"/> is null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="memberClient"/> is null.
+        /// Thrown if <paramref name="billDataSigner"/> is null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="voteClient"/> is null.
+        /// Thrown if <paramref name="memberDataSigner"/> is null.
         /// </exception>
-        public RemoteCongressClient(
-            IEndpointClient<Bill> billClient,
-            IEndpointClient<Member> memberClient,
-            IEndpointClient<Vote> voteClient
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="voteDataSigner"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="billRepo"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="memberRepo"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="voteRepo"/> is null.
+        /// </exception>
+        internal RemoteCongressClient(
+            ILogger<RemoteCongressClient> logger,
+            IDataSigner<Bill> billDataSigner,
+            IDataSigner<Member> memberDataSigner,
+            IDataSigner<Vote> voteDataSigner,
+            IImmutableDataRepository<Bill> billRepo,
+            IImmutableDataRepository<Member> memberRepo,
+            IImmutableDataRepository<Vote> voteRepo
         )
         {
-            _billClient = billClient ??
-                throw new ArgumentNullException(nameof(billClient));
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
 
-            _memberClient = memberClient ??
-                throw new ArgumentNullException(nameof(memberClient));
+            _billDataSigner = billDataSigner ??
+                throw new ArgumentNullException(nameof(billDataSigner));
 
-            _voteClient = voteClient ??
-                throw new ArgumentNullException(nameof(voteClient));
+            _memberDataSigner = memberDataSigner ??
+                throw new ArgumentNullException(nameof(memberDataSigner));
+
+            _voteDataSigner = voteDataSigner ??
+                throw new ArgumentNullException(nameof(voteDataSigner));
+
+            _billRepo = billRepo ??
+                throw new ArgumentNullException(nameof(billRepo));
+
+            _memberRepo = memberRepo ??
+                throw new ArgumentNullException(nameof(memberRepo));
+
+            _voteRepo = voteRepo ??
+                throw new ArgumentNullException(nameof(voteRepo));
         }
 
         /// <summary>
@@ -85,8 +150,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Bill"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Bill"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <see cref="Bill"/> data to persist.
@@ -97,13 +161,17 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Bill"/>.
         /// </returns>
-        public Task<VerifiedData<Bill>> CreateBill(
+        public async Task<VerifiedData<Bill>> CreateBill(
             string privateKey,
             string publicKey,
             Bill data,
             CancellationToken cancellationToken
-        ) =>
-            _billClient.Create(privateKey, publicKey, data, cancellationToken);
+        )
+        {
+            VerifiedData<Bill> bill = await _billDataSigner.Create(privateKey, publicKey, data, cancellationToken);
+
+            return await _billRepo.Create(bill, cancellationToken);
+        }    
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Bill"/>s that match <paramref name="query"/>.
@@ -121,7 +189,7 @@ namespace RemoteCongress.Client
             IList<IQuery> query,
             CancellationToken cancellationToken
         ) =>
-            _billClient.Get(query, cancellationToken);
+            _billRepo.Fetch(query, cancellationToken);
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Bill"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -136,7 +204,7 @@ namespace RemoteCongress.Client
         /// The persisted <see cref="Bill"/>.
         /// </returns>
         public Task<VerifiedData<Bill>> GetBill(string id, CancellationToken cancellationToken) =>
-            _billClient.Get(id, cancellationToken);
+            _billRepo.Fetch(id, cancellationToken);
 
         /// <summary>
         /// Creates, signs, and persists a <see cref="Member"/> instance.
@@ -145,8 +213,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Member"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Member"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Member"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <see cref="Member"/> data to persist.
@@ -157,13 +224,17 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Member"/>.
         /// </returns>
-        public Task<VerifiedData<Member>> CreateMember(
+        public async Task<VerifiedData<Member>> CreateMember(
             string privateKey,
             string publicKey,
             Member data,
             CancellationToken cancellationToken
-        ) =>
-            _memberClient.Create(privateKey, publicKey, data, cancellationToken);
+        )
+        {
+            VerifiedData<Member> member = await _memberDataSigner.Create(privateKey, publicKey, data, cancellationToken);
+
+            return await _memberRepo.Create(member, cancellationToken);
+        }    
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Member"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -178,7 +249,7 @@ namespace RemoteCongress.Client
         /// The persisted <see cref="Member"/>.
         /// </returns>
         public Task<VerifiedData<Member>> GetMember(string id, CancellationToken cancellationToken) =>
-            _memberClient.Get(id, cancellationToken);
+            _memberRepo.Fetch(id, cancellationToken);
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Member"/>s that match <paramref name="query"/>.
@@ -196,7 +267,7 @@ namespace RemoteCongress.Client
             IList<IQuery> query,
             CancellationToken cancellationToken
         ) =>
-            _memberClient.Get(query, cancellationToken);
+            _memberRepo.Fetch(query, cancellationToken);
 
         /// <summary>
         /// Creates, signs, and persists a <see cref="Vote"/> instance.
@@ -205,8 +276,7 @@ namespace RemoteCongress.Client
         /// The private key to use to generate the <see cref="ISignedData.Signature"/> of the <see cref="Vote"/>.
         /// </param>
         /// <param name="publicKey">
-        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to
-        ///     the producing individual.
+        /// The public key that matches <paramref name="privateKey"/> to link the immutable <see cref="Vote"/> to the producing individual.
         /// </param>
         /// <param name="data">
         /// The <see cref="Vote"/> data to persist.
@@ -217,13 +287,17 @@ namespace RemoteCongress.Client
         /// <returns>
         /// The persisted <see cref="Vote"/>.
         /// </returns>
-        public Task<VerifiedData<Vote>> CreateVote(
+        public async Task<VerifiedData<Vote>> CreateVote(
             string privateKey,
             string publicKey,
             Vote data,
             CancellationToken cancellationToken
-        ) =>
-            _voteClient.Create(privateKey, publicKey, data, cancellationToken);
+        )
+        {
+            VerifiedData<Vote> vote = await _voteDataSigner.Create(privateKey, publicKey, data, cancellationToken);
+
+            return await _voteRepo.Create(vote, cancellationToken);
+        }    
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Vote"/> by it's <see cref="IIdentifiable.Id"/>.
@@ -238,7 +312,7 @@ namespace RemoteCongress.Client
         /// The persisted <see cref="Vote"/>.
         /// </returns>
         public Task<VerifiedData<Vote>> GetVote(string id, CancellationToken cancellationToken) =>
-            _voteClient.Get(id, cancellationToken);
+            _voteRepo.Fetch(id, cancellationToken);
 
         /// <summary>
         /// Fetches a signed, and verified <see cref="Vote"/>s that match <paramref name="query"/>.
@@ -256,6 +330,6 @@ namespace RemoteCongress.Client
             IList<IQuery> query,
             CancellationToken cancellationToken
         ) =>
-            _voteClient.Get(query, cancellationToken);
+            _voteRepo.Fetch(query, cancellationToken);
     }
 }

@@ -1,0 +1,2136 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteCongress.Common</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteCongress.Common.Bill">
+            <summary>
+            A model representing a bill
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Bill.Title">
+            <summary>
+            The title of the bill.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Bill.Content">
+            <summary>
+            The content of the bill.
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Encryption.RsaUtils">
+            <summary>
+            A simple utility class to handle RSA Signing and Verification
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Encryption.RsaUtils.GenerateSignature(System.String,System.String)">
+            <summary>
+            Generates an rsa signature hash with a private key that can be verified with the public key.
+            </summary>
+            <param name="privateKey">
+            A rsa private key to use to generate a signature hash.
+            </param>
+            <param name="message">
+            The message to generate the signature for.
+            </param>
+            <returns>
+            A <see cref="T:System.Byte"/> array containing the signature.
+            </returns>
+            <remarks>
+            We're using this signature hash to ensure the message that is signed is tied to who created it, and so we can make this message immutable. If any of the content of <paramref name="message"/> changes later on, the signature verification will fail.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            Throw if <paramref name="privateKey"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Throw if <paramref name="message"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Encryption.RsaUtils.VerifySignature(System.String,System.String,System.Byte[])">
+            <summary>
+            Validates that a signature matches the passed message, and is sent from who is being claimed by the public key.
+            </summary>
+            <param name="publicKey">
+            A rsa public key to match the signature against.
+            </param>
+            <param name="message">
+            The message content to ensure is valid and unmutated since signed.
+            </param>
+            <param name="signatureBytes">
+            The signature to test against <paramref name="publicKey"/> and <paramref name="message"/>.
+            </param>
+            <returns>
+            true, if <paramref name="signatureBytes"/> is a valid signature for <paramref name="publicKey"/> and <paramref name="message"/>.
+            </returns>
+            <remarks>
+            We're using this verification to know that our signed data content is coming from the individual who is represnted by <paramref name="publicKey"/> and that their <paramref name="message"/> isn't tampered with.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            Throw if <paramref name="publicKey"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Throw if <paramref name="message"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Throw if <paramref name="signatureBytes"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Encryption.RsaUtils.GetAlgorithmName">
+            <summary>
+            Fetches a common Hashing Algorithm to used throughout this class.
+            </summary>
+            <returns>
+            <see cref="P:System.Security.Cryptography.HashAlgorithmName.SHA512"/>
+            </returns>
+            <remarks>
+            In a production version of this platform this should be dynamic.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Common.Encryption.RsaUtils.GetPadding">
+            <summary>
+            Fetches a common signature padding configuration to use through out this class.
+            </summary>
+            <returns>
+            <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1"/>
+            </returns>
+            <remarks>
+            In a production version of this platform this should be dynamic.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Common.Encryption.RsaUtils.GetEncoding">
+            <summary>
+            Fetches a common <see cref="T:System.Text.Encoding"/> to use throughout this class.
+            </summary>
+            <returns>
+            <see cref="P:System.Text.Encoding.UTF8"/>
+            </returns>
+            <remarks>
+            In a production version of this platform this should be dynamic.
+            </remarks>
+        </member>
+        <member name="T:RemoteCongress.Common.Exceptions.BaseRemoteCongressException">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Exceptions.BlockNotFoundException">
+            <summary>
+            An <see cref="T:System.Exception"/> to throw when a block is unexpected not found.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+            <param name="innerException">
+            Another exception that brought this exception to light.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockNotFoundException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockNotFoundException.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Exceptions.BlockNotStorableException">
+            <summary>
+            An <see cref="T:System.Exception"/> to throw when a block is unexpected cannot be persisted.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockNotStorableException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+            <param name="innerException">
+            Another exception that brought this exception to light.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockNotStorableException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockNotStorableException.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Exceptions.BlockStorageException">
+            <summary>
+            An <see cref="T:System.Exception"/> that all block storage related exceptions should inherit fromm.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockStorageException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+            <param name="innerException">
+            Another exception that brought this exception to light.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockStorageException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.BlockStorageException.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException">
+            <summary>
+            <param>
+            An <see cref="T:System.Exception"/> to throw when a <see cref="T:RemoteCongress.Common.ISignedData"/>'s <see cref="P:RemoteCongress.Common.ISignedData.Signature"/> isn't
+                valid for it's <see cref="P:RemoteCongress.Common.ISignedData.PublicKey"/> and <see cref="P:RemoteCongress.Common.ISignedData.BlockContent"/>.
+            </param>
+            <param>
+            This indicates that either:
+            <list>
+                <item>The block was tampered with.</item>
+                <item>Is being sent by someone claming to be someone else.</item>
+                <item>Was corrupted over the network.</item>
+            </list>
+            </param>
+            <param>
+            In any case this is an exception, because our system only operates on immutable, valid, and signed data.
+            </param>
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+            <param name="innerException">
+            Another exception that brought this exception to light.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException">
+            <summary>
+            An <see cref="T:System.Exception"/> to throw when a <see cref="T:RemoteCongress.Common.ISignedData"/>'s <see cref="P:RemoteCongress.Common.ISignedData.MediaType"/> isn't
+                supported by the configured codecs
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+            <param name="innerException">
+            Another exception that brought this exception to light.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">
+            A message describing the exceptional situation in detail.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.IIdentifiable">
+            <summary>
+            An interface describing an identifiable structure.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.IIdentifiable.Id">
+            <summary>
+            The unique identifier of the implementing structure.
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.ISignedData">
+            <summary>
+            An interface defining structures that contain verifiable data.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.ISignedData.PublicKey">
+            <summary>
+            The string representation of the data producer's public key.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.ISignedData.BlockContent">
+            <summary>
+            The content of the data.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.ISignedData.Signature">
+            <summary>
+            The signature of the <see cref="P:RemoteCongress.Common.ISignedData.BlockContent"/> that can be verified with <see cref="P:RemoteCongress.Common.ISignedData.PublicKey"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.ISignedData.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of <see cref="P:RemoteCongress.Common.ISignedData.BlockContent"/>
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.ISignedData.IsValid">
+            <summary>
+            A flag to indicate that the contained signed data is valid, and untampered with.
+            </summary>
+            <returns>
+            True if the contained data is valid, and not tampered with.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Logging.ILoggerExtensions">
+            <summary>
+            <see cref="T:Microsoft.Extensions.Logging.ILogger"/> extension methods.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Logging.ILoggerExtensions.LogException``1(Microsoft.Extensions.Logging.ILogger,``0,Microsoft.Extensions.Logging.LogLevel)">
+            <summary>
+            Logs an exception to an <see cref="T:Microsoft.Extensions.Logging.ILogger"/>.
+            </summary>
+            <param name="logger">
+            The <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to log to.
+            </param>
+            <param name="logLevel">
+            The <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> to log the exception at.
+            </param>
+            <param name="exception">
+            an exception of <typeparamref name="TException"/> to be logged.
+            </param>
+            <typeparam name="TException">
+            A type of <see cref="T:System.Exception"/> to be passed through the method.
+            </typeparam>
+            <returns>
+            The passed in <paramref name="exception"/> reference.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="exception"/> is null.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Member">
+            <summary>
+            A model representing a voting member
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Member.Id">
+            <summary>
+            The member's identifier
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Member.FirstName">
+            <summary>
+            The member's first name
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Member.LastName">
+            <summary>
+            The member's last name
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Member.Seat">
+            <summary>
+            The member's seat
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Member.Party">
+            <summary>
+            The member's party
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Member.PublicKey">
+            <summary>
+            The member's public key
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.RemoteCongressMediaType">
+            <summary>
+            A class that defines a mime MediaType
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.RemoteCongressMediaType.StructureKey">
+            <summary>
+            The key used for the structure parameterr in the media type.
+            </summary>
+            <value>
+            structure
+            </value>
+        </member>
+        <member name="F:RemoteCongress.Common.RemoteCongressMediaType.VersionKey">
+            <summary>
+            The key used for the version parameterr in the media type.
+            </summary>
+            <value>
+            version
+            </value>
+        </member>
+        <member name="F:RemoteCongress.Common.RemoteCongressMediaType.MinVersionValue">
+            <summary>
+            The minimum version number a media type can represent
+            </summary>
+            <value>
+            1
+            </value>
+        </member>
+        <member name="P:RemoteCongress.Common.RemoteCongressMediaType.Type">
+            <summary>
+            The mediatype type
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.RemoteCongressMediaType.SubType">
+            <summary>
+            The mediatype sub-type
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.RemoteCongressMediaType.Structure">
+            <summary>
+            The structure defined by the type
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.RemoteCongressMediaType.Version">
+            <summary>
+            The version of the structure defined by the type.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.RemoteCongressMediaType.#ctor(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="type">
+            The mediatype type
+            </param>
+            <param name="subType">
+            The mediatype subtype
+            </param>
+            <param name="structure">
+            The mediatype structure
+            </param>
+            <param name="version">
+            The mediatype version
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="type"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="subType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="structure"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if <paramref name="version"/> is less than <see cref="F:RemoteCongress.Common.RemoteCongressMediaType.MinVersionValue"/>.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.RemoteCongressMediaType.Equals(System.Object)">
+            <summary>
+            Tests if an instance is equal to this instance.
+            </summary>
+            <param name="obj">
+            Instance to compare against
+            </param>
+            <returns>
+            If <paramref name="obj"/> is equal true is returned.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.RemoteCongressMediaType.GetHashCode">
+            <summary>
+            Fetches a unique hash code for the value of this instance.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.RemoteCongressMediaType.ToString">
+            <summary>
+            Fetches a string representation of this instance.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.RemoteCongressMediaType.Parse(System.String)">
+            <summary>
+            Fetches a <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to represent <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            A string mediatype
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> representation
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            Thrown if <paramref name="mediaType"/> is invalid.
+            </exception>
+        </member>
+        <member name="P:RemoteCongress.Common.RemoteCongressMediaType.None">
+            <summary>
+            A <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> representing no value.
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.IDataClient">
+            <summary>
+            An interface for interacting with an immutable data store.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.IDataClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
+            </summary>
+            <param name="data">
+            The signed and verified data structure to store in the blockchain.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The unique id of the stored block.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.IDataClient.FetchFromChain(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Fetches the verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain by block id.
+            </summary>
+            <param name="id">
+            The unique block id to pull verified data from.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.IDataClient.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all matching verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain.
+            </summary>
+            <param name="query">
+            The query to pull data by.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.IImmutableDataRepository`1">
+            <summary>
+            An interface defining what operations can happen for persisted immutable data types.
+            </summary>
+            <typeparam name="TData">
+            A type that defines the data being operated on.
+            </typeparam>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Create(RemoteCongress.Common.VerifiedData{`0},System.Threading.CancellationToken)">
+            <summary>
+            Creates and persist the signed and verified <paramref name="instance"/>.
+            </summary>
+            <param name="instance">
+            A signed and verified instance of type <typeparamref name="TData"/> to persist.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The persisted <paramref name="instance"/> model.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Fetch(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Fetches a persisted instance of <typeparamref name="TData"/> that has an <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/> that
+                matches <paramref name="id"/>.
+            </summary>
+            <param name="id">
+            The unique <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/> of an <typeparamref name="TData"/> instance to fetch.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The immutable, and verified <typeparamref name="TData"/> instance with an <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/>
+                of <paramref name="id"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.IImmutableDataRepository`1.Fetch(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all matching verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain.
+            </summary>
+            <param name="query">
+            The query to pull data by.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.ImmutableDataRepository`1">
+            <summary>
+            An immutable data repository for <typeparamref name="TData"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Repositories.ImmutableDataRepository`1._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Repositories.ImmutableDataRepository`1._client">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Repositories.IDataClient"/> to interact with data against.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Repositories.ImmutableDataRepository`1._codecs">
+            <summary>
+            A collection of <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/>s to use to decode data.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Repositories.ImmutableDataRepository`1._queryProcessor">
+            <summary>
+            A <see cref="T:RemoteCongress.Common.Repositories.Queries.IQueryProcessor`1"/> to process an <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>s that need to be processed.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.ImmutableDataRepository`1.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Repositories.IImmutableDataRepository{`0}},RemoteCongress.Common.Repositories.IDataClient,System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{`0}},RemoteCongress.Common.Repositories.Queries.IQueryProcessor{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <param name="client">
+            A <see cref="T:RemoteCongress.Common.Repositories.IDataClient"/> instance to use to communicate with the data store.
+            </param>
+            <param name="codecs">
+            <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/>s for <typeparamref name="TData"/> to process block content.
+            </param>
+            <param name="queryProcessor">
+            <see cref="T:RemoteCongress.Common.Repositories.Queries.IQueryProcessor`1"/> to filter <typeparamref name="TData"/> on for queries.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="client"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="codecs"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="queryProcessor"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Create(RemoteCongress.Common.VerifiedData{`0},System.Threading.CancellationToken)">
+            <summary>
+            Creates and persist the signed and verified <paramref name="model"/>.
+            </summary>
+            <param name="model">
+            A signed and verified instance of type <typeparamref name="TData"/> to persist.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The persisted <paramref name="model"/> model.
+            </returns>
+            <exception cref="T:RemoteCongress.Common.Exceptions.BlockNotStorableException">
+            Thrown if the <paramref name="model"/> cannot be stored.
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            Thrown if the <paramref name="cancellationToken"/> is cancelled.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="model"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Fetch(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Fetches a persisted instance of <typeparamref name="TData"/> that has an <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/> that
+                matches <paramref name="id"/>.
+            </summary>
+            <param name="id">
+            The unique <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/> of an <typeparamref name="TData"/> instance to fetch.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The immutable, and verified <typeparamref name="TData"/> instance with an <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/>
+                of <paramref name="id"/>.
+            </returns>
+            <exception cref="T:RemoteCongress.Common.Exceptions.BlockNotFoundException">
+            Thrown if a block with an id of <paramref name="id"/> cannot be fetched.
+            </exception>
+            <exception cref="T:RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException">
+            Thrown if a block has a <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> cannot be decoded.
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            Thrown if the <paramref name="cancellationToken"/> is cancelled.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="id"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.ImmutableDataRepository`1.Fetch(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all matching verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain.
+            </summary>
+            <param name="query">
+            The query to pull data by.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="query"/> is null.
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            Thrown if the <paramref name="cancellationToken"/> is cancelled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.BillIdQuery">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> to filter on BillId.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Repositories.Queries.BillIdQuery.BillId">
+            <summary>
+            The Id of the <see cref="T:RemoteCongress.Common.Bill"/> to filter on.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.BillIdQuery.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="billId">
+            The Id of the <see cref="T:RemoteCongress.Common.Bill"/> to filter on.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="billId"/> is null.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.BillQueryProcessor">
+            <summary>
+            Query processing logic for <see cref="T:RemoteCongress.Common.Vote"/>s.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.BillQueryProcessor.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Repositories.Queries.BillQueryProcessor})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to use for logging.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.BillQueryProcessor.BlockMatchesQuery(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},RemoteCongress.Common.SignedData,RemoteCongress.Common.Bill)">
+            <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches everything defined <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            A collection of <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>s to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.Bill"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches everything in <paramref name="query"/>.</item>
+                <item>false, if the block does not matches everything in <paramref name="query"/>.</item>
+            </list>
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="query"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="signedData"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.BillQueryProcessor.BlockMatchesQuery(RemoteCongress.Common.Repositories.Queries.IQuery,RemoteCongress.Common.SignedData,RemoteCongress.Common.Bill)">
+            <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            An <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.Bill"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches <paramref name="query"/>.</item>
+                <item>false, if the block does not matches <paramref name="query"/>.</item>
+            </list>
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.IQuery">
+            <summary>
+            A type to use for filtering.
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.IQueryProcessor`1">
+            <summary>
+            Query processing logic for <typeparmref name="TData"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.IQueryProcessor`1.BlockMatchesQuery(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},RemoteCongress.Common.SignedData,`0)">
+            <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches everything defined <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            A collection of <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>s to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <typeparamref name="TData"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches everything in <paramref name="query"/>.</item>
+                <item>false, if the block does not matches everything in <paramref name="query"/>.</item>
+            </list>
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.MemberQueryProcessor">
+            <summary>
+            Query processing logic for <see cref="T:RemoteCongress.Common.Vote"/>s.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.MemberQueryProcessor.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Repositories.Queries.MemberQueryProcessor})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to use for logging.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.MemberQueryProcessor.BlockMatchesQuery(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},RemoteCongress.Common.SignedData,RemoteCongress.Common.Member)">
+            <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches everything defined <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            A collection of <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>s to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.Member"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches everything in <paramref name="query"/>.</item>
+                <item>false, if the block does not matches everything in <paramref name="query"/>.</item>
+            </list>
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="query"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="signedData"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.MemberQueryProcessor.BlockMatchesQuery(RemoteCongress.Common.Repositories.Queries.IQuery,RemoteCongress.Common.SignedData,RemoteCongress.Common.Member)">
+            <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            An <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.Member"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches <paramref name="query"/>.</item>
+                <item>false, if the block does not matches <paramref name="query"/>.</item>
+            </list>
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.NullQuery">
+            <summary>
+            A no-op <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>.
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.OpinionQuery">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> to filter on Opinion.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Repositories.Queries.OpinionQuery.Opinion">
+            <summary>
+            The opinion to filter on.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.OpinionQuery.#ctor(System.Boolean)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="opinion">
+            The opinion to filter on.
+            </param>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.PublicKeyQuery">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> to filter on Public Key.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Repositories.Queries.PublicKeyQuery.PublicKey">
+            <summary>
+            The Public Key to filter on.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.PublicKeyQuery.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="publicKey">
+            The Public Key to filter on.
+            </param>
+        </member>
+        <member name="T:RemoteCongress.Common.Repositories.Queries.VoteQueryProcessor">
+            <summary>
+            Query processing logic for <see cref="T:RemoteCongress.Common.Vote"/>s.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.VoteQueryProcessor.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Repositories.Queries.VoteQueryProcessor})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to use for logging.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.VoteQueryProcessor.BlockMatchesQuery(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},RemoteCongress.Common.SignedData,RemoteCongress.Common.Vote)">
+            <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches everything defined <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            A collection of <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>s to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.Vote"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches everything in <paramref name="query"/>.</item>
+                <item>false, if the block does not matches everything in <paramref name="query"/>.</item>
+            </list>
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="query"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="signedData"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Repositories.Queries.VoteQueryProcessor.BlockMatchesQuery(RemoteCongress.Common.Repositories.Queries.IQuery,RemoteCongress.Common.SignedData,RemoteCongress.Common.Vote)">
+            /// <summary>
+            Tests if a block defined by <paramref name="data"/> and <paramref name="signedData"/> mataches <paramref name="query"/>.
+            </summary>
+            <param name="query">
+            An <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> to filter on.
+            </param>
+            <param name="signedData">
+            The <see cref="T:RemoteCongress.Common.SignedData"/> to test against <paramref name="query"/> against.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.Vote"/> to test against <paramref name="query"/> against.
+            </param>
+            <returns>
+            <list>
+                <item>true, if the block matches <paramref name="query"/>.</item>
+                <item>false, if the block does not matches <paramref name="query"/>.</item>
+            </list>
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.BillV1AvroCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 avro representation of a <see cref="T:RemoteCongress.Common.Bill"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.BillV1AvroCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1AvroCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.BillV1AvroCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.BillV1AvroCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1AvroCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1AvroCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1AvroCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.Bill"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Bill"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1AvroCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Bill)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.BillV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a <see cref="T:RemoteCongress.Common.Bill"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.BillV1JsonCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.BillV1JsonCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.BillV1JsonCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.Bill"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Bill"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.BillV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Bill)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.ICodec`1">
+            <summary>
+            An interface around encoding and decoding data.
+            </summary>
+            <typeparam name="TData">
+            The data type to encode or decode.
+            </typeparam>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.ICodec`1.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.ICodec`1.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.ICodec`1.Encode(RemoteCongress.Common.RemoteCongressMediaType,`0)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.ICodec`1.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <typeparamref name="TData"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode data from.
+            </param>
+            <returns>
+            The <typeparamref name="TData"/> from <paramref name="data"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.ICodec`1.EncodeToString(RemoteCongress.Common.RemoteCongressMediaType,`0)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.String"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.ICodec`1.DecodeFromString(RemoteCongress.Common.RemoteCongressMediaType,System.String)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <typeparamref name="TData"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.String"/> to decode data from.
+            </param>
+            <returns>
+            The <typeparamref name="TData"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.IQueryV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.IQueryV1JsonCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.IQueryV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.IQueryV1JsonCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.IQueryV1JsonCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.IQueryV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.IQueryV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.IQueryV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Repositories.Queries.IQuery"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.IQueryV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Repositories.Queries.IQuery)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.MemberV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a <see cref="T:RemoteCongress.Common.Member"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.MemberV1JsonCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.MemberV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.MemberV1JsonCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.MemberV1JsonCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.MemberV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.MemberV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.MemberV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.Member"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Member"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.MemberV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Member)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a collection of <see cref="T:RemoteCongress.Common.SignedData"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.SignedData"/> collection.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.SignedData"/> collection from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData})">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 avro representation of a <see cref="T:RemoteCongress.Common.SignedData"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.SignedDataV1AvroCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.SignedData"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.SignedData"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.SignedData)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a <see cref="T:RemoteCongress.Common.SignedData"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.SignedDataV1JsonCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.SignedData"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.SignedData"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.SignedData)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.VoteV1AvroCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 avro representation of a <see cref="T:RemoteCongress.Common.Vote"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.VoteV1AvroCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1AvroCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.VoteV1AvroCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.VoteV1AvroCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1AvroCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1AvroCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1AvroCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.Vote"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Vote"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1AvroCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Serialization.VoteV1JsonCodec">
+            <summary>
+            An <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> for a version 1 json representation of a <see cref="T:RemoteCongress.Common.Vote"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.VoteV1JsonCodec._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.VoteV1JsonCodec})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="F:RemoteCongress.Common.Serialization.VoteV1JsonCodec.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> handled by this codec.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1JsonCodec.GetPreferredMediaType">
+            <summary>
+            Gets the preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> for the codec.
+            </summary>
+            <returns>
+            The preferred <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Checks if <paramref name="mediaType"/> can be handled by the codec.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to check if it can be handled.
+            </param>
+            <returns>
+            True if <paramref name="mediaType"/> can be handled.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)">
+            <summary>
+            Decodes a <paramref name="data"/> into a <see cref="T:RemoteCongress.Common.Vote"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to decode the data from.
+            </param>
+            <param name="data">
+            The <see cref="T:System.IO.Stream"/> to decode dat from.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Vote"/> from <paramref name="data"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.Serialization.VoteV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)">
+            <summary>
+            Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+            </summary>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> to encode the data to.
+            </param>
+            <param name="data">
+            The data to encode.
+            </param>
+            <returns>
+            A <see cref="T:System.IO.Stream"/> containing the encoded data.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the <paramref name="mediaType"/> cannot be handled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.SignedData">
+            <summary>
+            A simple data transfer object that contains signed data.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.SignedData.Id">
+            <summary>
+            The unique identifier of the contained data.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.SignedData.PublicKey">
+            <summary>
+            The string representation of the data producer's public key.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.SignedData.BlockContent">
+            <summary>
+            The content of the data.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.SignedData.Signature">
+            <summary>
+            The signature of the <see cref="P:RemoteCongress.Common.SignedData.BlockContent"/> that can be verified with <see cref="P:RemoteCongress.Common.SignedData.PublicKey"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.SignedData.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of <see cref="P:RemoteCongress.Common.SignedData.BlockContent"/>
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.SignedData.#ctor(System.String,System.String,System.Byte[],RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="publicKey">
+            The string representation of the data producer's public key.
+            </param>
+            <param name="blockContent">
+            The content of the data.
+            </param>
+            <param name="signature">
+            The signature of the <see cref="P:RemoteCongress.Common.SignedData.BlockContent"/> that can be verified with <see cref="P:RemoteCongress.Common.SignedData.PublicKey"/>.
+            </param>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of <see cref="P:RemoteCongress.Common.SignedData.BlockContent"/>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="publicKey"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="blockContent"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="signature"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="mediaType"/> is null.
+            </exception>
+            <remarks>
+            The data isn't validated, and could be in an invalid state.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Common.SignedData.#ctor(RemoteCongress.Common.ISignedData)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="data">
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance to populate data from.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException">
+            Thrown if <paramref name="data"/> contains non verifiable data.
+            </exception>
+            <remarks>
+            Since <paramref name="data"/> is a <see cref="T:RemoteCongress.Common.ISignedData"/> instance we validate it before populating
+                data from it. So the created <see cref="T:RemoteCongress.Common.SignedData"/> instance will be valid when created, but
+                since it's mutable it may not stay that way.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Common.SignedData.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <remarks>
+            The <see cref="T:RemoteCongress.Common.SignedData"/> is created in an invalid state, and must be populated with valid data.
+            </remarks>
+        </member>
+        <member name="T:RemoteCongress.Common.VerifiedData`1">
+            <summary>
+            A class that contains the base logic for generating immutable and verified data models.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.VerifiedData`1.Id">
+            <summary>
+            The unique Identifier of the persisted version.
+            </summary>
+            <remarks>
+            If this data isn't persisted this will be <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="P:RemoteCongress.Common.VerifiedData`1.PublicKey">
+            <summary>
+            The string representation of the data producer's public key.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.VerifiedData`1.BlockContent">
+            <summary>
+            The content of the model.
+            </summary>
+            <remarks>
+            Currently in this proof of concept this needs to be json, but in a more built out version
+             I'd expect this to be any number of formats, and we'd have a way to handle different
+             formats.
+            </remarks>
+        </member>
+        <member name="P:RemoteCongress.Common.VerifiedData`1.Data">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.VerifiedData`1.Signature">
+            <summary>
+            The signature of the <see cref="P:RemoteCongress.Common.VerifiedData`1.BlockContent"/> that can be verified with <see cref="P:RemoteCongress.Common.VerifiedData`1.PublicKey"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.VerifiedData`1.MediaType">
+            <summary>
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of <see cref="P:RemoteCongress.Common.VerifiedData`1.BlockContent"/>
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Common.VerifiedData`1.#ctor(System.String,RemoteCongress.Common.ISignedData,`0)">
+            <summary>
+            Constructor for a persisted version of the data.
+            </summary>
+            <param name="id">
+            The <see cref="P:RemoteCongress.Common.VerifiedData`1.Id"/> of the persisted data.
+            </param>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.ISignedData"/> data to use to construct the <see cref="T:RemoteCongress.Common.ISignedData"/>.
+            </param>
+            <param name="model">
+            The <typeparamref name="TModel"/> that contains the <see cref="P:RemoteCongress.Common.ISignedData.BlockContent"/>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="id"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="model"/> is null.
+            </exception>
+            <exception cref="T:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException">
+            Thrown if <see cref="P:RemoteCongress.Common.VerifiedData`1.Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Common.VerifiedData`1.#ctor(RemoteCongress.Common.ISignedData,`0)">
+            <summary>
+            Constructor for a non-persisted version of the data.
+            </summary>
+            <param name="data">
+            The <see cref="T:RemoteCongress.Common.ISignedData"/> data to use to construct the <see cref="T:RemoteCongress.Common.ISignedData"/>.
+            </param>
+            <param name="model">
+            The <typeparamref name="TModel"/> that contains the <see cref="P:RemoteCongress.Common.ISignedData.BlockContent"/>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="data"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="model"/> is null.
+            </exception>
+            <exception cref="T:RemoteCongress.Common.Exceptions.InvalidBlockSignatureException">
+            Thrown if <see cref="P:RemoteCongress.Common.VerifiedData`1.Signature"/> is invalid, and we can't ensure the data hasn't been tampered with.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Common.Vote">
+            <summary>
+            A model representing a vote
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Vote.BillId">
+            <summary>
+            The <see cref="P:RemoteCongress.Common.IIdentifiable.Id"/> of the <see cref="T:RemoteCongress.Common.Bill"/> being voted on.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Vote.Opinion">
+            <summary>
+            The opinion of the <see cref="T:RemoteCongress.Common.Vote"/>. True if voting yes, False if voting no, and null if present.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Common.Vote.Message">
+            <summary>
+            A short optional message explaining the <see cref="P:RemoteCongress.Common.Vote.Opinion"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteCongress.Server.DAL.Blockchain</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteCongress.Server.DAL.Blockchain.BaseBlock">
+            <summary>
+            A base model for a blockchain block
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.Blockchain.BaseBlock.Id">
+            <summary>
+            The id of the block.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.Blockchain.BaseBlock.IsValid">
+            <summary>
+            Is the block valid
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1">
+            <summary>
+            A base blockchain class
+            </summary>
+            <typeparam name="TBlock">
+            The block model stored in the blockchain
+            </typeparam>
+        </member>
+        <member name="F:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1._blocks">
+            <summary>
+            The in memory collection of blocks in the chain.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.IsValid">
+            <summary>
+            A <typeparamref name="TBlock"/> is valid if:
+            <list>
+                <item>Every <typeparamref name="TBlock"/>'s <typeparamref name="TBlock.IsValid.IsValid"/> is true</item>
+                <item>Every <typeparamref name="TBlock"/>'s <typeparamref name="TBlock.LastBlockHash.LastBlockHash"/> matches the previous <typeparamref name="TBlock"/>'s <typeparamref name="TBlock.Hash.Hash"/>.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.GenerateGenisysBlock">
+            <summary>
+            Creates a genisys block.
+            </summary>
+            <returns>
+            The genisys block
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.GenerateBlock(`0,System.String,RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Creates a new block
+            </summary>
+            <param name="last">
+            The previous block
+            </param>
+            <param name="content">
+            The block content
+            </param>
+            <param name="mediaType">
+            The mediatype of the block
+            </param>
+            <returns>
+            The created block
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.AppendToChain(System.String,RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Appends data to the blockchain.
+            </summary>
+            <param name="content">
+            The raw content to append to the blockchain.
+            </param>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of the block to append.
+            </param>
+            <returns>
+            The created <typeparamref name="TBlock"/> that contains <paramref name="content"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.FetchFromChain(System.String)">
+            <summary>
+            Fetches a <typeparamref name="TBlock"/> by <paramref name="id"/>.
+            </summary>
+            <param name="id">
+            The unique identifier to look up the <typeparamref name="TBlock"/> by.
+            </param>
+            <returns>
+            The matching <typeparamref name="TBlock"/>, or null if it's not found.
+            /// </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.Blockchain.BaseBlockchain`1.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all matching blocks from the chain
+            </summary>
+            <param name="query">
+            A collection of queries to match each block on.
+            </param>
+            <param name="cancellationToken">
+            A token to handle cancellation
+            </param>
+            <returns>
+            The matching blocks from the chain
+            </returns>
+        </member>
+    </members>
+</doc>

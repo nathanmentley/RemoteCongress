@@ -67,6 +67,6 @@ namespace RemoteCongress.Common.Repositories
         /// <returns>
         /// An <see cref="ISignedData"/> instance containing the block data.
         /// </returns>
-        IAsyncEnumerable<ISignedData> FetchAllFromChain(IList<IQuery> query, CancellationToken cancellationToken);
+        IAsyncEnumerable<ISignedData> FetchAllFromChain(IEnumerable<IQuery> query, CancellationToken cancellationToken);
     }
 }
