@@ -1,7 +1,7 @@
 
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -84,37 +84,39 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         public async Task<Block> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
             if (data is null)
-                throw new ArgumentNullException(nameof(data));
-
-            if (CanHandle(mediaType))
             {
-                using StreamReader sr = new StreamReader(data);
-                string json = await sr.ReadToEndAsync();
+                throw new ArgumentNullException(nameof(data));
+            }
 
-                JObject jObject = JObject.Parse(json);
-
-                string id = jObject.Value<string>("id");
-                string lastBlockId = jObject.Value<string>("lastBlockId");
-                DateTime timestampUtc = jObject.Value<DateTime>("timestampUtc");
-                string lastBlockHash = jObject.Value<string>("lastBlockHash");
-                string content = jObject.Value<string>("content");
-                string blockMediaType = jObject.Value<string>("mediaType");
-                string hash = jObject.Value<string>("hash");
-
-                return Block.CreateFromData(
-                    id,
-                    lastBlockId,
-                    timestampUtc,
-                    lastBlockHash,
-                    content,
-                    RemoteCongressMediaType.Parse(blockMediaType),
-                    hash
+            if (!CanHandle(mediaType))
+            {
+                throw new InvalidOperationException(
+                    $"{GetType()} cannot handle {mediaType}"
                 );
             }
 
-            throw new InvalidOperationException(
-               $"{GetType()} cannot handle {mediaType}"
-           );
+            using StreamReader sr = new StreamReader(data);
+            string json = await sr.ReadToEndAsync();
+
+            JObject jObject = JObject.Parse(json);
+
+            string id = jObject.Value<string>("id");
+            string lastBlockId = jObject.Value<string>("lastBlockId");
+            DateTime timestampUtc = jObject.Value<DateTime>("timestampUtc");
+            string lastBlockHash = jObject.Value<string>("lastBlockHash");
+            string content = jObject.Value<string>("content");
+            string blockMediaType = jObject.Value<string>("mediaType");
+            string hash = jObject.Value<string>("hash");
+
+            return Block.CreateFromData(
+                id,
+                lastBlockId,
+                timestampUtc,
+                lastBlockHash,
+                content,
+                RemoteCongressMediaType.Parse(blockMediaType),
+                hash
+            );
         }
 
         /// <summary>
@@ -143,27 +145,27 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
-            if (CanHandle(mediaType))
+            if (!CanHandle(mediaType))
             {
-                JObject jObject = new JObject()
-                {
-                    ["id"] = data.Id,
-                    ["lastBlockId"] = data.LastBlockHash,
-                    ["timestampUtc"] = data.Timestamp,
-                    ["lastBlockHash"] = data.LastBlockHash,
-                    ["content"] = data.Content,
-                    ["mediaType"] = data.MediaType.ToString(),
-                    ["hash"] = data.Hash
-                };
-
-                byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());
-
-                return Task.FromResult(new MemoryStream(jsonBytes) as Stream);
+                throw new InvalidOperationException(
+                   $"{GetType()} cannot handle {mediaType}"
+                );
             }
 
-            throw new InvalidOperationException(
-               $"{GetType()} cannot handle {mediaType}"
-           );
+            JObject jObject = new JObject()
+            {
+                ["id"] = data.Id,
+                ["lastBlockId"] = data.LastBlockHash,
+                ["timestampUtc"] = data.Timestamp,
+                ["lastBlockHash"] = data.LastBlockHash,
+                ["content"] = data.Content,
+                ["mediaType"] = data.MediaType.ToString(),
+                ["hash"] = data.Hash
+            };
+
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());
+
+            return Task.FromResult(new MemoryStream(jsonBytes) as Stream);
         }
     }
 }

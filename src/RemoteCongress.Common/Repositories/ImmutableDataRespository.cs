@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -93,17 +93,20 @@ namespace RemoteCongress.Common.Repositories
 
             _client = client ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(client))
+                    new ArgumentNullException(nameof(client)),
+                    LogLevel.Debug
                 );
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(codecs))
+                    new ArgumentNullException(nameof(codecs)),
+                    LogLevel.Debug
                 );
 
             _queryProcessor = queryProcessor ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(queryProcessor))
+                    new ArgumentNullException(nameof(queryProcessor)),
+                    LogLevel.Debug
                 );
         }
 
@@ -136,7 +139,8 @@ namespace RemoteCongress.Common.Repositories
             if (model is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(model))
+                    new ArgumentNullException(nameof(model)),
+                    LogLevel.Debug
                 );
             }
 
@@ -147,7 +151,8 @@ namespace RemoteCongress.Common.Repositories
             if (string.IsNullOrWhiteSpace(id))
             {
                 throw _logger.LogException(
-                    new BlockNotStorableException()
+                    new BlockNotStorableException(),
+                    LogLevel.Debug
                 );
             }
 
@@ -185,7 +190,8 @@ namespace RemoteCongress.Common.Repositories
             if (string.IsNullOrWhiteSpace(id))
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(id))
+                    new ArgumentNullException(nameof(id)),
+                    LogLevel.Debug
                 );
             }
 
@@ -196,7 +202,8 @@ namespace RemoteCongress.Common.Repositories
             if (block is null)
             {
                 throw _logger.LogException(
-                    new BlockNotFoundException()
+                    new BlockNotFoundException(),
+                    LogLevel.Debug
                 );
             }
 
@@ -207,7 +214,8 @@ namespace RemoteCongress.Common.Repositories
             if (codec is null)
             {
                 throw _logger.LogException(
-                    new UnknownBlockMediaTypeException()
+                    new UnknownBlockMediaTypeException(),
+                    LogLevel.Debug
                 );
             }
 
@@ -241,7 +249,8 @@ namespace RemoteCongress.Common.Repositories
             if (query is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(query))
+                    new ArgumentNullException(nameof(query)),
+                    LogLevel.Debug
                 );
             }
 

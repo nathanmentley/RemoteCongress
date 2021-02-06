@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -72,7 +72,8 @@ namespace RemoteCongress.Client
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(codecs))
+                    new ArgumentNullException(nameof(codecs)),
+                    LogLevel.Debug
                 );
 
             if (_codecs.Count() < 1)
@@ -81,7 +82,8 @@ namespace RemoteCongress.Client
                     new ArgumentException(
                         $"{nameof(codecs)} must contain atleast one {nameof(ICodec<TModel>)}.",
                         nameof(codecs)
-                    )
+                    ),
+                    LogLevel.Debug
                 );
             }
         }
@@ -126,21 +128,24 @@ namespace RemoteCongress.Client
             if (string.IsNullOrWhiteSpace(privateKey))
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(privateKey))
+                    new ArgumentNullException(nameof(privateKey)),
+                    LogLevel.Debug
                 );
             }
 
             if (string.IsNullOrWhiteSpace(publicKey))
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(publicKey))
+                    new ArgumentNullException(nameof(publicKey)),
+                    LogLevel.Debug
                 );
             }
 
             if (data is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(data))
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
                 );
             }
 
@@ -191,7 +196,8 @@ namespace RemoteCongress.Client
                 throw _logger.LogException(
                     new UnknownBlockMediaTypeException(
                         $"{mediaType.ToString()} is not supported."
-                    )
+                    ),
+                    LogLevel.Debug
                 );
     }
 }

@@ -15,44 +15,54 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
-namespace RemoteCongress.Common
+namespace RemoteCongress.Common.Serialization
 {
     /// <summary>
-    /// A model representing a voting member
+    /// 
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public sealed class Member
+    public class JObjectBuilder
     {
-        /// <summary>
-        /// The member's identifier
-        /// </summary>
-        public string Id { get; set; }
+        private readonly IDictionary<string, JToken> _data =
+            new Dictionary<string, JToken>();
 
         /// <summary>
-        /// The member's first name
+        /// 
         /// </summary>
-        public string FirstName { get; set; }
+        /// <param name="key">
+        /// 
+        /// </param>
+        /// <param name="jToken">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        public JObjectBuilder WithData(string key, JToken jToken)
+        {
+            _data[key] = jToken;
+
+            return this;
+        }
 
         /// <summary>
-        /// The member's last name
+        /// 
         /// </summary>
-        public string LastName { get; set; }
+        /// <returns>
+        /// 
+        /// </returns>
+        public JObject Build()
+        {
+            JObject jObject = new JObject();
 
-        /// <summary>
-        /// The member's seat
-        /// </summary>
-        public string Seat { get; set; }
+            foreach((string key, JToken data) in _data)
+            {
+                jObject[key] = data;
+            }
 
-        /// <summary>
-        /// The member's party
-        /// </summary>
-        public string Party { get; set; }
-
-        /// <summary>
-        /// The member's public key
-        /// </summary>
-        public string PublicKey { get; set; }
+            return jObject;
+        }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published

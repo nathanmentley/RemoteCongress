@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories.Queries;
 using System;
 using System.IO;
@@ -107,13 +108,19 @@ namespace RemoteCongress.Common.Serialization
         {
             if (data is null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
+                );
             }
 
             if (!CanHandle(mediaType))
             {
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{GetType()} cannot handle {mediaType}"
+                    ),
+                    LogLevel.Debug
                 );
             }
 
@@ -163,13 +170,19 @@ namespace RemoteCongress.Common.Serialization
         {
             if (data is null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
+                );
             }
 
             if (!CanHandle(mediaType))
             {
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{GetType()} cannot handle {mediaType}"
+                    ),
+                    LogLevel.Debug
                 );
             }
 

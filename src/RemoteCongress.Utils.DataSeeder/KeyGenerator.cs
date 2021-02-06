@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -81,7 +81,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     new ArgumentOutOfRangeException(
                         nameof(bit),
                         $"{nameof(bit)} cannot be less than 1"
-                    )
+                    ),
+                    LogLevel.Debug
                 );
             }
 
@@ -127,7 +128,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     new ArgumentException(
                         "CSP does not contain a private key",
                         nameof(csp)
-                    )
+                    ),
+                    LogLevel.Debug
                 );
             }
 
@@ -256,7 +258,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     new ArgumentOutOfRangeException(
                         nameof(length),
                         "Length must be non-negative"
-                    )
+                    ),
+                    LogLevel.Debug
                 );
             }
 

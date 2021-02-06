@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -56,10 +56,16 @@ namespace RemoteCongress.Server.Api.Formatters
                 throw new ArgumentNullException(nameof(logger));
 
             _signedDataCodecs = signedDataCodecs ??
-                throw new ArgumentNullException(nameof(signedDataCodecs));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(signedDataCodecs)),
+                    LogLevel.Debug
+                );
 
             _dataCodecs = dataCodecs ??
-                throw new ArgumentNullException(nameof(dataCodecs));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(dataCodecs)),
+                    LogLevel.Debug
+                );
 
             foreach(ICodec<SignedData> signedDataCodec in _signedDataCodecs)
             {
@@ -102,7 +108,8 @@ namespace RemoteCongress.Server.Api.Formatters
                 throw _logger.LogException(
                     new UnparsableMediaTypeException(
                         $"Cannot handle {mediaType.ToString()}"
-                    )
+                    ),
+                    LogLevel.Debug
                 );
 
             SignedData signedData = await codec.Decode(
@@ -111,7 +118,12 @@ namespace RemoteCongress.Server.Api.Formatters
             );
 
             if (signedData is null)
-                throw new Exception("TODO: Get a better exception for this.");
+            {
+                throw _logger.LogException(
+                    new Exception("TODO: Get a better exception for this."),
+                    LogLevel.Debug
+                );
+            }
 
             ICodec<TData> dataCodec = _dataCodecs.FirstOrDefault(
                 codec => codec.CanHandle(signedData.MediaType)
@@ -121,22 +133,34 @@ namespace RemoteCongress.Server.Api.Formatters
                 throw _logger.LogException(
                     new UnknownBlockMediaTypeException(
                         $"Cannot handle {signedData.MediaType.ToString()}"
-                    )
+                    ),
+                    LogLevel.Debug
                 );
 
             TData model = await dataCodec.DecodeFromString(signedData.MediaType, signedData.BlockContent);
 
             if (model is null)
-                throw new Exception("TODO: Get a better exception for this.");
+            {
+                throw _logger.LogException(
+                    new Exception("TODO: Get a better exception for this."),
+                    LogLevel.Debug
+                );
+            }
 
             VerifiedData<TData> result = new VerifiedData<TData>(signedData, model);
-            if ((result as ISignedData).IsValid)
-                return await InputFormatterResult.SuccessAsync(result);
+            if (!(result as ISignedData).IsValid)
+            {
+                throw _logger.LogException(
+                    new InvalidBlockSignatureException(
+                        $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
+                            $"using public key[{result.PublicKey}]"
+                    ),
+                    LogLevel.Debug
+                );
+            }
 
-            throw new InvalidBlockSignatureException(
-                $"Invalid signature[{result.Signature}] for content[{result.BlockContent}] " +
-                    $"using public key[{result.PublicKey}]"
-            );
+            return await InputFormatterResult.SuccessAsync(result);
+
         }
 
         /// <summary>

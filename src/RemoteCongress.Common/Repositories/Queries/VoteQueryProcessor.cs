@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -76,17 +76,26 @@ namespace RemoteCongress.Common.Repositories.Queries
         {
             if (query is null)
             {
-                throw _logger.LogException(new ArgumentNullException(nameof(query)));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(query)),
+                    LogLevel.Debug
+                );
             }
 
             if (signedData is null)
             {
-                throw _logger.LogException(new ArgumentNullException(nameof(signedData)));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(signedData)),
+                    LogLevel.Debug
+                );
             }
 
             if (data is null)
             {
-                throw _logger.LogException(new ArgumentNullException(nameof(data)));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
+                );
             }
 
             return !query.Any(clause => !BlockMatchesQuery(clause, signedData, data));

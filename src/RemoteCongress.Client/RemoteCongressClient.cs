@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.Logging;
 using RemoteCongress.Common;
+using RemoteCongress.Common.Logging;
 using RemoteCongress.Common.Repositories;
 using RemoteCongress.Common.Repositories.Queries;
 using System;
@@ -125,22 +126,40 @@ namespace RemoteCongress.Client
                 throw new ArgumentNullException(nameof(logger));
 
             _billDataSigner = billDataSigner ??
-                throw new ArgumentNullException(nameof(billDataSigner));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(billDataSigner)),
+                    LogLevel.Debug
+                );
 
             _memberDataSigner = memberDataSigner ??
-                throw new ArgumentNullException(nameof(memberDataSigner));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(memberDataSigner)),
+                    LogLevel.Debug
+                );
 
             _voteDataSigner = voteDataSigner ??
-                throw new ArgumentNullException(nameof(voteDataSigner));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(voteDataSigner)),
+                    LogLevel.Debug
+                );
 
             _billRepo = billRepo ??
-                throw new ArgumentNullException(nameof(billRepo));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(billRepo)),
+                    LogLevel.Debug
+                );
 
             _memberRepo = memberRepo ??
-                throw new ArgumentNullException(nameof(memberRepo));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(memberRepo)),
+                    LogLevel.Debug
+                );
 
             _voteRepo = voteRepo ??
-                throw new ArgumentNullException(nameof(voteRepo));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(voteRepo)),
+                    LogLevel.Debug
+                );
         }
 
         /// <summary>

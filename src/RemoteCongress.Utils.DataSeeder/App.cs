@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -106,28 +106,32 @@ namespace RemoteCongress.Utils.DataSeeder
             if (string.IsNullOrWhiteSpace(adminPrivateKey))
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(adminPrivateKey))
+                    new ArgumentNullException(nameof(adminPrivateKey)),
+                    LogLevel.Debug
                 );
             }
 
             if (string.IsNullOrWhiteSpace(adminPublicKey))
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(adminPublicKey))
+                    new ArgumentNullException(nameof(adminPublicKey)),
+                    LogLevel.Debug
                 );
             }
 
             if (client is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(client))
+                    new ArgumentNullException(nameof(client)),
+                    LogLevel.Debug
                 );
             }
 
             if (dataProvider is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(dataProvider))
+                    new ArgumentNullException(nameof(dataProvider)),
+                    LogLevel.Debug
                 );
             }
 
@@ -154,7 +158,7 @@ namespace RemoteCongress.Utils.DataSeeder
             }
             catch(Exception exception)
             {
-                _logger.LogException(exception);
+                _logger.LogException(exception, LogLevel.Debug);
 
                 return exception switch
                 {

@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -54,7 +54,8 @@ namespace RemoteCongress.Server.Api.Controllers.Base
 
             _repository = repository ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(repository))
+                    new ArgumentNullException(nameof(repository)),
+                    LogLevel.Debug
                 );
         }
 
@@ -108,7 +109,8 @@ namespace RemoteCongress.Server.Api.Controllers.Base
             if (model is null)
             {
                 throw _logger.LogException(
-                    new MissingBodyException()
+                    new MissingBodyException(),
+                    LogLevel.Debug
                 );
             }
 

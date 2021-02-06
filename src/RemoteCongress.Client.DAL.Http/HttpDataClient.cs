@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -111,32 +111,38 @@ namespace RemoteCongress.Client.DAL.Http
 
             _config = config ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(config))
+                    new ArgumentNullException(nameof(config)),
+                    LogLevel.Debug
                 );
 
             _httpClient = httpClient ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(httpClient))
+                    new ArgumentNullException(nameof(httpClient)),
+                    LogLevel.Debug
                 );
 
             _queryCodec = queryCodec ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(queryCodec))
+                    new ArgumentNullException(nameof(queryCodec)),
+                    LogLevel.Debug
                 );
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(codecs))
+                    new ArgumentNullException(nameof(codecs)),
+                    LogLevel.Debug
                 );
 
             _collectionCodecs = collectionCodecs ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(collectionCodecs))
+                    new ArgumentNullException(nameof(collectionCodecs)),
+                    LogLevel.Debug
                 );
 
             _endpoint = endpoint ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(endpoint))
+                    new ArgumentNullException(nameof(endpoint)),
+                    LogLevel.Debug
                 );
         }
 
@@ -273,7 +279,8 @@ namespace RemoteCongress.Client.DAL.Http
         {
             if (queries is null)
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(queries))
+                    new ArgumentNullException(nameof(queries)),
+                    LogLevel.Debug
                 );
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -339,7 +346,8 @@ namespace RemoteCongress.Client.DAL.Http
                 throw _logger.LogException(
                     new UnknownBlockMediaTypeException(
                         $"{mediaType.ToString()} is not supported."
-                    )
+                    ),
+                    LogLevel.Debug
                 );
 
         /// <summary>
@@ -363,7 +371,8 @@ namespace RemoteCongress.Client.DAL.Http
                 throw _logger.LogException(
                     new UnknownBlockMediaTypeException(
                         $"{mediaType.ToString()} is not supported."
-                    )
+                    ),
+                    LogLevel.Debug
                 );
     }
 }

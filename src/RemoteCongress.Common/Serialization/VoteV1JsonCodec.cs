@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,7 @@
 */
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using RemoteCongress.Common.Logging;
 using System;
 using System.IO;
 using System.Text;
@@ -105,12 +106,22 @@ namespace RemoteCongress.Common.Serialization
         public async Task<Vote> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
             if (data is null)
-                throw new ArgumentNullException(nameof(data));
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
+                );
+            }
 
             if (!CanHandle(mediaType))
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
+            {
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{GetType()} cannot handle {mediaType}"
+                    ),
+                    LogLevel.Debug
                 );
+            }
 
             using StreamReader sr = new StreamReader(data);
             string json = await sr.ReadToEndAsync();
@@ -153,12 +164,22 @@ namespace RemoteCongress.Common.Serialization
         public Task<Stream> Encode(RemoteCongressMediaType mediaType, Vote data)
         {
             if (data is null)
-                throw new ArgumentNullException(nameof(data));
+            {
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
+                );
+            }
 
             if (!CanHandle(mediaType))
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
+            {
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{GetType()} cannot handle {mediaType}"
+                    ),
+                    LogLevel.Debug
                 );
+            }
 
             JObject jObject = new JObject()
             {

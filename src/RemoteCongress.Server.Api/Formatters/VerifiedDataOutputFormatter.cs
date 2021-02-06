@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -58,7 +58,8 @@ namespace RemoteCongress.Server.Api.Formatters
 
             _codecs = codecs ??
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(logger))
+                    new ArgumentNullException(nameof(logger)),
+                    LogLevel.Debug
                 );
 
             foreach(ICodec<SignedData> codec in _codecs)
@@ -88,15 +89,25 @@ namespace RemoteCongress.Server.Api.Formatters
         )
         {
             if (!(context.Object is VerifiedData<TData> signedData))
-                throw new InvalidOperationException(
-                    $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(VerifiedData<TData>)}."
+            {
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{nameof(context.Object)} is of type[{context.ObjectType}]. It must be a {typeof(VerifiedData<TData>)}."
+                    ),
+                    LogLevel.Debug
                 );
+            }
 
             if (!(signedData as ISignedData).IsValid)
-                throw new InvalidBlockSignatureException(
-                    $"Invalid signature[{signedData.Signature}] for content[{signedData.BlockContent}] " +
-                        $"using public key[{signedData.PublicKey}]"
+            {
+                throw _logger.LogException(
+                    new InvalidBlockSignatureException(
+                        $"Invalid signature[{signedData.Signature}] for content[{signedData.BlockContent}] " +
+                            $"using public key[{signedData.PublicKey}]"
+                    ),
+                    LogLevel.Debug
                 );
+            }
 
             StringValues accepts = context.HttpContext.Request.Headers["Accept"];
 
@@ -111,9 +122,14 @@ namespace RemoteCongress.Server.Api.Formatters
             );
 
             if (codec is null)
-                throw new UnacceptableMediaTypeException(
-                    $"Cannot return any media types {accepts} for type {typeof(TData)}"
+            {
+                throw _logger.LogException(
+                    new UnacceptableMediaTypeException(
+                        $"Cannot return any media types {accepts} for type {typeof(TData)}"
+                    ),
+                    LogLevel.Debug
                 );
+            }
 
             await context.HttpContext.Response.WriteAsync(
                 await codec.EncodeToString(

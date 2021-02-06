@@ -1,6 +1,6 @@
 /*
     RemoteCongress - A platform for conducting small secure public elections
-    Copyright (C) 2020  Nathan Mentley
+    Copyright (C) 2021  Nathan Mentley
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -57,32 +57,38 @@ namespace RemoteCongress.Server.Api
 
             _loggerFactory = loggerFactory ??
                 throw logger.LogException(
-                    new ArgumentNullException(nameof(loggerFactory))
+                    new ArgumentNullException(nameof(loggerFactory)),
+                    LogLevel.Debug
                 );
 
             _signedDataCodecs = signedDataCodecs ??
                 throw logger.LogException(
-                    new ArgumentNullException(nameof(signedDataCodecs))
+                    new ArgumentNullException(nameof(signedDataCodecs)),
+                    LogLevel.Debug
                 );
 
             _signedDataCollectionCodecs = signedDataCollectionCodecs ??
                 throw logger.LogException(
-                    new ArgumentNullException(nameof(signedDataCollectionCodecs))
+                    new ArgumentNullException(nameof(signedDataCollectionCodecs)),
+                    LogLevel.Debug
                 );
 
             _billDataCodecs = billDataCodecs ??
                 throw logger.LogException(
-                    new ArgumentNullException(nameof(billDataCodecs))
+                    new ArgumentNullException(nameof(billDataCodecs)),
+                    LogLevel.Debug
                 );
 
             _memberDataCodecs = memberDataCodecs ??
                 throw logger.LogException(
-                    new ArgumentNullException(nameof(memberDataCodecs))
+                    new ArgumentNullException(nameof(memberDataCodecs)),
+                    LogLevel.Debug
                 );
 
             _voteDataCodecs = voteDataCodecs ??
                 throw logger.LogException(
-                    new ArgumentNullException(nameof(voteDataCodecs))
+                    new ArgumentNullException(nameof(voteDataCodecs)),
+                    LogLevel.Debug
                 );
         }
     
