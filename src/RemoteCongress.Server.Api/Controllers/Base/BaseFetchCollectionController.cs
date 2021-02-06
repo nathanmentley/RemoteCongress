@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.Api.Controllers.Base
 {
     /// <summary>
-    /// Exposes an endpoint to fetch a <see cref="TModel"/>.
+    /// Exposes an endpoint to fetch a <typeparamref name="TModel"/>.
     /// </summary>
     public abstract class BaseFetchCollectionController<TModel>
     {
@@ -42,8 +42,11 @@ namespace RemoteCongress.Server.Api.Controllers.Base
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
         /// <param name="repository">
-        /// An <see cref="IImmutableDataRepository<TModelData>"/> instance.
+        /// An <see cref="IImmutableDataRepository{TModelData}"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
@@ -67,10 +70,16 @@ namespace RemoteCongress.Server.Api.Controllers.Base
         }
 
         /// <summary>
-        /// Fetches all <see cref="TModel"/>s.
+        /// Fetches all <typeparamref name="TModel"/>s.
         /// </summary>
+        /// <param name="query">
+        /// A collection of <see cref="IQuery"/>s to filter the result by.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
+        /// </param>
         /// <returns>
-        /// The persisted, signed, and validiated <see cref="TModel"/>s.
+        /// The persisted, signed, and validated <typeparamref name="TModel"/>s.
         /// </returns>
         [HttpGet]
         public async Task<IEnumerable<VerifiedData<TModel>>> Get(

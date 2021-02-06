@@ -91,6 +91,9 @@
   - [#ctor(message,innerException)](#M-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException-#ctor-System-String,System-Exception- 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor(System.String,System.Exception)')
   - [#ctor(message)](#M-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException-#ctor-System-String- 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor(System.String)')
   - [#ctor()](#M-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException-#ctor 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor')
+- [JObjectBuilder](#T-RemoteCongress-Common-Serialization-JObjectBuilder 'RemoteCongress.Common.Serialization.JObjectBuilder')
+  - [Build()](#M-RemoteCongress-Common-Serialization-JObjectBuilder-Build 'RemoteCongress.Common.Serialization.JObjectBuilder.Build')
+  - [WithData(key,jToken)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithData-System-String,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithData(System.String,Newtonsoft.Json.Linq.JToken)')
 - [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')
   - [FirstName](#P-RemoteCongress-Common-Member-FirstName 'RemoteCongress.Common.Member.FirstName')
   - [Id](#P-RemoteCongress-Common-Member-Id 'RemoteCongress.Common.Member.Id')
@@ -1507,6 +1510,50 @@ Constructor
 ##### Parameters
 
 This constructor has no parameters.
+
+<a name='T-RemoteCongress-Common-Serialization-JObjectBuilder'></a>
+## JObjectBuilder `type`
+
+##### Namespace
+
+RemoteCongress.Common.Serialization
+
+##### Summary
+
+
+
+<a name='M-RemoteCongress-Common-Serialization-JObjectBuilder-Build'></a>
+### Build() `method`
+
+##### Summary
+
+
+
+##### Returns
+
+
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-RemoteCongress-Common-Serialization-JObjectBuilder-WithData-System-String,Newtonsoft-Json-Linq-JToken-'></a>
+### WithData(key,jToken) `method`
+
+##### Summary
+
+
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+| jToken | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') |  |
 
 <a name='T-RemoteCongress-Common-Member'></a>
 ## Member `type`

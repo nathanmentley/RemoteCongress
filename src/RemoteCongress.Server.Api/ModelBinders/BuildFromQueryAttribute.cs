@@ -16,11 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Microsoft.AspNetCore.Mvc;
+using RemoteCongress.Common.Repositories.Queries;
 
 namespace RemoteCongress.Server.Api.ModelBinders
 {
+    /// <summary>
+    /// An attribute to build <see cref="IQuery"/> from the query string.
+    /// </summary>
     public class BuildFromQueryAttribute: ModelBinderAttribute
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BuildFromQueryAttribute(): base()
         {
             BinderType = typeof(QueryModelBinder);

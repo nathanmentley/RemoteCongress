@@ -25,16 +25,31 @@ using System.Threading.Tasks;
 
 namespace RemoteCongress.Server.Api.ModelBinders
 {
+    /// <summary>
+    /// A <see cref="IModelBinder"/> implementation for <see cref="IQuery"/>s.
+    /// </summary>
     public class QueryModelBinder: IModelBinder
     {
         private readonly ICodec<IQuery> _codec;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="codec">
+        /// A codec used to serialize and deserialize.
+        /// </param>
         public QueryModelBinder(ICodec<IQuery> codec)
         {
             _codec = codec ??
                 throw new ArgumentNullException(nameof(codec));
         }
 
+        /// <summary>
+        /// Processes the request in <paramref name="bindingContext"/> for any included queries.
+        /// </summary>
+        /// <param name="bindingContext">
+        /// The <see cref="ModelBindingContext"/> to process
+        /// </param>
         public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             List<IQuery> queries = new List<IQuery>();

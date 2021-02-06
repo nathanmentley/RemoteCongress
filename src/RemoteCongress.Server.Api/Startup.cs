@@ -36,17 +36,31 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Api
 {
+    /// <summary>
+    /// Startup logic to execute when spinning up the api.
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="configuration">
+        /// An <see cref="IConfiguration"/> instance to use when configuring the server.
+        /// </param>
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configures and sets up DI for the server.
+        /// </summary>
+        /// <param name="services">
+        /// An <see cref="IServiceCollection"/> to use to register services against.
+        /// </param>
         public void ConfigureServices(IServiceCollection services)
         {
             IpfsBlockchainConfig ipfsConfig = _configuration
@@ -98,7 +112,15 @@ namespace RemoteCongress.Server.Api
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures teh application
+        /// </summary>
+        /// <param name="app">
+        /// The <see cref="IApplicationBuilder"/> to configure
+        /// </param>
+        /// <param name="env">
+        /// The <see cref="IWebHostEnvironment"/> to configure against.
+        /// </param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();

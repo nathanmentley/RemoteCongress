@@ -38,8 +38,11 @@ namespace RemoteCongress.Server.Api.Controllers.Base
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
         /// <param name="repository">
-        /// An <see cref="IImmutableDataRepository<TModelData>"/> instance.
+        /// An <see cref="IImmutableDataRepository{TModelData}"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="repository"/> is null.
@@ -64,6 +67,9 @@ namespace RemoteCongress.Server.Api.Controllers.Base
         /// </summary>
         /// <param name="model">
         /// The <typeparamref name="TModel"/> to persist.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to handle cancellation.
         /// </param>
         /// <returns>
         /// The persisted, signed, and validiated <typeparamref name="TModel"/>.

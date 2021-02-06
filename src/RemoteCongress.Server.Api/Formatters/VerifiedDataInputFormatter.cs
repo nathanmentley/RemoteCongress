@@ -25,6 +25,7 @@ using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.Api.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.Api.Formatters
 {
     /// <summary>
-    /// Reads and validates a signed <see cref="BaseBlockModel"/> from the input.
+    /// Reads and validates a signed <see cref="VerifiedData{TData}"/> from the input.
     /// </summary>
     /// <typeparam name="TData">
     /// Verified data model
@@ -89,7 +90,7 @@ namespace RemoteCongress.Server.Api.Formatters
         /// The selected <see cref="Encoding"/>.
         /// </param>
         /// <returns>
-        /// A <see cref="Task"/> with the signed and validated <see cref="BaseBlockModel"/>.
+        /// A <see cref="Task"/> with the signed and validated <see cref="VerifiedData{TData}"/>.
         /// </returns>
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(
             InputFormatterContext context,

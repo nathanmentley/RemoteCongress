@@ -34,8 +34,11 @@ namespace RemoteCongress.Server.Api.Controllers.Votes
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
         /// <param name="repository">
-        /// An <see cref="IImmutableDataRepository<VoteData>"/> instance.
+        /// An <see cref="IImmutableDataRepository{VoteData}"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.

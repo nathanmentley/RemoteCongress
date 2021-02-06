@@ -27,6 +27,7 @@ using RemoteCongress.Common.Serialization;
 using RemoteCongress.Server.Api.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ using System.Threading.Tasks;
 namespace RemoteCongress.Server.Api.Formatters
 {
     /// <summary>
-    /// Validates a signed <see cref="BaseBlockModel"/> and writes it to the http response <see cref="Stream"/>.
+    /// Validates a signed <see cref="VerifiedData{TData}"/> and writes it to the http response <see cref="Stream"/>.
     /// </summary>
     /// <typeparam name="TData">
     /// Verified data model
@@ -75,7 +76,7 @@ namespace RemoteCongress.Server.Api.Formatters
         }
 
         /// <summary>
-        /// Writes the signed and validated <see cref="BaseBlockModel"/> to the http response <see cref="Stream"/>.
+        /// Writes the signed and validated <see cref="VerifiedData{TData}"/> to the http response <see cref="Stream"/>.
         /// </summary>
         /// <param name="context">
         /// The <see cref="OutputFormatterWriteContext"/>.

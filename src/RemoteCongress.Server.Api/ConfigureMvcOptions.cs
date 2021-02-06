@@ -31,6 +31,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Api
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class ConfigureMvcOptions : IConfigureOptions<MvcOptions>
     {
@@ -42,6 +45,30 @@ namespace RemoteCongress.Server.Api
         private readonly IEnumerable<ICodec<Member>> _memberDataCodecs;
         private readonly IEnumerable<ICodec<Vote>> _voteDataCodecs;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger">
+        /// 
+        /// </param>
+        /// <param name="loggerFactory">
+        /// 
+        /// </param>
+        /// <param name="signedDataCodecs">
+        /// 
+        /// </param>
+        /// <param name="signedDataCollectionCodecs">
+        /// 
+        /// </param>
+        /// <param name="billDataCodecs">
+        /// 
+        /// </param>
+        /// <param name="memberDataCodecs">
+        /// 
+        /// </param>
+        /// <param name="voteDataCodecs">
+        /// 
+        /// </param>
         public ConfigureMvcOptions(
             ILogger<ConfigureMvcOptions> logger,
             ILoggerFactory loggerFactory,
@@ -92,6 +119,12 @@ namespace RemoteCongress.Server.Api
                 );
         }
     
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options">
+        /// 
+        /// </param>
         public void Configure(MvcOptions options)
         {
             SetupFormatters(options);

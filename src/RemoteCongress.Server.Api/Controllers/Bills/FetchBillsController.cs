@@ -34,8 +34,11 @@ namespace RemoteCongress.Server.Api.Controllers.Bills
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
         /// <param name="repository">
-        /// An <see cref="IImmutableDataRepository<BillData>"/> instance.
+        /// An <see cref="IImmutableDataRepository{BillData}"/> instance.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.

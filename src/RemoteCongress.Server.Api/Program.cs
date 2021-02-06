@@ -22,12 +22,32 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RemoteCongress.Server.Api
 {
+    /// <summary>
+    /// The entrypoint class
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class Program
     {
+        /// <summary>
+        /// The entrypoint method
+        /// </summary>
+        /// <param name="args">
+        /// Arguments passed to the program when it was called.
+        /// </param>
         public static void Main(string[] args) =>
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args)
+                .Build()
+                .Run();
 
+        /// <summary>
+        /// Setsup the post builder for the api server.
+        /// </summary>
+        /// <param name="args">
+        /// Arguments passed to the program when it was called.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IHostBuilder"/> configured to build the api server host.
+        /// </returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(logBuilder => {
