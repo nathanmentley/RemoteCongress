@@ -17,24 +17,15 @@
 */
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using RemoteCongress.Common.Logging;
 using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Serialization
 {
     /// <summary>
     /// An <see cref="ICodec{TData}"/> for a version 1 json representation of a <see cref="Bill"/>.
     /// </summary>
-    public class BillV1JsonCodec: ICodec<Bill>
+    public class BillV1JsonCodec: BaseJsonCodec<Bill>
     {
-        /// <summary>
-        /// An <see cref="ILogger"/> instance to log against.
-        /// </summary>
-        private readonly ILogger _logger;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -44,10 +35,9 @@ namespace RemoteCongress.Common.Serialization
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
         /// </exception>
-        public BillV1JsonCodec(ILogger<BillV1JsonCodec> logger)
+        public BillV1JsonCodec(ILogger<BillV1JsonCodec> logger):
+            base(logger)
         {
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -67,20 +57,8 @@ namespace RemoteCongress.Common.Serialization
         /// <returns>
         /// The preferred <see cref="RemoteCongressMediaType"/>.
         /// </returns>
-        public RemoteCongressMediaType GetPreferredMediaType() =>
+        public override RemoteCongressMediaType GetPreferredMediaType() =>
             MediaType;
-
-        /// <summary>
-        /// Checks if <paramref name="mediaType"/> can be handled by the codec.
-        /// </summary>
-        /// <param name="mediaType">
-        /// The <see cref="RemoteCongressMediaType"/> to check if it can be handled.
-        /// </param>
-        /// <returns>
-        /// True if <paramref name="mediaType"/> can be handled.
-        /// </returns>
-        public bool CanHandle(RemoteCongressMediaType mediaType) =>
-            MediaType.Equals(mediaType);
 
         /// <summary>
         /// Decodes a <paramref name="data"/> into a <see cref="Bill"/>.
@@ -89,54 +67,17 @@ namespace RemoteCongress.Common.Serialization
         /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
         /// </param>
         /// <param name="data">
-        /// The <see cref="Stream"/> to decode dat from.
+        /// The <see cref="JToken"/> to decode data from.
         /// </param>
         /// <returns>
         /// The <see cref="Bill"/> from <paramref name="data"/>.
         /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="mediaType"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="data"/> is null.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the <paramref name="mediaType"/> cannot be handled.
-        /// </exception>
-        public async Task<Bill> Decode(RemoteCongressMediaType mediaType, Stream data)
-        {
-            if (data is null)
+        protected override Bill DecodeJson(RemoteCongressMediaType mediaType, JToken data) =>
+            new Bill()
             {
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(data)),
-                    LogLevel.Debug
-                );
-            }
-
-            if (!CanHandle(mediaType))
-            {
-                throw _logger.LogException(
-                    new InvalidOperationException(
-                        $"{GetType()} cannot handle {mediaType}"
-                    ),
-                    LogLevel.Debug
-                );
-            }
-
-            using StreamReader sr = new StreamReader(data);
-            string json = await sr.ReadToEndAsync();
-
-            JObject jObject = JObject.Parse(json);
-
-            string title = jObject.Value<string>("title");
-            string content = jObject.Value<string>("content");
-
-            return new Bill()
-            {
-                Title = title,
-                Content = content
+                Title = data.Value<string>("title"),
+                Content = data.Value<string>("content"),
             };
-        }
 
         /// <summary>
         /// Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
@@ -148,45 +89,12 @@ namespace RemoteCongress.Common.Serialization
         /// The data to encode.
         /// </param>
         /// <returns>
-        /// A <see cref="Stream"/> containing the encoded data.
+        /// A <see cref="JToken"/> containing the encoded data.
         /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="mediaType"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="data"/> is null.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the <paramref name="mediaType"/> cannot be handled.
-        /// </exception>
-        public Task<Stream> Encode(RemoteCongressMediaType mediaType, Bill data)
-        {
-            if (data is null)
-            {
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(data)),
-                    LogLevel.Debug
-                );
-            }
-
-            if (!CanHandle(mediaType))
-            {
-                throw _logger.LogException(
-                    new InvalidOperationException(
-                        $"{GetType()} cannot handle {mediaType}"
-                    ),
-                    LogLevel.Debug
-                );
-            }
-
-            JObject jObject = new JObjectBuilder()
+        protected override JToken EncodeJson(RemoteCongressMediaType mediaType, Bill data) =>
+            new JObjectBuilder()
                 .WithData("title", data.Title)
                 .WithData("content", data.Content)
                 .Build();
-
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());
-
-            return Task.FromResult(new MemoryStream(jsonBytes) as Stream);
-        }
     }
 }

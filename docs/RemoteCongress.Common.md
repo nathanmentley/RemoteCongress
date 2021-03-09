@@ -3,6 +3,24 @@
 
 ## Contents
 
+- [BaseAvroCodec\`1](#T-RemoteCongress-Common-Serialization-BaseAvroCodec`1 'RemoteCongress.Common.Serialization.BaseAvroCodec`1')
+  - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-#ctor-Microsoft-Extensions-Logging-ILogger- 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.#ctor(Microsoft.Extensions.Logging.ILogger)')
+  - [_logger](#F-RemoteCongress-Common-Serialization-BaseAvroCodec`1-_logger 'RemoteCongress.Common.Serialization.BaseAvroCodec`1._logger')
+  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
+  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
+  - [DecodeAvro(mediaType,decoder)](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder- 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.DecodeAvro(RemoteCongress.Common.RemoteCongressMediaType,Avro.IO.Decoder)')
+  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-Encode-RemoteCongress-Common-RemoteCongressMediaType,`0- 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.Encode(RemoteCongress.Common.RemoteCongressMediaType,`0)')
+  - [EncodeAvro(encoder,mediaType,data)](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,`0- 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.EncodeAvro(Avro.IO.Encoder,RemoteCongress.Common.RemoteCongressMediaType,`0)')
+  - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-GetPreferredMediaType 'RemoteCongress.Common.Serialization.BaseAvroCodec`1.GetPreferredMediaType')
+- [BaseJsonCodec\`1](#T-RemoteCongress-Common-Serialization-BaseJsonCodec`1 'RemoteCongress.Common.Serialization.BaseJsonCodec`1')
+  - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-#ctor-Microsoft-Extensions-Logging-ILogger- 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.#ctor(Microsoft.Extensions.Logging.ILogger)')
+  - [_logger](#F-RemoteCongress-Common-Serialization-BaseJsonCodec`1-_logger 'RemoteCongress.Common.Serialization.BaseJsonCodec`1._logger')
+  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
+  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
+  - [DecodeJson(mediaType,jToken)](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-Encode-RemoteCongress-Common-RemoteCongressMediaType,`0- 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.Encode(RemoteCongress.Common.RemoteCongressMediaType,`0)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,`0- 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,`0)')
+  - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-GetPreferredMediaType 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.GetPreferredMediaType')
 - [BaseRemoteCongressException](#T-RemoteCongress-Common-Exceptions-BaseRemoteCongressException 'RemoteCongress.Common.Exceptions.BaseRemoteCongressException')
 - [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
   - [Content](#P-RemoteCongress-Common-Bill-Content 'RemoteCongress.Common.Bill.Content')
@@ -17,18 +35,14 @@
 - [BillV1AvroCodec](#T-RemoteCongress-Common-Serialization-BillV1AvroCodec 'RemoteCongress.Common.Serialization.BillV1AvroCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-BillV1AvroCodec}- 'RemoteCongress.Common.Serialization.BillV1AvroCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.BillV1AvroCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-BillV1AvroCodec-MediaType 'RemoteCongress.Common.Serialization.BillV1AvroCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-BillV1AvroCodec-_logger 'RemoteCongress.Common.Serialization.BillV1AvroCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.BillV1AvroCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.BillV1AvroCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill- 'RemoteCongress.Common.Serialization.BillV1AvroCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Bill)')
+  - [DecodeAvro(mediaType,decoder)](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder- 'RemoteCongress.Common.Serialization.BillV1AvroCodec.DecodeAvro(RemoteCongress.Common.RemoteCongressMediaType,Avro.IO.Decoder)')
+  - [EncodeAvro(encoder,mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill- 'RemoteCongress.Common.Serialization.BillV1AvroCodec.EncodeAvro(Avro.IO.Encoder,RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Bill)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-BillV1AvroCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.BillV1AvroCodec.GetPreferredMediaType')
 - [BillV1JsonCodec](#T-RemoteCongress-Common-Serialization-BillV1JsonCodec 'RemoteCongress.Common.Serialization.BillV1JsonCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-BillV1JsonCodec}- 'RemoteCongress.Common.Serialization.BillV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.BillV1JsonCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-BillV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.BillV1JsonCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-BillV1JsonCodec-_logger 'RemoteCongress.Common.Serialization.BillV1JsonCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.BillV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.BillV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill- 'RemoteCongress.Common.Serialization.BillV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Bill)')
+  - [DecodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.BillV1JsonCodec.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill- 'RemoteCongress.Common.Serialization.BillV1JsonCodec.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Bill)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-BillV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.BillV1JsonCodec.GetPreferredMediaType')
 - [BlockNotFoundException](#T-RemoteCongress-Common-Exceptions-BlockNotFoundException 'RemoteCongress.Common.Exceptions.BlockNotFoundException')
   - [#ctor(message,innerException)](#M-RemoteCongress-Common-Exceptions-BlockNotFoundException-#ctor-System-String,System-Exception- 'RemoteCongress.Common.Exceptions.BlockNotFoundException.#ctor(System.String,System.Exception)')
@@ -67,10 +81,8 @@
 - [IQueryV1JsonCodec](#T-RemoteCongress-Common-Serialization-IQueryV1JsonCodec 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-IQueryV1JsonCodec}- 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.IQueryV1JsonCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-_logger 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Repositories-Queries-IQuery- 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Repositories.Queries.IQuery)')
+  - [DecodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Repositories-Queries-IQuery- 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Repositories.Queries.IQuery)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.IQueryV1JsonCodec.GetPreferredMediaType')
 - [ISignedData](#T-RemoteCongress-Common-ISignedData 'RemoteCongress.Common.ISignedData')
   - [BlockContent](#P-RemoteCongress-Common-ISignedData-BlockContent 'RemoteCongress.Common.ISignedData.BlockContent')
@@ -93,7 +105,10 @@
   - [#ctor()](#M-RemoteCongress-Common-Exceptions-InvalidBlockSignatureException-#ctor 'RemoteCongress.Common.Exceptions.InvalidBlockSignatureException.#ctor')
 - [JObjectBuilder](#T-RemoteCongress-Common-Serialization-JObjectBuilder 'RemoteCongress.Common.Serialization.JObjectBuilder')
   - [Build()](#M-RemoteCongress-Common-Serialization-JObjectBuilder-Build 'RemoteCongress.Common.Serialization.JObjectBuilder.Build')
+  - [WithArray(key,jArray)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithArray-System-String,Newtonsoft-Json-Linq-JArray- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithArray(System.String,Newtonsoft.Json.Linq.JArray)')
+  - [WithArray\`\`1(key,data,logic)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithArray``1-System-String,System-Collections-Generic-IEnumerable{``0},System-Func{``0,Newtonsoft-Json-Linq-JToken}- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithArray``1(System.String,System.Collections.Generic.IEnumerable{``0},System.Func{``0,Newtonsoft.Json.Linq.JToken})')
   - [WithData(key,jToken)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithData-System-String,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithData(System.String,Newtonsoft.Json.Linq.JToken)')
+  - [WithObject(key,jObject)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithObject-System-String,Newtonsoft-Json-Linq-JObject- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithObject(System.String,Newtonsoft.Json.Linq.JObject)')
 - [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')
   - [FirstName](#P-RemoteCongress-Common-Member-FirstName 'RemoteCongress.Common.Member.FirstName')
   - [Id](#P-RemoteCongress-Common-Member-Id 'RemoteCongress.Common.Member.Id')
@@ -108,10 +123,8 @@
 - [MemberV1JsonCodec](#T-RemoteCongress-Common-Serialization-MemberV1JsonCodec 'RemoteCongress.Common.Serialization.MemberV1JsonCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-MemberV1JsonCodec}- 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.MemberV1JsonCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-MemberV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-MemberV1JsonCodec-_logger 'RemoteCongress.Common.Serialization.MemberV1JsonCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Member- 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Member)')
+  - [DecodeJson(mediaType,jToken)](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Member- 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Member)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.MemberV1JsonCodec.GetPreferredMediaType')
 - [NullQuery](#T-RemoteCongress-Common-Repositories-Queries-NullQuery 'RemoteCongress.Common.Repositories.Queries.NullQuery')
 - [OpinionQuery](#T-RemoteCongress-Common-Repositories-Queries-OpinionQuery 'RemoteCongress.Common.Repositories.Queries.OpinionQuery')
@@ -152,26 +165,20 @@
 - [SignedDataCollectionV1JsonCodec](#T-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec}- 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-_logger 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,System-Collections-Generic-IEnumerable{RemoteCongress-Common-SignedData}- 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData})')
+  - [DecodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,System-Collections-Generic-IEnumerable{RemoteCongress-Common-SignedData}- 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData})')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.SignedDataCollectionV1JsonCodec.GetPreferredMediaType')
 - [SignedDataV1AvroCodec](#T-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-SignedDataV1AvroCodec}- 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.SignedDataV1AvroCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-MediaType 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-_logger 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData- 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.SignedData)')
+  - [DecodeAvro(mediaType,decoder)](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder- 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.DecodeAvro(RemoteCongress.Common.RemoteCongressMediaType,Avro.IO.Decoder)')
+  - [EncodeAvro(encoder,mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData- 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.EncodeAvro(Avro.IO.Encoder,RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.SignedData)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.SignedDataV1AvroCodec.GetPreferredMediaType')
 - [SignedDataV1JsonCodec](#T-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-SignedDataV1JsonCodec}- 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.SignedDataV1JsonCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-_logger 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData- 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.SignedData)')
+  - [DecodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData- 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.SignedData)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.SignedDataV1JsonCodec.GetPreferredMediaType')
 - [UnknownBlockMediaTypeException](#T-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException')
   - [#ctor(message,innerException)](#M-RemoteCongress-Common-Exceptions-UnknownBlockMediaTypeException-#ctor-System-String,System-Exception- 'RemoteCongress.Common.Exceptions.UnknownBlockMediaTypeException.#ctor(System.String,System.Exception)')
@@ -197,19 +204,326 @@
 - [VoteV1AvroCodec](#T-RemoteCongress-Common-Serialization-VoteV1AvroCodec 'RemoteCongress.Common.Serialization.VoteV1AvroCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-VoteV1AvroCodec}- 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.VoteV1AvroCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-VoteV1AvroCodec-MediaType 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-VoteV1AvroCodec-_logger 'RemoteCongress.Common.Serialization.VoteV1AvroCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote- 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)')
+  - [DecodeAvro(mediaType,decoder)](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder- 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.DecodeAvro(RemoteCongress.Common.RemoteCongressMediaType,Avro.IO.Decoder)')
+  - [EncodeAvro(encoder,mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote- 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.EncodeAvro(Avro.IO.Encoder,RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.VoteV1AvroCodec.GetPreferredMediaType')
 - [VoteV1JsonCodec](#T-RemoteCongress-Common-Serialization-VoteV1JsonCodec 'RemoteCongress.Common.Serialization.VoteV1JsonCodec')
   - [#ctor(logger)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Common-Serialization-VoteV1JsonCodec}- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Common.Serialization.VoteV1JsonCodec})')
   - [MediaType](#F-RemoteCongress-Common-Serialization-VoteV1JsonCodec-MediaType 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.MediaType')
-  - [_logger](#F-RemoteCongress-Common-Serialization-VoteV1JsonCodec-_logger 'RemoteCongress.Common.Serialization.VoteV1JsonCodec._logger')
-  - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
-  - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
-  - [Encode(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.Encode(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)')
+  - [DecodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.DecodeJson(RemoteCongress.Common.RemoteCongressMediaType,Newtonsoft.Json.Linq.JToken)')
+  - [EncodeJson(mediaType,data)](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote- 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.EncodeJson(RemoteCongress.Common.RemoteCongressMediaType,RemoteCongress.Common.Vote)')
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-GetPreferredMediaType 'RemoteCongress.Common.Serialization.VoteV1JsonCodec.GetPreferredMediaType')
+
+<a name='T-RemoteCongress-Common-Serialization-BaseAvroCodec`1'></a>
+## BaseAvroCodec\`1 `type`
+
+##### Namespace
+
+RemoteCongress.Common.Serialization
+
+##### Summary
+
+A base [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1') for implementing avro codecs.
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-#ctor-Microsoft-Extensions-Logging-ILogger-'></a>
+### #ctor(logger) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| logger | [Microsoft.Extensions.Logging.ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') | An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `logger` is null. |
+
+<a name='F-RemoteCongress-Common-Serialization-BaseAvroCodec`1-_logger'></a>
+### _logger `constants`
+
+##### Summary
+
+An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
+### CanHandle(mediaType) `method`
+
+##### Summary
+
+Checks if `mediaType` can be handled by the codec.
+
+##### Returns
+
+True if `mediaType` can be handled.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
+### Decode(mediaType,data) `method`
+
+##### Summary
+
+Decodes a `data` into a `T`.
+
+##### Returns
+
+The `T` from `data`.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
+| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode data from. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
+| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder-'></a>
+### DecodeAvro(mediaType,decoder) `method`
+
+##### Summary
+
+Decodes a `decoder` into a `T`.
+
+##### Returns
+
+The `T` from `decoder`.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
+| decoder | [Avro.IO.Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') | The [Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') to decode data from. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-Encode-RemoteCongress-Common-RemoteCongressMediaType,`0-'></a>
+### Encode(mediaType,data) `method`
+
+##### Summary
+
+Encodes `data` into `mediaType`.
+
+##### Returns
+
+A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
+| data | [\`0](#T-`0 '`0') | The data to encode. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
+| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,`0-'></a>
+### EncodeAvro(encoder,mediaType,data) `method`
+
+##### Summary
+
+Encodes `data` into `mediaType`.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| encoder | [Avro.IO.Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') | The [Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') to encode data to. |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
+| data | [\`0](#T-`0 '`0') | The data to encode. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseAvroCodec`1-GetPreferredMediaType'></a>
+### GetPreferredMediaType() `method`
+
+##### Summary
+
+Gets the preferred [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') for the codec.
+
+##### Returns
+
+The preferred [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType').
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='T-RemoteCongress-Common-Serialization-BaseJsonCodec`1'></a>
+## BaseJsonCodec\`1 `type`
+
+##### Namespace
+
+RemoteCongress.Common.Serialization
+
+##### Summary
+
+A base [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1') for implementing json codecs.
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-#ctor-Microsoft-Extensions-Logging-ILogger-'></a>
+### #ctor(logger) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| logger | [Microsoft.Extensions.Logging.ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') | An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `logger` is null. |
+
+<a name='F-RemoteCongress-Common-Serialization-BaseJsonCodec`1-_logger'></a>
+### _logger `constants`
+
+##### Summary
+
+An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
+### CanHandle(mediaType) `method`
+
+##### Summary
+
+Checks if `mediaType` can be handled by the codec.
+
+##### Returns
+
+True if `mediaType` can be handled.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
+### Decode(mediaType,data) `method`
+
+##### Summary
+
+Decodes a `data` into a `T`.
+
+##### Returns
+
+The `T` from `data`.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
+| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode data from. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
+| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,jToken) `method`
+
+##### Summary
+
+Decodes a `jToken` into a `T`.
+
+##### Returns
+
+The `T` from `jToken`.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
+| jToken | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-Encode-RemoteCongress-Common-RemoteCongressMediaType,`0-'></a>
+### Encode(mediaType,data) `method`
+
+##### Summary
+
+Encodes `data` into `mediaType`.
+
+##### Returns
+
+A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
+| data | [\`0](#T-`0 '`0') | The data to encode. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
+| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,`0-'></a>
+### EncodeJson(mediaType,data) `method`
+
+##### Summary
+
+Encodes `data` into `mediaType`.
+
+##### Returns
+
+A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
+| data | [\`0](#T-`0 '`0') | The data to encode. |
+
+<a name='M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-GetPreferredMediaType'></a>
+### GetPreferredMediaType() `method`
+
+##### Summary
+
+Gets the preferred [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') for the codec.
+
+##### Returns
+
+The preferred [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType').
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='T-RemoteCongress-Common-Exceptions-BaseRemoteCongressException'></a>
 ## BaseRemoteCongressException `type`
@@ -397,81 +711,38 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-BillV1AvroCodec-_logger'></a>
-### _logger `constants`
+<a name='M-RemoteCongress-Common-Serialization-BillV1AvroCodec-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder-'></a>
+### DecodeAvro(mediaType,decoder) `method`
 
 ##### Summary
 
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-BillV1AvroCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
+Decodes a `decoder` into a [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill').
 
 ##### Returns
 
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-BillV1AvroCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
-
-##### Summary
-
-Decodes a `data` into a [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill').
-
-##### Returns
-
-The [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') from `data`.
+The [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') from `decoder`.
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| decoder | [Avro.IO.Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') | The [Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-BillV1AvroCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-BillV1AvroCodec-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill-'></a>
+### EncodeAvro(encoder,mediaType,data) `method`
 
 ##### Summary
 
 Encodes `data` into `mediaType`.
 
-##### Returns
-
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
-
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| encoder | [Avro.IO.Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') | The [Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') to encode data to. |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-BillV1AvroCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -525,32 +796,8 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-BillV1JsonCodec-_logger'></a>
-### _logger `constants`
-
-##### Summary
-
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-BillV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
-
-##### Returns
-
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-BillV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-BillV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -565,18 +812,10 @@ The [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') from `dat
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| data | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-BillV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-BillV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Bill-'></a>
+### EncodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -584,7 +823,7 @@ Encodes `data` into `mediaType`.
 
 ##### Returns
 
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+A [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') containing the encoded data.
 
 ##### Parameters
 
@@ -592,14 +831,6 @@ A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-BillV1JsonCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -1177,32 +1408,8 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-_logger'></a>
-### _logger `constants`
-
-##### Summary
-
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
-
-##### Returns
-
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -1217,18 +1424,10 @@ The [IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongres
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| data | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Repositories-Queries-IQuery-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Repositories-Queries-IQuery-'></a>
+### EncodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -1236,7 +1435,7 @@ Encodes `data` into `mediaType`.
 
 ##### Returns
 
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+A [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') containing the encoded data.
 
 ##### Parameters
 
@@ -1244,14 +1443,6 @@ A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.Repositories.Queries.IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongress.Common.Repositories.Queries.IQuery') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-IQueryV1JsonCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -1537,6 +1728,43 @@ RemoteCongress.Common.Serialization
 
 This method has no parameters.
 
+<a name='M-RemoteCongress-Common-Serialization-JObjectBuilder-WithArray-System-String,Newtonsoft-Json-Linq-JArray-'></a>
+### WithArray(key,jArray) `method`
+
+##### Summary
+
+
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+| jArray | [Newtonsoft.Json.Linq.JArray](#T-Newtonsoft-Json-Linq-JArray 'Newtonsoft.Json.Linq.JArray') |  |
+
+<a name='M-RemoteCongress-Common-Serialization-JObjectBuilder-WithArray``1-System-String,System-Collections-Generic-IEnumerable{``0},System-Func{``0,Newtonsoft-Json-Linq-JToken}-'></a>
+### WithArray\`\`1(key,data,logic) `method`
+
+##### Summary
+
+
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+| data | [System.Collections.Generic.IEnumerable{\`\`0}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{``0}') |  |
+| logic | [System.Func{\`\`0,Newtonsoft.Json.Linq.JToken}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``0,Newtonsoft.Json.Linq.JToken}') |  |
+
 <a name='M-RemoteCongress-Common-Serialization-JObjectBuilder-WithData-System-String,Newtonsoft-Json-Linq-JToken-'></a>
 ### WithData(key,jToken) `method`
 
@@ -1554,6 +1782,24 @@ This method has no parameters.
 | ---- | ---- | ----------- |
 | key | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 | jToken | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') |  |
+
+<a name='M-RemoteCongress-Common-Serialization-JObjectBuilder-WithObject-System-String,Newtonsoft-Json-Linq-JObject-'></a>
+### WithObject(key,jObject) `method`
+
+##### Summary
+
+
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+| jObject | [Newtonsoft.Json.Linq.JObject](#T-Newtonsoft-Json-Linq-JObject 'Newtonsoft.Json.Linq.JObject') |  |
 
 <a name='T-RemoteCongress-Common-Member'></a>
 ## Member `type`
@@ -1721,58 +1967,26 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-MemberV1JsonCodec-_logger'></a>
-### _logger `constants`
+<a name='M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,jToken) `method`
 
 ##### Summary
 
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
+Decodes a `jToken` into a [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member').
 
 ##### Returns
 
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
-
-##### Summary
-
-Decodes a `data` into a [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member').
-
-##### Returns
-
-The [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') from `data`.
+The [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') from `jToken`.
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| jToken | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Member-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Member-'></a>
+### EncodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -1780,7 +1994,7 @@ Encodes `data` into `mediaType`.
 
 ##### Returns
 
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+A [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') containing the encoded data.
 
 ##### Parameters
 
@@ -1788,14 +2002,6 @@ A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-MemberV1JsonCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -2321,32 +2527,8 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-_logger'></a>
-### _logger `constants`
-
-##### Summary
-
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
-
-##### Returns
-
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -2361,18 +2543,10 @@ The [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.Sign
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| data | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,System-Collections-Generic-IEnumerable{RemoteCongress-Common-SignedData}-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,System-Collections-Generic-IEnumerable{RemoteCongress-Common-SignedData}-'></a>
+### EncodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -2380,7 +2554,7 @@ Encodes `data` into `mediaType`.
 
 ##### Returns
 
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+A [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') containing the encoded data.
 
 ##### Parameters
 
@@ -2388,14 +2562,6 @@ A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Common.SignedData}') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-SignedDataCollectionV1JsonCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -2449,81 +2615,38 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-_logger'></a>
-### _logger `constants`
+<a name='M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder-'></a>
+### DecodeAvro(mediaType,decoder) `method`
 
 ##### Summary
 
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
+Decodes a `decoder` into a [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData').
 
 ##### Returns
 
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
-
-##### Summary
-
-Decodes a `data` into a [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData').
-
-##### Returns
-
-The [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData') from `data`.
+The [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData') from `decoder`.
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| decoder | [Avro.IO.Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') | The [Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData-'></a>
+### EncodeAvro(encoder,mediaType,data) `method`
 
 ##### Summary
 
 Encodes `data` into `mediaType`.
 
-##### Returns
-
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
-
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| encoder | [Avro.IO.Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') | The [Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') to encode data to. |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-SignedDataV1AvroCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -2577,32 +2700,8 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-_logger'></a>
-### _logger `constants`
-
-##### Summary
-
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
-
-##### Returns
-
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -2617,18 +2716,10 @@ The [SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.Sign
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| data | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-SignedData-'></a>
+### EncodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -2636,7 +2727,7 @@ Encodes `data` into `mediaType`.
 
 ##### Returns
 
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+A [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') containing the encoded data.
 
 ##### Parameters
 
@@ -2644,14 +2735,6 @@ A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.SignedData](#T-RemoteCongress-Common-SignedData 'RemoteCongress.Common.SignedData') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-SignedDataV1JsonCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -2972,81 +3055,38 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-VoteV1AvroCodec-_logger'></a>
-### _logger `constants`
+<a name='M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-DecodeAvro-RemoteCongress-Common-RemoteCongressMediaType,Avro-IO-Decoder-'></a>
+### DecodeAvro(mediaType,decoder) `method`
 
 ##### Summary
 
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
+Decodes a `decoder` into a [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote').
 
 ##### Returns
 
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
-
-##### Summary
-
-Decodes a `data` into a [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote').
-
-##### Returns
-
-The [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') from `data`.
+The [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') from `decoder`.
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| decoder | [Avro.IO.Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') | The [Decoder](#T-Avro-IO-Decoder 'Avro.IO.Decoder') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-EncodeAvro-Avro-IO-Encoder,RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote-'></a>
+### EncodeAvro(encoder,mediaType,data) `method`
 
 ##### Summary
 
 Encodes `data` into `mediaType`.
 
-##### Returns
-
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
-
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| encoder | [Avro.IO.Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') | The [Encoder](#T-Avro-IO-Encoder 'Avro.IO.Encoder') to encode data to. |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-VoteV1AvroCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`
@@ -3100,32 +3140,8 @@ Constructor
 
 The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') handled by this codec.
 
-<a name='F-RemoteCongress-Common-Serialization-VoteV1JsonCodec-_logger'></a>
-### _logger `constants`
-
-##### Summary
-
-An [ILogger](#T-Microsoft-Extensions-Logging-ILogger 'Microsoft.Extensions.Logging.ILogger') instance to log against.
-
-<a name='M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-CanHandle-RemoteCongress-Common-RemoteCongressMediaType-'></a>
-### CanHandle(mediaType) `method`
-
-##### Summary
-
-Checks if `mediaType` can be handled by the codec.
-
-##### Returns
-
-True if `mediaType` can be handled.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to check if it can be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream-'></a>
-### Decode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-DecodeJson-RemoteCongress-Common-RemoteCongressMediaType,Newtonsoft-Json-Linq-JToken-'></a>
+### DecodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -3140,18 +3156,10 @@ The [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') from `dat
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to decode the data from. |
-| data | [System.IO.Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') | The [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') to decode dat from. |
+| data | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | The [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') to decode data from. |
 
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
-
-<a name='M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-Encode-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote-'></a>
-### Encode(mediaType,data) `method`
+<a name='M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-EncodeJson-RemoteCongress-Common-RemoteCongressMediaType,RemoteCongress-Common-Vote-'></a>
+### EncodeJson(mediaType,data) `method`
 
 ##### Summary
 
@@ -3159,7 +3167,7 @@ Encodes `data` into `mediaType`.
 
 ##### Returns
 
-A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.IO.Stream 'System.IO.Stream') containing the encoded data.
+A [JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') containing the encoded data.
 
 ##### Parameters
 
@@ -3167,14 +3175,6 @@ A [Stream](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&
 | ---- | ---- | ----------- |
 | mediaType | [RemoteCongress.Common.RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') | The [RemoteCongressMediaType](#T-RemoteCongress-Common-RemoteCongressMediaType 'RemoteCongress.Common.RemoteCongressMediaType') to encode the data to. |
 | data | [RemoteCongress.Common.Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') | The data to encode. |
-
-##### Exceptions
-
-| Name | Description |
-| ---- | ----------- |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `mediaType` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `data` is null. |
-| [System.InvalidOperationException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.InvalidOperationException 'System.InvalidOperationException') | Thrown if the `mediaType` cannot be handled. |
 
 <a name='M-RemoteCongress-Common-Serialization-VoteV1JsonCodec-GetPreferredMediaType'></a>
 ### GetPreferredMediaType() `method`

@@ -17,23 +17,15 @@
 */
 using Avro.IO;
 using Microsoft.Extensions.Logging;
-using RemoteCongress.Common.Logging;
 using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace RemoteCongress.Common.Serialization
 {
     /// <summary>
     /// An <see cref="ICodec{TData}"/> for a version 1 avro representation of a <see cref="Bill"/>.
     /// </summary>
-    public class BillV1AvroCodec: ICodec<Bill>
+    public class BillV1AvroCodec: BaseAvroCodec<Bill>
     {
-        /// <summary>
-        /// An <see cref="ILogger"/> instance to log against.
-        /// </summary>
-        private readonly ILogger _logger;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -43,10 +35,9 @@ namespace RemoteCongress.Common.Serialization
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
         /// </exception>
-        public BillV1AvroCodec(ILogger<BillV1AvroCodec> logger)
+        public BillV1AvroCodec(ILogger<BillV1AvroCodec> logger):
+            base(logger)
         {
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -66,127 +57,56 @@ namespace RemoteCongress.Common.Serialization
         /// <returns>
         /// The preferred <see cref="RemoteCongressMediaType"/>.
         /// </returns>
-        public RemoteCongressMediaType GetPreferredMediaType() =>
+        public override RemoteCongressMediaType GetPreferredMediaType() =>
             MediaType;
 
         /// <summary>
-        /// Checks if <paramref name="mediaType"/> can be handled by the codec.
-        /// </summary>
-        /// <param name="mediaType">
-        /// The <see cref="RemoteCongressMediaType"/> to check if it can be handled.
-        /// </param>
-        /// <returns>
-        /// True if <paramref name="mediaType"/> can be handled.
-        /// </returns>
-        public bool CanHandle(RemoteCongressMediaType mediaType) =>
-            MediaType.Equals(mediaType);
-
-        /// <summary>
-        /// Decodes a <paramref name="data"/> into a <see cref="Bill"/>.
+        /// Decodes a <paramref name="decoder"/> into a <see cref="Bill"/>.
         /// </summary>
         /// <param name="mediaType">
         /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
         /// </param>
-        /// <param name="data">
-        /// The <see cref="Stream"/> to decode dat from.
+        /// <param name="decoder">
+        /// The <see cref="Decoder"/> to decode data from.
         /// </param>
         /// <returns>
-        /// The <see cref="Bill"/> from <paramref name="data"/>.
+        /// The <see cref="Bill"/> from <paramref name="decoder"/>.
         /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="mediaType"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="data"/> is null.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the <paramref name="mediaType"/> cannot be handled.
-        /// </exception>
-        public Task<Bill> Decode(RemoteCongressMediaType mediaType, Stream data)
+        protected override Bill DecodeAvro(
+            RemoteCongressMediaType mediaType,
+            Decoder decoder
+        )
         {
-            if (data is null)
-            {
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(data)),
-                    LogLevel.Debug
-                );
-            }
-
-            if (!CanHandle(mediaType))
-            {
-                throw _logger.LogException(
-                    new InvalidOperationException(
-                        $"{GetType()} cannot handle {mediaType}"
-                    ),
-                    LogLevel.Debug
-                );
-            }
-
-            Decoder decoder = new BinaryDecoder(data);
-
             string title = decoder.ReadString();
             string content = decoder.ReadString();
 
-            return Task.FromResult(
-                new Bill()
-                {
-                    Title = title,
-                    Content = content
-                }
-            );
+            return new Bill()
+            {
+                Title = title,
+                Content = content
+            };
         }
 
         /// <summary>
         /// Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
         /// </summary>
+        /// <param name="encoder">
+        /// The <see cref="Encoder"/> to encode data to.
+        /// </param>
         /// <param name="mediaType">
         /// The <see cref="RemoteCongressMediaType"/> to encode the data to.
         /// </param>
         /// <param name="data">
         /// The data to encode.
         /// </param>
-        /// <returns>
-        /// A <see cref="Stream"/> containing the encoded data.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="mediaType"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="data"/> is null.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the <paramref name="mediaType"/> cannot be handled.
-        /// </exception>
-        public Task<Stream> Encode(RemoteCongressMediaType mediaType, Bill data)
+        protected override void EncodeAvro(
+            Encoder encoder,
+            RemoteCongressMediaType mediaType,
+            Bill data
+        )
         {
-            if (data is null)
-            {
-                throw _logger.LogException(
-                    new ArgumentNullException(nameof(data)),
-                    LogLevel.Debug
-                );
-            }
-
-            if (!CanHandle(mediaType))
-            {
-                throw _logger.LogException(
-                    new InvalidOperationException(
-                        $"{GetType()} cannot handle {mediaType}"
-                    ),
-                    LogLevel.Debug
-                );
-            }
-
-            using MemoryStream stream = new MemoryStream();
-
-            Encoder encoder = new BinaryEncoder(stream);
-
             encoder.WriteString(data.Title);
             encoder.WriteString(data.Content);
-
-            stream.Seek(0, SeekOrigin.Begin);
-
-            return Task.FromResult(stream as Stream);
         }
     }
 }

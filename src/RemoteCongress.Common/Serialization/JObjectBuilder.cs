@@ -16,7 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RemoteCongress.Common.Serialization
 {
@@ -43,6 +45,73 @@ namespace RemoteCongress.Common.Serialization
         public JObjectBuilder WithData(string key, JToken jToken)
         {
             _data[key] = jToken;
+
+            return this;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key">
+        /// 
+        /// </param>
+        /// <param name="jObject">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        public JObjectBuilder WithObject(string key, JObject jObject)
+        {
+            _data[key] = jObject;
+
+            return this;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key">
+        /// 
+        /// </param>
+        /// <param name="jArray">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        public JObjectBuilder WithArray(string key, JArray jArray)
+        {
+            _data[key] = jArray;
+
+            return this;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key">
+        /// 
+        /// </param>
+        /// <param name="data">
+        ///
+        /// </param>
+        /// <param name="logic">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        public JObjectBuilder WithArray<T>(string key, IEnumerable<T> data, Func<T, JToken> logic)
+        {
+            JArray array = new JArray();
+
+            foreach(JToken token in data.Select(logic))
+            {
+                array.Add(token);
+            }
+
+            _data[key] = array;
 
             return this;
         }

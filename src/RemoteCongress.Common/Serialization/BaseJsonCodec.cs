@@ -1,4 +1,3 @@
-
 /*
     RemoteCongress - A platform for conducting small secure public elections
     Copyright (C) 2021  Nathan Mentley
@@ -16,28 +15,40 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using RemoteCongress.Common;
-using RemoteCongress.Common.Serialization;
+using RemoteCongress.Common.Logging;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
+namespace RemoteCongress.Common.Serialization
 {
     /// <summary>
-    /// An <see cref="ICodec{TData}"/> for a version 1 json representation of a <see cref="Block"/>.
+    /// A base <see cref="ICodec{TData}"/> for implementing json codecs.
     /// </summary>
-    internal class BlockV1JsonCodec: ICodec<Block>
+    public abstract class BaseJsonCodec<T>: ICodec<T>
     {
-        private readonly static RemoteCongressMediaType MediaType =
-            new RemoteCongressMediaType(
-                "application",
-                "json",
-                "remotecongress.ipfs.block", 
-                1
-            );
+        /// <summary>
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </summary>
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        /// An <see cref="ILogger"/> instance to log against.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> is null.
+        /// </exception>
+        protected BaseJsonCodec(ILogger logger)
+        {
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+        }
 
         /// <summary>
         /// Gets the preferred <see cref="RemoteCongressMediaType"/> for the codec.
@@ -45,8 +56,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// <returns>
         /// The preferred <see cref="RemoteCongressMediaType"/>.
         /// </returns>
-        public RemoteCongressMediaType GetPreferredMediaType() =>
-            MediaType;
+        public abstract RemoteCongressMediaType GetPreferredMediaType();
 
         /// <summary>
         /// Checks if <paramref name="mediaType"/> can be handled by the codec.
@@ -57,11 +67,39 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// <returns>
         /// True if <paramref name="mediaType"/> can be handled.
         /// </returns>
-        public bool CanHandle(RemoteCongressMediaType mediaType) =>
-            MediaType.Equals(mediaType);
+        public virtual bool CanHandle(RemoteCongressMediaType mediaType) =>
+            GetPreferredMediaType().Equals(mediaType);
+
+        /// /// <summary>
+        /// Decodes a <paramref name="jToken"/> into a <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
+        /// </param>
+        /// <param name="jToken">
+        /// The <see cref="JToken"/> to decode data from.
+        /// </param>
+        /// <returns>
+        /// The <typeparamref name="T"/> from <paramref name="jToken"/>.
+        /// </returns>
+        protected abstract T DecodeJson(RemoteCongressMediaType mediaType, JToken jToken);
+
+        /// /// <summary>
+        /// Encodes <paramref name="data"/> into <paramref name="mediaType"/>.
+        /// </summary>
+        /// <param name="mediaType">
+        /// The <see cref="RemoteCongressMediaType"/> to encode the data to.
+        /// </param>
+        /// <param name="data">
+        /// The data to encode.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Stream"/> containing the encoded data.
+        /// </returns>
+        protected abstract JToken EncodeJson(RemoteCongressMediaType mediaType, T data);
 
         /// <summary>
-        /// Decodes a <paramref name="data"/> into a <see cref="Block"/>.
+        /// Decodes a <paramref name="data"/> into a <typeparamref name="T"/>.
         /// </summary>
         /// <param name="mediaType">
         /// The <see cref="RemoteCongressMediaType"/> to decode the data from.
@@ -70,7 +108,7 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// The <see cref="Stream"/> to decode data from.
         /// </param>
         /// <returns>
-        /// The <see cref="Block"/> from <paramref name="data"/>.
+        /// The <typeparamref name="T"/> from <paramref name="data"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="mediaType"/> is null.
@@ -81,42 +119,30 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
-        public async Task<Block> Decode(RemoteCongressMediaType mediaType, Stream data)
+        public async Task<T> Decode(RemoteCongressMediaType mediaType, Stream data)
         {
             if (data is null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
+                );
             }
 
             if (!CanHandle(mediaType))
             {
-                throw new InvalidOperationException(
-                    $"{GetType()} cannot handle {mediaType}"
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{GetType()} cannot handle {mediaType}"
+                    ),
+                    LogLevel.Debug
                 );
             }
 
             using StreamReader sr = new StreamReader(data);
             string json = await sr.ReadToEndAsync();
 
-            JObject jObject = JObject.Parse(json);
-
-            string id = jObject.Value<string>("id");
-            string lastBlockId = jObject.Value<string>("lastBlockId");
-            DateTime timestampUtc = jObject.Value<DateTime>("timestampUtc");
-            string lastBlockHash = jObject.Value<string>("lastBlockHash");
-            string content = jObject.Value<string>("content");
-            string blockMediaType = jObject.Value<string>("mediaType");
-            string hash = jObject.Value<string>("hash");
-
-            return Block.CreateFromData(
-                id,
-                lastBlockId,
-                timestampUtc,
-                lastBlockHash,
-                content,
-                RemoteCongressMediaType.Parse(blockMediaType),
-                hash
-            );
+            return DecodeJson(mediaType, JToken.Parse(json));
         }
 
         /// <summary>
@@ -140,30 +166,29 @@ namespace RemoteCongress.Server.DAL.IpfsBlockchainDb.Serialization
         /// <exception cref="InvalidOperationException">
         /// Thrown if the <paramref name="mediaType"/> cannot be handled.
         /// </exception>
-        public Task<Stream> Encode(RemoteCongressMediaType mediaType, Block data)
+        public Task<Stream> Encode(RemoteCongressMediaType mediaType, T data)
         {
             if (data is null)
-                throw new ArgumentNullException(nameof(data));
-
-            if (!CanHandle(mediaType))
             {
-                throw new InvalidOperationException(
-                   $"{GetType()} cannot handle {mediaType}"
+                throw _logger.LogException(
+                    new ArgumentNullException(nameof(data)),
+                    LogLevel.Debug
                 );
             }
 
-            JObject jObject = new JObject()
+            if (!CanHandle(mediaType))
             {
-                ["id"] = data.Id,
-                ["lastBlockId"] = data.LastBlockHash,
-                ["timestampUtc"] = data.Timestamp,
-                ["lastBlockHash"] = data.LastBlockHash,
-                ["content"] = data.Content,
-                ["mediaType"] = data.MediaType.ToString(),
-                ["hash"] = data.Hash
-            };
+                throw _logger.LogException(
+                    new InvalidOperationException(
+                        $"{GetType()} cannot handle {mediaType}"
+                    ),
+                    LogLevel.Debug
+                );
+            }
 
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(jObject.ToString());
+            JToken jToken = EncodeJson(mediaType, data);
+
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(jToken.ToString());
 
             return Task.FromResult(new MemoryStream(jsonBytes) as Stream);
         }
