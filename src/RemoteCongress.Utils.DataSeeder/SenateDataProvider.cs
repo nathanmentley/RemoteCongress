@@ -208,6 +208,12 @@ namespace RemoteCongress.Utils.DataSeeder
                     cancellationToken.ThrowIfCancellationRequested();
 
                     string memberId = member.Element("lis_member_id").Value;
+
+                    if (!_keys.ContainsKey(memberId))
+                    {
+                        continue;
+                    }
+
                     (string memberPrivateKey, string memberPublicKey) = _keys[memberId];
                     Vote vote = BuildVote(bill, member);
 
