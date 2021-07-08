@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using RemoteCongress.Client;
 using RemoteCongress.Client.DAL.Http;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,12 +59,12 @@ kwMRyHisc6diIMoNAgMBAAE=";
         /// <summary>
         /// The congress to seed.
         /// </summary>
-        private static readonly int Congress = 116;
+        private static readonly int Congress = 117;
 
         /// <summary>
         /// The session to seed.
         /// </summary>
-        private static readonly int Session = 2;
+        private static readonly int Session = 1;
 
         /// <summary>
         /// The hardcoded hostname to seed against
@@ -117,13 +118,20 @@ kwMRyHisc6diIMoNAgMBAAE=";
                         Session
                     )
                 )
+                .AddSingleton<IDataProvider>(provider => 
+                    new HouseDataProvider(
+                        provider.GetRequiredService<IKeyGenerator>(),
+                        Congress,
+                        Session
+                    )
+                )
                 .AddSingleton<IApp>(provider =>
                     new App(
                         provider.GetRequiredService<ILogger<App>>(),
                         AdminPrivateKey,
                         AdminPublicKey,
                         provider.GetRequiredService<IRemoteCongressClient>(),
-                        provider.GetRequiredService<IDataProvider>()
+                        provider.GetRequiredService<IEnumerable<IDataProvider>>()
                     )
                 )
                 .AddRemoteCongressClient(config)

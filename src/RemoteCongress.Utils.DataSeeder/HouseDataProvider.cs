@@ -26,9 +26,9 @@ using System.Xml.Linq;
 namespace RemoteCongress.Utils.DataSeeder
 {
     /// <summary>
-    /// A <see cref="IDataProvider"/> for fetching data for the US Senate from xml files.
+    /// A <see cref="IDataProvider"/> for fetching data for the US House from xml files.
     /// </summary>
-    public class SenateDataProvider: IDataProvider
+    public class HouseDataProvider: IDataProvider
     {
         /// <summary>
         /// A local in memory cache of members, and their pub/priv keys.
@@ -66,7 +66,7 @@ namespace RemoteCongress.Utils.DataSeeder
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="keyGenerator"/> is null.
         /// </exception>
-        public SenateDataProvider(
+        public HouseDataProvider(
             IKeyGenerator keyGenerator,
             int congress,
             int session
@@ -95,15 +95,15 @@ namespace RemoteCongress.Utils.DataSeeder
 
             string path = AppDomain.CurrentDomain.BaseDirectory;
 
-            XElement senatorsData = XElement.Load(
-                Path.Combine(path, "data/senate/member_data.xml")
+            XElement membersData = XElement.Load(
+                Path.Combine(path, "data/house/member_data.xml")
             );
 
-            foreach(XElement senatorData in senatorsData.Descendants("senator"))
+            foreach(XElement houseData in membersData.Element("members").Descendants("member"))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                string id = senatorData.Attribute("lis_member_id").Value;
+                string id = houseData.Element("member-info").Element("bioguideID").Value;
 
                 (string privateKey, string publicKey) = await _keyGenerator.GenerateKeys(1024, cancellationToken);
                 _keys[id] = (privateKey, publicKey);
@@ -111,10 +111,10 @@ namespace RemoteCongress.Utils.DataSeeder
                 yield return new Member()
                 {
                     Id = id,
-                    FirstName = senatorData.Element("name").Element("first").Value,
-                    LastName = senatorData.Element("name").Element("last").Value,
-                    Seat = senatorData.Element("state").Value + senatorData.Element("stateRank").Value,
-                    Party = senatorData.Element("party").Value,
+                    FirstName = houseData.Element("member-info").Element("firstname").Value,
+                    LastName = houseData.Element("member-info").Element("lastname").Value,
+                    Seat = houseData.Element("statedistrict").Value,
+                    Party = houseData.Element("member-info").Element("party").Value,
                     PublicKey = publicKey
                 };
             }
@@ -133,8 +133,8 @@ namespace RemoteCongress.Utils.DataSeeder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "senate");
-            string searchPattern = $"vote_{_congress}_{_session}_*.xml";
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "house");
+            string searchPattern = $"roll*.xml";
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
 
             foreach(FileInfo file in directoryInfo.GetFiles(searchPattern))
@@ -151,13 +151,26 @@ namespace RemoteCongress.Utils.DataSeeder
                     cancellationToken
                 );
 
+                string title = voteData.Element("vote-metadata")?.Element("legis-num")?.Value ?? "";
+                string content = voteData.Element("vote-metadata")?.Element("vote-question")?.Value ?? "";
+                string id = voteData.Element("vote-metadata")?.Element("rollcall-num")?.Value?.PadLeft(3, '0') ?? "";
+
+                if (
+                    string.IsNullOrWhiteSpace(title) ||
+                    string.IsNullOrWhiteSpace(content) ||
+                    string.IsNullOrWhiteSpace(id)
+                )
+                {
+                    continue;
+                }
+
                 yield return (
                     new Bill()
                     {
-                        Title = voteData.Element("vote_question_text").Value,
-                        Content = voteData.Element("vote_document_text").Value
+                        Title = title,
+                        Content = content
                     },
-                    voteData.Element("vote_number").Value.PadLeft(5, '0')
+                    id
                 );
             }
         }
@@ -185,8 +198,8 @@ namespace RemoteCongress.Utils.DataSeeder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "senate");
-            string searchPattern = $"vote_{_congress}_{_session}_{id}.xml";
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "house");
+            string searchPattern = $"roll{id}.xml";
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
 
             foreach(FileInfo file in directoryInfo.GetFiles(searchPattern))
@@ -203,13 +216,19 @@ namespace RemoteCongress.Utils.DataSeeder
                     cancellationToken
                 );
 
-                foreach(XElement member in voteData.Element("members").Descendants("member"))
+                foreach(XElement recordedVote in voteData.Element("vote-data").Descendants("recorded-vote"))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    string memberId = member.Element("lis_member_id").Value;
+                    string memberId = recordedVote.Element("legislator").Attribute("name-id").Value;
+
+                    if (!_keys.ContainsKey(memberId))
+                    {
+                        continue;
+                    }
+
                     (string memberPrivateKey, string memberPublicKey) = _keys[memberId];
-                    Vote vote = BuildVote(bill, member);
+                    Vote vote = BuildVote(bill, recordedVote);
 
                     yield return (vote, memberPrivateKey, memberPublicKey);
                 }
@@ -222,26 +241,25 @@ namespace RemoteCongress.Utils.DataSeeder
         /// <param name="bill">
         /// The <see cref="Bill"/> related to the <see cref="Vote"/>.
         /// </param>
-        /// <param name="member">
+        /// <param name="recordedVote">
         /// The XML element containing the vote data.
         /// </param>
         /// <returns>
         /// The <see cref="Vote"/> poco to use.
         /// </returns>
-        private static Vote BuildVote(VerifiedData<Bill> bill, XElement member) =>
+        private static Vote BuildVote(VerifiedData<Bill> bill, XElement recordedVote) =>
             new Vote()
             {
                 BillId = bill.Id,
                 Opinion =
-                    member.Element("vote_cast")?.Value switch
+                    recordedVote.Element("vote")?.Value switch
                     {
                         "Yea" => true,
-                        "Guilty" => true,
+                        "Present" => true,
                         "Nay" => false,
-                        "Not Guilty" => false,
                         _ => null
                     },
-                Message = $"{member.Element("member_full")?.Value} voted {member.Element("vote_cast")?.Value}"
+                Message = $"{recordedVote.Element("vote")?.Value}"
             };
     }
 }

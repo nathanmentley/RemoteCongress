@@ -4,19 +4,28 @@
 ## Contents
 
 - [App](#T-RemoteCongress-Utils-DataSeeder-App 'RemoteCongress.Utils.DataSeeder.App')
-  - [#ctor(logger,adminPrivateKey,adminPublicKey,client,dataProvider)](#M-RemoteCongress-Utils-DataSeeder-App-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Utils-DataSeeder-App},System-String,System-String,RemoteCongress-Client-IRemoteCongressClient,RemoteCongress-Utils-DataSeeder-IDataProvider- 'RemoteCongress.Utils.DataSeeder.App.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Utils.DataSeeder.App},System.String,System.String,RemoteCongress.Client.IRemoteCongressClient,RemoteCongress.Utils.DataSeeder.IDataProvider)')
+  - [#ctor(logger,adminPrivateKey,adminPublicKey,client,dataProviders)](#M-RemoteCongress-Utils-DataSeeder-App-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Utils-DataSeeder-App},System-String,System-String,RemoteCongress-Client-IRemoteCongressClient,System-Collections-Generic-IEnumerable{RemoteCongress-Utils-DataSeeder-IDataProvider}- 'RemoteCongress.Utils.DataSeeder.App.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Utils.DataSeeder.App},System.String,System.String,RemoteCongress.Client.IRemoteCongressClient,System.Collections.Generic.IEnumerable{RemoteCongress.Utils.DataSeeder.IDataProvider})')
   - [_adminPrivateKey](#F-RemoteCongress-Utils-DataSeeder-App-_adminPrivateKey 'RemoteCongress.Utils.DataSeeder.App._adminPrivateKey')
   - [_adminPublicKey](#F-RemoteCongress-Utils-DataSeeder-App-_adminPublicKey 'RemoteCongress.Utils.DataSeeder.App._adminPublicKey')
   - [_client](#F-RemoteCongress-Utils-DataSeeder-App-_client 'RemoteCongress.Utils.DataSeeder.App._client')
-  - [_dataProvider](#F-RemoteCongress-Utils-DataSeeder-App-_dataProvider 'RemoteCongress.Utils.DataSeeder.App._dataProvider')
+  - [_dataProviders](#F-RemoteCongress-Utils-DataSeeder-App-_dataProviders 'RemoteCongress.Utils.DataSeeder.App._dataProviders')
   - [_logger](#F-RemoteCongress-Utils-DataSeeder-App-_logger 'RemoteCongress.Utils.DataSeeder.App._logger')
   - [Logic(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-Logic-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.Logic(System.Threading.CancellationToken)')
   - [Run(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-Run-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.Run(System.Threading.CancellationToken)')
-  - [SeedBill(bill,id,cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-SeedBill-RemoteCongress-Common-Bill,System-String,System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.SeedBill(RemoteCongress.Common.Bill,System.String,System.Threading.CancellationToken)')
+  - [SeedBill(bill,id,dataProvider,cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-App-SeedBill-RemoteCongress-Common-Bill,System-String,RemoteCongress-Utils-DataSeeder-IDataProvider,System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.App.SeedBill(RemoteCongress.Common.Bill,System.String,RemoteCongress.Utils.DataSeeder.IDataProvider,System.Threading.CancellationToken)')
 - [AppResultCode](#T-RemoteCongress-Utils-DataSeeder-AppResultCode 'RemoteCongress.Utils.DataSeeder.AppResultCode')
   - [OperationCancelled](#F-RemoteCongress-Utils-DataSeeder-AppResultCode-OperationCancelled 'RemoteCongress.Utils.DataSeeder.AppResultCode.OperationCancelled')
   - [Success](#F-RemoteCongress-Utils-DataSeeder-AppResultCode-Success 'RemoteCongress.Utils.DataSeeder.AppResultCode.Success')
   - [UnknownError](#F-RemoteCongress-Utils-DataSeeder-AppResultCode-UnknownError 'RemoteCongress.Utils.DataSeeder.AppResultCode.UnknownError')
+- [HouseDataProvider](#T-RemoteCongress-Utils-DataSeeder-HouseDataProvider 'RemoteCongress.Utils.DataSeeder.HouseDataProvider')
+  - [#ctor(keyGenerator,congress,session)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-#ctor-RemoteCongress-Utils-DataSeeder-IKeyGenerator,System-Int32,System-Int32- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.#ctor(RemoteCongress.Utils.DataSeeder.IKeyGenerator,System.Int32,System.Int32)')
+  - [_congress](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_congress 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._congress')
+  - [_keyGenerator](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_keyGenerator 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._keyGenerator')
+  - [_keys](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_keys 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._keys')
+  - [_session](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_session 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._session')
+  - [GetBills(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetBills-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetBills(System.Threading.CancellationToken)')
+  - [GetMembers(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetMembers-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetMembers(System.Threading.CancellationToken)')
+  - [GetVotes(id,bill,cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetVotes-System-String,RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill},System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetVotes(System.String,RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Threading.CancellationToken)')
 - [IApp](#T-RemoteCongress-Utils-DataSeeder-IApp 'RemoteCongress.Utils.DataSeeder.IApp')
   - [Run(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-IApp-Run-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.IApp.Run(System.Threading.CancellationToken)')
 - [IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider')
@@ -64,8 +73,8 @@ Application logic.
 
 This impl is essentially glue code that ties an [IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider'), and an [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') to seed data.
 
-<a name='M-RemoteCongress-Utils-DataSeeder-App-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Utils-DataSeeder-App},System-String,System-String,RemoteCongress-Client-IRemoteCongressClient,RemoteCongress-Utils-DataSeeder-IDataProvider-'></a>
-### #ctor(logger,adminPrivateKey,adminPublicKey,client,dataProvider) `constructor`
+<a name='M-RemoteCongress-Utils-DataSeeder-App-#ctor-Microsoft-Extensions-Logging-ILogger{RemoteCongress-Utils-DataSeeder-App},System-String,System-String,RemoteCongress-Client-IRemoteCongressClient,System-Collections-Generic-IEnumerable{RemoteCongress-Utils-DataSeeder-IDataProvider}-'></a>
+### #ctor(logger,adminPrivateKey,adminPublicKey,client,dataProviders) `constructor`
 
 ##### Summary
 
@@ -79,7 +88,7 @@ Constructor
 | adminPrivateKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The "admin" private key to seed members |
 | adminPublicKey | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The "admin" public key to seed members |
 | client | [RemoteCongress.Client.IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') | The [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') to seed against. |
-| dataProvider | [RemoteCongress.Utils.DataSeeder.IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider') | The [IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider') to load data from. |
+| dataProviders | [System.Collections.Generic.IEnumerable{RemoteCongress.Utils.DataSeeder.IDataProvider}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{RemoteCongress.Utils.DataSeeder.IDataProvider}') | All the [IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider') to load data from. |
 
 ##### Exceptions
 
@@ -89,7 +98,7 @@ Constructor
 | [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `adminPrivateKey` is null. |
 | [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `adminPublicKey` is null. |
 | [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `client` is null. |
-| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `dataProvider` is null. |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `dataProviders` is null. |
 
 <a name='F-RemoteCongress-Utils-DataSeeder-App-_adminPrivateKey'></a>
 ### _adminPrivateKey `constants`
@@ -112,8 +121,8 @@ The "admin" public key to seed members
 
 The [IRemoteCongressClient](#T-RemoteCongress-Client-IRemoteCongressClient 'RemoteCongress.Client.IRemoteCongressClient') to seed against.
 
-<a name='F-RemoteCongress-Utils-DataSeeder-App-_dataProvider'></a>
-### _dataProvider `constants`
+<a name='F-RemoteCongress-Utils-DataSeeder-App-_dataProviders'></a>
+### _dataProviders `constants`
 
 ##### Summary
 
@@ -156,8 +165,8 @@ The result code
 | ---- | ---- | ----------- |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation. |
 
-<a name='M-RemoteCongress-Utils-DataSeeder-App-SeedBill-RemoteCongress-Common-Bill,System-String,System-Threading-CancellationToken-'></a>
-### SeedBill(bill,id,cancellationToken) `method`
+<a name='M-RemoteCongress-Utils-DataSeeder-App-SeedBill-RemoteCongress-Common-Bill,System-String,RemoteCongress-Utils-DataSeeder-IDataProvider,System-Threading-CancellationToken-'></a>
+### SeedBill(bill,id,dataProvider,cancellationToken) `method`
 
 ##### Summary
 
@@ -169,6 +178,7 @@ The result code
 | ---- | ---- | ----------- |
 | bill | [RemoteCongress.Common.Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') |  |
 | id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+| dataProvider | [RemoteCongress.Utils.DataSeeder.IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider') |  |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation. |
 
 <a name='T-RemoteCongress-Utils-DataSeeder-AppResultCode'></a>
@@ -202,6 +212,119 @@ RemoteCongress.Utils.DataSeeder
 ##### Summary
 
 
+
+<a name='T-RemoteCongress-Utils-DataSeeder-HouseDataProvider'></a>
+## HouseDataProvider `type`
+
+##### Namespace
+
+RemoteCongress.Utils.DataSeeder
+
+##### Summary
+
+A [IDataProvider](#T-RemoteCongress-Utils-DataSeeder-IDataProvider 'RemoteCongress.Utils.DataSeeder.IDataProvider') for fetching data for the US House from xml files.
+
+<a name='M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-#ctor-RemoteCongress-Utils-DataSeeder-IKeyGenerator,System-Int32,System-Int32-'></a>
+### #ctor(keyGenerator,congress,session) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| keyGenerator | [RemoteCongress.Utils.DataSeeder.IKeyGenerator](#T-RemoteCongress-Utils-DataSeeder-IKeyGenerator 'RemoteCongress.Utils.DataSeeder.IKeyGenerator') | A [IKeyGenerator](#T-RemoteCongress-Utils-DataSeeder-IKeyGenerator 'RemoteCongress.Utils.DataSeeder.IKeyGenerator') to create keys for seeded [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')s. |
+| congress | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | The congress number to seed. |
+| session | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | The session number to seed. |
+
+##### Exceptions
+
+| Name | Description |
+| ---- | ----------- |
+| [System.ArgumentNullException](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.ArgumentNullException 'System.ArgumentNullException') | Thrown if `keyGenerator` is null. |
+
+<a name='F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_congress'></a>
+### _congress `constants`
+
+##### Summary
+
+The congress number to seed.
+
+<a name='F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_keyGenerator'></a>
+### _keyGenerator `constants`
+
+##### Summary
+
+A [IKeyGenerator](#T-RemoteCongress-Utils-DataSeeder-IKeyGenerator 'RemoteCongress.Utils.DataSeeder.IKeyGenerator') to create keys for seeded [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')s.
+
+<a name='F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_keys'></a>
+### _keys `constants`
+
+##### Summary
+
+A local in memory cache of members, and their pub/priv keys.
+
+<a name='F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_session'></a>
+### _session `constants`
+
+##### Summary
+
+The session number to seed.
+
+<a name='M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetBills-System-Threading-CancellationToken-'></a>
+### GetBills(cancellationToken) `method`
+
+##### Summary
+
+Fetches all [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')s to seed.
+
+##### Returns
+
+A collection of [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')s to seed.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') that triggers a cancellation. |
+
+<a name='M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetMembers-System-Threading-CancellationToken-'></a>
+### GetMembers(cancellationToken) `method`
+
+##### Summary
+
+Fetches all [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')s to seed.
+
+##### Returns
+
+A collection of [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')s to seed.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') that triggers a cancellation. |
+
+<a name='M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetVotes-System-String,RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill},System-Threading-CancellationToken-'></a>
+### GetVotes(id,bill,cancellationToken) `method`
+
+##### Summary
+
+Fetches all [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote')s for a [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') to seed.
+
+##### Returns
+
+A collection of [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote')s to seed.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| id | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The unique id of the bill. |
+| bill | [RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill}](#T-RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill} 'RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill}') | The seeded [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') wrapped in a [VerifiedData\`1](#T-RemoteCongress-Common-VerifiedData`1 'RemoteCongress.Common.VerifiedData`1'). |
+| cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') that triggers a cancellation. |
 
 <a name='T-RemoteCongress-Utils-DataSeeder-IApp'></a>
 ## IApp `type`

@@ -21,6 +21,7 @@ using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -52,7 +53,7 @@ namespace RemoteCongress.Utils.DataSeeder
         /// <summary>
         /// The <see cref="IDataProvider"/> to load data from.
         /// </summary>
-        private readonly IDataProvider _dataProvider;
+        private readonly IEnumerable<IDataProvider> _dataProviders;
 
         /// <summary>
         /// An <see cref="ILogger"/> to log against.
@@ -74,8 +75,8 @@ namespace RemoteCongress.Utils.DataSeeder
         /// <param name="client">
         /// The <see cref="IRemoteCongressClient"/> to seed against.
         /// </param>
-        /// <param name="dataProvider">
-        /// The <see cref="IDataProvider"/> to load data from.
+        /// <param name="dataProviders">
+        /// All the <see cref="IDataProvider"/> to load data from.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="logger"/> is null.
@@ -90,14 +91,14 @@ namespace RemoteCongress.Utils.DataSeeder
         /// Thrown if <paramref name="client"/> is null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="dataProvider"/> is null.
+        /// Thrown if <paramref name="dataProviders"/> is null.
         /// </exception>
         public App(
             ILogger<App> logger,
             string adminPrivateKey,
             string adminPublicKey,
             IRemoteCongressClient client,
-            IDataProvider dataProvider
+            IEnumerable<IDataProvider> dataProviders
         )
         {
             _logger = logger ??
@@ -127,10 +128,10 @@ namespace RemoteCongress.Utils.DataSeeder
                 );
             }
 
-            if (dataProvider is null)
+            if (dataProviders is null)
             {
                 throw _logger.LogException(
-                    new ArgumentNullException(nameof(dataProvider)),
+                    new ArgumentNullException(nameof(dataProviders)),
                     LogLevel.Debug
                 );
             }
@@ -138,7 +139,7 @@ namespace RemoteCongress.Utils.DataSeeder
             _adminPrivateKey = adminPrivateKey;
             _adminPublicKey = adminPublicKey;
             _client = client;
-            _dataProvider = dataProvider;
+            _dataProviders = dataProviders;
         }
  
         /// <summary>
@@ -184,32 +185,35 @@ namespace RemoteCongress.Utils.DataSeeder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await foreach(Member member in _dataProvider.GetMembers(cancellationToken))
+            foreach(IDataProvider dataProvider in _dataProviders)
             {
-                _logger.LogDebug(
-                    "Creating Member: {firstName} {lastName} ({party}) - {seat}",
-                    member.FirstName,
-                    member.LastName,
-                    member.Party,
-                    member.Seat
-                );
+                await foreach(Member member in dataProvider.GetMembers(cancellationToken))
+                {
+                    _logger.LogDebug(
+                        "Creating Member: {firstName} {lastName} ({party}) - {seat}",
+                        member.FirstName,
+                        member.LastName,
+                        member.Party,
+                        member.Seat
+                    );
 
-                await _client.CreateMember(
-                    _adminPrivateKey,
-                    _adminPublicKey,
-                    member,
-                    cancellationToken
-                );
-            }
+                    await _client.CreateMember(
+                        _adminPrivateKey,
+                        _adminPublicKey,
+                        member,
+                        cancellationToken
+                    );
+                }
 
-            await foreach((Bill bill, string id) in _dataProvider.GetBills(cancellationToken))
-            {
-                _logger.LogDebug(
-                    "Creating bill: {title}",
-                    bill.Title
-                );
+                await foreach((Bill bill, string id) in dataProvider.GetBills(cancellationToken))
+                {
+                    _logger.LogDebug(
+                        "Creating bill: {title}",
+                        bill.Title
+                    );
 
-                await SeedBill(bill, id, cancellationToken);
+                    await SeedBill(bill, id, dataProvider, cancellationToken);
+                }
             }
         }
 
@@ -222,10 +226,18 @@ namespace RemoteCongress.Utils.DataSeeder
         /// <param name="id">
         /// 
         /// </param>
+        /// <param name="dataProvider">
+        /// 
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to handle cancellation.
         /// </param>
-        private async Task SeedBill(Bill bill, string id, CancellationToken cancellationToken)
+        private async Task SeedBill(
+            Bill bill,
+            string id,
+            IDataProvider dataProvider,
+            CancellationToken cancellationToken
+        )
         {
             VerifiedData<Bill> billData = await _client.CreateBill(
                 _adminPrivateKey,
@@ -236,7 +248,7 @@ namespace RemoteCongress.Utils.DataSeeder
 
             await foreach(
                 (Vote vote, string memberPrivateKey, string memberPublicKey) in
-                    _dataProvider.GetVotes(id, billData, cancellationToken))
+                    dataProvider.GetVotes(id, billData, cancellationToken))
             {
                 _logger.LogDebug(
                     "Creating vote for bill: {billId}",
