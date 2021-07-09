@@ -23,6 +23,7 @@
   - [_keyGenerator](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_keyGenerator 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._keyGenerator')
   - [_keys](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_keys 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._keys')
   - [_session](#F-RemoteCongress-Utils-DataSeeder-HouseDataProvider-_session 'RemoteCongress.Utils.DataSeeder.HouseDataProvider._session')
+  - [BuildVote(bill,recordedVote)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-BuildVote-RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill},System-Xml-Linq-XElement- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.BuildVote(RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Xml.Linq.XElement)')
   - [GetBills(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetBills-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetBills(System.Threading.CancellationToken)')
   - [GetMembers(cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetMembers-System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetMembers(System.Threading.CancellationToken)')
   - [GetVotes(id,bill,cancellationToken)](#M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetVotes-System-String,RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill},System-Threading-CancellationToken- 'RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetVotes(System.String,RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Threading.CancellationToken)')
@@ -272,6 +273,24 @@ A local in memory cache of members, and their pub/priv keys.
 ##### Summary
 
 The session number to seed.
+
+<a name='M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-BuildVote-RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill},System-Xml-Linq-XElement-'></a>
+### BuildVote(bill,recordedVote) `method`
+
+##### Summary
+
+Generates a [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') poco.
+
+##### Returns
+
+The [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote') poco to use.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| bill | [RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill}](#T-RemoteCongress-Common-VerifiedData{RemoteCongress-Common-Bill} 'RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill}') | The [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill') related to the [Vote](#T-RemoteCongress-Common-Vote 'RemoteCongress.Common.Vote'). |
+| recordedVote | [System.Xml.Linq.XElement](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Xml.Linq.XElement 'System.Xml.Linq.XElement') | The XML element containing the vote data. |
 
 <a name='M-RemoteCongress-Utils-DataSeeder-HouseDataProvider-GetBills-System-Threading-CancellationToken-'></a>
 ### GetBills(cancellationToken) `method`

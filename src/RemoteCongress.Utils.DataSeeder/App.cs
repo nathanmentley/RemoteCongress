@@ -187,6 +187,8 @@ namespace RemoteCongress.Utils.DataSeeder
 
             foreach(IDataProvider dataProvider in _dataProviders)
             {
+                IList<Task> addMemberTasks = new List<Task>();
+
                 await foreach(Member member in dataProvider.GetMembers(cancellationToken))
                 {
                     _logger.LogDebug(
@@ -197,23 +199,42 @@ namespace RemoteCongress.Utils.DataSeeder
                         member.Seat
                     );
 
-                    await _client.CreateMember(
-                        _adminPrivateKey,
-                        _adminPublicKey,
-                        member,
-                        cancellationToken
+                    addMemberTasks.Add(
+                        _client.CreateMember(
+                            _adminPrivateKey,
+                            _adminPublicKey,
+                            member,
+                            cancellationToken
+                        )
                     );
                 }
 
+                await Task.WhenAll(addMemberTasks);
+
+                IList<Task> addBillTasks = new List<Task>();
+
+                int counter = 0;
                 await foreach((Bill bill, string id) in dataProvider.GetBills(cancellationToken))
                 {
+                    if (counter % 5 == 0)
+                    {
+                        await Task.WhenAll(addBillTasks);
+                        addBillTasks.Clear();
+                    }
+
                     _logger.LogDebug(
                         "Creating bill: {title}",
                         bill.Title
                     );
 
-                    await SeedBill(bill, id, dataProvider, cancellationToken);
+                    addBillTasks.Add(
+                        SeedBill(bill, id, dataProvider, cancellationToken)
+                    );
+
+                    counter++;
                 }
+
+                await Task.WhenAll(addBillTasks);
             }
         }
 
@@ -246,6 +267,8 @@ namespace RemoteCongress.Utils.DataSeeder
                 cancellationToken
             );
 
+            IList<Task> addVoteTasks = new List<Task>();
+
             await foreach(
                 (Vote vote, string memberPrivateKey, string memberPublicKey) in
                     dataProvider.GetVotes(id, billData, cancellationToken))
@@ -255,13 +278,17 @@ namespace RemoteCongress.Utils.DataSeeder
                     vote.BillId
                 );
 
-                await _client.CreateVote(
-                    memberPrivateKey,
-                    memberPublicKey,
-                    vote,
-                    cancellationToken
+                addVoteTasks.Add(
+                    _client.CreateVote(
+                        memberPrivateKey,
+                        memberPublicKey,
+                        vote,
+                        cancellationToken
+                    )
                 );
             }
+
+            await Task.WhenAll(addVoteTasks);
         }
     }
 }

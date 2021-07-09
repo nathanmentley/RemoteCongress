@@ -36,11 +36,9 @@ namespace RemoteCongress.Server.DAL.Blockchain
         /// </summary>
         protected BaseBlockchain()
         {
-            _blocks =
-                new List<TBlock>()
-                {
-                    GenerateGenisysBlock()
-                };
+            _blocks = new ConcurrentList.ConcurrentList<TBlock>();
+
+            _blocks.Add(GenerateGenisysBlock());
         }
 
         /// <summary>
