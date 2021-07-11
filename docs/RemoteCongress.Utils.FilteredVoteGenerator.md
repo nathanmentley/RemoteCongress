@@ -13,6 +13,18 @@
   - [OperationCancelled](#F-RemoteCongress-Util-FilteredVoteGenerator-AppResultCode-OperationCancelled 'RemoteCongress.Util.FilteredVoteGenerator.AppResultCode.OperationCancelled')
   - [Success](#F-RemoteCongress-Util-FilteredVoteGenerator-AppResultCode-Success 'RemoteCongress.Util.FilteredVoteGenerator.AppResultCode.Success')
   - [UnknownError](#F-RemoteCongress-Util-FilteredVoteGenerator-AppResultCode-UnknownError 'RemoteCongress.Util.FilteredVoteGenerator.AppResultCode.UnknownError')
+- [BillResult](#T-RemoteCongress-Util-FilteredVoteGenerator-BillResult 'RemoteCongress.Util.FilteredVoteGenerator.BillResult')
+  - [Bill](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-Bill 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.Bill')
+  - [BillId](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-BillId 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.BillId')
+  - [BillLegitimatelyPassed](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-BillLegitimatelyPassed 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.BillLegitimatelyPassed')
+  - [BillPassed](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-BillPassed 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.BillPassed')
+  - [InvalidNays](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-InvalidNays 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.InvalidNays')
+  - [InvalidPresents](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-InvalidPresents 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.InvalidPresents')
+  - [InvalidYays](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-InvalidYays 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.InvalidYays')
+  - [ValidNays](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-ValidNays 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.ValidNays')
+  - [ValidPresents](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-ValidPresents 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.ValidPresents')
+  - [ValidYays](#P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-ValidYays 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.ValidYays')
+  - [AddVote(vote)](#M-RemoteCongress-Util-FilteredVoteGenerator-BillResult-AddVote-RemoteCongress-Util-FilteredVoteGenerator-VoteResult- 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.AddVote(RemoteCongress.Util.FilteredVoteGenerator.VoteResult)')
 - [IApp](#T-RemoteCongress-Util-FilteredVoteGenerator-IApp 'RemoteCongress.Util.FilteredVoteGenerator.IApp')
   - [Run(cancellationToken)](#M-RemoteCongress-Util-FilteredVoteGenerator-IApp-Run-System-Threading-CancellationToken- 'RemoteCongress.Util.FilteredVoteGenerator.IApp.Run(System.Threading.CancellationToken)')
 - [Program](#T-RemoteCongress-Util-FilteredVoteGenerator-Program 'RemoteCongress.Util.FilteredVoteGenerator.Program')
@@ -21,6 +33,10 @@
   - [GetCancellationTokenSource()](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-GetCancellationTokenSource 'RemoteCongress.Util.FilteredVoteGenerator.Program.GetCancellationTokenSource')
   - [GetServiceProvider(config)](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-GetServiceProvider-RemoteCongress-Client-DAL-Http-ClientConfig- 'RemoteCongress.Util.FilteredVoteGenerator.Program.GetServiceProvider(RemoteCongress.Client.DAL.Http.ClientConfig)')
   - [Main(args)](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-Main-System-String[]- 'RemoteCongress.Util.FilteredVoteGenerator.Program.Main(System.String[])')
+- [VoteResult](#T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult')
+  - [IsInvalid](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-IsInvalid 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.IsInvalid')
+  - [Member](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-Member 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.Member')
+  - [Opinion](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-Opinion 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.Opinion')
 
 <a name='T-RemoteCongress-Util-FilteredVoteGenerator-App'></a>
 ## App `type`
@@ -129,6 +145,100 @@ RemoteCongress.Util.FilteredVoteGenerator
 ##### Summary
 
 
+
+<a name='T-RemoteCongress-Util-FilteredVoteGenerator-BillResult'></a>
+## BillResult `type`
+
+##### Namespace
+
+RemoteCongress.Util.FilteredVoteGenerator
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-Bill'></a>
+### Bill `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-BillId'></a>
+### BillId `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-BillLegitimatelyPassed'></a>
+### BillLegitimatelyPassed `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-BillPassed'></a>
+### BillPassed `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-InvalidNays'></a>
+### InvalidNays `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-InvalidPresents'></a>
+### InvalidPresents `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-InvalidYays'></a>
+### InvalidYays `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-ValidNays'></a>
+### ValidNays `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-ValidPresents'></a>
+### ValidPresents `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-BillResult-ValidYays'></a>
+### ValidYays `property`
+
+##### Summary
+
+
+
+<a name='M-RemoteCongress-Util-FilteredVoteGenerator-BillResult-AddVote-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-'></a>
+### AddVote(vote) `method`
+
+##### Summary
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| vote | [RemoteCongress.Util.FilteredVoteGenerator.VoteResult](#T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult') |  |
 
 <a name='T-RemoteCongress-Util-FilteredVoteGenerator-IApp'></a>
 ## IApp `type`
@@ -239,3 +349,35 @@ Result code
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | args | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | Command line arguments |
+
+<a name='T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult'></a>
+## VoteResult `type`
+
+##### Namespace
+
+RemoteCongress.Util.FilteredVoteGenerator
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-IsInvalid'></a>
+### IsInvalid `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-Member'></a>
+### Member `property`
+
+##### Summary
+
+
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-Opinion'></a>
+### Opinion `property`
+
+##### Summary
+
+
