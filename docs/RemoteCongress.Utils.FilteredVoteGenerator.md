@@ -33,6 +33,11 @@
   - [GetCancellationTokenSource()](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-GetCancellationTokenSource 'RemoteCongress.Util.FilteredVoteGenerator.Program.GetCancellationTokenSource')
   - [GetServiceProvider(config)](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-GetServiceProvider-RemoteCongress-Client-DAL-Http-ClientConfig- 'RemoteCongress.Util.FilteredVoteGenerator.Program.GetServiceProvider(RemoteCongress.Client.DAL.Http.ClientConfig)')
   - [Main(args)](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-Main-System-String[]- 'RemoteCongress.Util.FilteredVoteGenerator.Program.Main(System.String[])')
+- [Templates](#T-RemoteCongress-Util-FilteredVoteGenerator-Templates 'RemoteCongress.Util.FilteredVoteGenerator.Templates')
+  - [BillTemplate](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplate 'RemoteCongress.Util.FilteredVoteGenerator.Templates.BillTemplate')
+  - [BillTemplateName](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplateName 'RemoteCongress.Util.FilteredVoteGenerator.Templates.BillTemplateName')
+  - [IndexTemplate](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplate 'RemoteCongress.Util.FilteredVoteGenerator.Templates.IndexTemplate')
+  - [IndexTemplateName](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplateName 'RemoteCongress.Util.FilteredVoteGenerator.Templates.IndexTemplateName')
 - [VoteResult](#T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult')
   - [IsInvalid](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-IsInvalid 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.IsInvalid')
   - [Member](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-Member 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.Member')
@@ -349,6 +354,45 @@ Result code
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | args | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | Command line arguments |
+
+<a name='T-RemoteCongress-Util-FilteredVoteGenerator-Templates'></a>
+## Templates `type`
+
+##### Namespace
+
+RemoteCongress.Util.FilteredVoteGenerator
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplate'></a>
+### BillTemplate `constants`
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplateName'></a>
+### BillTemplateName `constants`
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplate'></a>
+### IndexTemplate `constants`
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplateName'></a>
+### IndexTemplateName `constants`
+
+##### Summary
+
+
 
 <a name='T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult'></a>
 ## VoteResult `type`

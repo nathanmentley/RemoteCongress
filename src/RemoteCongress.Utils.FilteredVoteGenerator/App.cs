@@ -100,6 +100,11 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             "L000585", //LaHood
 
             //IN
+            "B001307", //Baird
+            "B001299", //Banks
+            "H001074", //Hollingsworth
+            "P000615", //Pence
+            "W000813", //Walorski
             "", //
             "", //
             "", //
@@ -107,11 +112,145 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             "", //
             "", //
             "", //
-            "", //
-            "", //
-            "", //
-            "", //
-            "", //
+
+            /*
+Indiana
+James Baird
+Jim Banks
+Trey 
+Greg 
+Jackie 
+
+Iowa
+Steve King
+
+Kansas
+Ron Estes
+Roger Marshall
+
+Louisiana
+Ralph Abraham
+Clay Higgins
+Mike Johnson
+Steve Scalise
+
+Maryland
+Andy Harris
+
+Michigan
+Jack Bergman
+Bill Huizenga
+John Moolenaar
+Tim Walberg
+
+Minnesota
+Tom Emmer
+Jim Hagedorn
+Pete Stauber
+
+Mississippi
+Michael Guest
+Trent Kelly
+Steven Palazzo
+
+Missouri
+Sam Graves
+Vicky Hartzler
+Billy Long
+Blaine Luetkemeyer
+Jason Smith
+Ann Wagner
+
+Montana
+Greg Gianforte
+
+Nebraska
+Jeff Fortenberry
+Adrian Smith
+
+New Jersey
+Jefferson Van Drew
+
+New York
+Elise Stefanik
+Lee Zeldin
+
+North Carolina
+Dan Bishop
+Ted Budd
+Virginia Foxx
+Richard Hudson
+Greg Murphy
+David Rouzer
+Mark Walker
+
+Ohio
+Bob Gibbs
+Bill Johnson
+Jim Jordan
+Robert E. Latta
+Brad Wenstrup
+
+Oklahoma
+Kevin Hern
+Markwayne Mullin
+
+Pennsylvania
+John Joyce
+Fred Keller
+Mike Kelly
+Daniel Meuser
+Scott Perry
+Guy Reschenthaler
+Glenn Thompson
+
+South Carolina
+Jeffrey Duncan
+Ralph Norman
+Tom Rice
+William Timmons
+Joe Wilson
+
+Tennessee
+Tim Burchett
+Scott DesJarlais
+Chuck Fleischmann
+Mike Green
+David Kustoff
+John Rose
+
+Texas
+Jodey Arrington
+Brian Babin
+Kevin Brady
+Michael C. Burgess
+Michael Cloud
+K. Michael Conaway
+Dan Crenshaw
+Bill Flores
+Louie Gohmert
+Lance Gooden
+Kenny Marchant
+Randy Weber
+Roger Williams
+Ron Wright
+
+Virginia
+Ben Cline
+Morgan Griffith
+Robert J. Wittman
+
+Washington
+Cathy McMorris Rodgers
+Dan Newhouse
+
+West Virginia
+Carol Miller
+Alex Mooney
+
+Wisconsin
+Tom Tiffany
+            */
         };
 
         /// <summary>
