@@ -105,152 +105,124 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             "H001074", //Hollingsworth
             "P000615", //Pence
             "W000813", //Walorski
-            "", //
-            "", //
-            "", //
-            "", //
-            "", //
-            "", //
-            "", //
 
-            /*
-Indiana
-James Baird
-Jim Banks
-Trey 
-Greg 
-Jackie 
+            //KS
+            "E000298", //Estes
 
-Iowa
-Steve King
+            //LA
+            "H001077", //Higgins
+            "J000299", //Johnson
+            "S001176", //Scalise
 
-Kansas
-Ron Estes
-Roger Marshall
+            //MD
+            "H001052", //Harris
 
-Louisiana
-Ralph Abraham
-Clay Higgins
-Mike Johnson
-Steve Scalise
+            //MI
+            "B001301", //Bergman
+            "H001058", //Huizenga
+            "M001194", //Moolenaar
+            "W000798", //Walberg
 
-Maryland
-Andy Harris
+            //MN
+            "E000294", //Emmer
+            "H001088", //Hagedorn
+            "S001212", //Stauber
 
-Michigan
-Jack Bergman
-Bill Huizenga
-John Moolenaar
-Tim Walberg
+            //MS
+            "G000591", //Guest
+            "K000388", //Kelly
+            "P000601", //Palazzo
 
-Minnesota
-Tom Emmer
-Jim Hagedorn
-Pete Stauber
+            //MO
+            "G000546", //Sam Graves
+            "H001053", //Vicky Hartzler
+            "L000576", //Billy Long
+            "L000569", //Blaine Luetkemeyer
+            "S001195", //Jason Smith
+            "W000812", //Ann Wagner
 
-Mississippi
-Michael Guest
-Trent Kelly
-Steven Palazzo
+            //NE
+            "F000449", //Jeff Fortenberry
+            "S001172", //Adrian Smith
 
-Missouri
-Sam Graves
-Vicky Hartzler
-Billy Long
-Blaine Luetkemeyer
-Jason Smith
-Ann Wagner
+            //NJ
+            "V000133", //Jefferson Van Drew
 
-Montana
-Greg Gianforte
+            //NY
+            "S001196", //Elise Stefanik
+            "Z000017", //Lee Zeldin
 
-Nebraska
-Jeff Fortenberry
-Adrian Smith
+            //NC
+            "B001311", //Dan Bishop
+            "B001305", //Ted Budd
+            "F000450", //Virginia Foxx
+            "H001067", //Richard Hudson
+            "M001210", //Greg Murphy
+            "R000603", //David Rouzer
 
-New Jersey
-Jefferson Van Drew
+            //OH
+            "G000563", //Bob Gibbs
+            "J000292", //Bill Johnson
+            "J000289", //Jim Jordan
+            "L000566", //Robert E. Latta
+            "W000815", //Brad Wenstrup
 
-New York
-Elise Stefanik
-Lee Zeldin
+            //OK
+            "H001082", //Kevin Hern
+            "M001190", //Markwayne Mullin
 
-North Carolina
-Dan Bishop
-Ted Budd
-Virginia Foxx
-Richard Hudson
-Greg Murphy
-David Rouzer
-Mark Walker
+            //PA
+            "J000302", //John Joyce
+            "K000395", //Fred Keller
+            "K000376", //Mike Kelly
+            "M001204", //Daniel Meuser
+            "P000605", //Scott Perry
+            "R000610", //Guy Reschenthaler
+            "T000467", //Glenn Thompson
 
-Ohio
-Bob Gibbs
-Bill Johnson
-Jim Jordan
-Robert E. Latta
-Brad Wenstrup
+            //SC
+            "D000615", //Jeffrey Duncan
+            "N000190", //Ralph Norman
+            "R000597", //Tom Rice
+            "T000480", //William Timmons
+            "W000795", //Joe Wilson
 
-Oklahoma
-Kevin Hern
-Markwayne Mullin
+            //TN
+            "B001309", //Tim Burchett
+            "D000616", //Scott DesJarlais
+            "F000459", //Chuck Fleischmann
+            "G000590", //Mike Green
+            "K000392", //David Kustoff
+            "R000612", //John Rose
 
-Pennsylvania
-John Joyce
-Fred Keller
-Mike Kelly
-Daniel Meuser
-Scott Perry
-Guy Reschenthaler
-Glenn Thompson
+            //TX
+            "A000375", //Jodey Arrington
+            "B001291", //Brian Babin
+            "B000755", //Kevin Brady
+            "B001248", //Michael C. Burgess
+            "C001115", //Michael Cloud
+            "C001120", //Dan Crenshaw
+            "G000552", //Louie Gohmert
+            "G000589", //Lance Gooden
+            "W000814", //Randy Weber
+            "W000816", //Roger Williams
+            "W000827", //Ron Wright
 
-South Carolina
-Jeffrey Duncan
-Ralph Norman
-Tom Rice
-William Timmons
-Joe Wilson
+            //VA
+            "C001118", //Ben Cline
+            "G000568", //Morgan Griffith
+            "W000804", //Robert J. Wittman
 
-Tennessee
-Tim Burchett
-Scott DesJarlais
-Chuck Fleischmann
-Mike Green
-David Kustoff
-John Rose
+            //WA
+            "M001159", //Cathy McMorris Rodgers
+            "N000189", //Dan Newhouse
 
-Texas
-Jodey Arrington
-Brian Babin
-Kevin Brady
-Michael C. Burgess
-Michael Cloud
-K. Michael Conaway
-Dan Crenshaw
-Bill Flores
-Louie Gohmert
-Lance Gooden
-Kenny Marchant
-Randy Weber
-Roger Williams
-Ron Wright
+            //WV
+            "M001205", //Carol Miller
+            "M001195", //Alex Mooney
 
-Virginia
-Ben Cline
-Morgan Griffith
-Robert J. Wittman
-
-Washington
-Cathy McMorris Rodgers
-Dan Newhouse
-
-West Virginia
-Carol Miller
-Alex Mooney
-
-Wisconsin
-Tom Tiffany
-            */
+            //WI
+            "T000165", //Tom Tiffany
         };
 
         /// <summary>
