@@ -46,9 +46,72 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
         /// </summary>
         private readonly ILogger<App> _logger;
 
+        //https://www.mercurynews.com/2020/12/12/list-the-126-congress-members-19-states-and-2-imaginary-states-that-backed-texas-suit-over-trump-defeat/
         private readonly IList<string> _bannedMemberIds = new List<string>()
         {
+            //AL
+            "A000055", //Aderholt
+            "B001274", //Brooksa
+            "P000609", //Palmer
+            "R000575", //Rogers
 
+            //AZ
+            "B001302", //Biggs
+            "L000589", //Lesko
+
+            //AR
+            "C001087", //Crawford
+
+            //CA
+            "C000059", //Calvert
+            "L000578", //LaMalfa
+            "M001165", //McCarthy
+            "M001177", //McClintock
+
+            //CO
+            "B001297", //Buck
+            "L000564", //Lamborn
+
+            //FL
+            "B001257", //Bilirakis
+            "D000600", //Diaz-Balart
+            "D000628", //Dunn
+            "G000578", //Gaetz
+            "P000599", //Posey
+            "R000609", //Rutherford
+            "S001214", //Steube
+            "W000823", //Waltz
+            "W000806", //Webster
+
+            //GA
+            "A000372", //Allen
+            "C001103", //Carter
+            "F000465", //Ferguson
+            "H001071", //Hice
+            "L000583", //Loudermilk
+            "S001189", //Scott
+
+            //Id
+            "F000469", //Fulcher
+            "S001148", //Simpson
+
+            //IL
+            "B001295", //Boat
+            "L000585", //LaHood
+
+            //IN
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
+            "", //
         };
 
         /// <summary>
