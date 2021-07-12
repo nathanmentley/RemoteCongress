@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteCongress.Server.DAL.InMemory</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock">
+            <summary>
+            A simple class to exist as a block inside a blockchain.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Id">
+            <summary>
+            The unique Identifier from the block.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Timestamp">
+            <summary>
+            A UTC timestamp for when the block was created.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.LastBlockHash">
+            <summary>
+            The <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Hash"/> of the previous <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/> in the <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Content">
+            <summary>
+            The raw content of the block.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Hash">
+            <summary>
+            The SHA256 hash of the concatinated:
+                * <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Id"/>
+                * <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Timestamp"/>
+                * <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.LastBlockHash"/>
+                * <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Content"/>
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.MediaType">
+            <summary>
+            The MediaType of <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Content"/>.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.IsValid">
+            <summary>
+            An <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/> is valid if the <see cref="P:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.Hash"/> equals the result from <see cref="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.GenerateHash"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.#ctor(RemoteCongress.Server.DAL.InMemory.InMemoryBlock,System.String,RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="previousBlock">
+            The previous <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/> in the <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain"/>.
+            </param>
+            <param name="content">
+            The content to be stored in the <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/>.
+            </param>
+            <param name="mediaType">
+            The <see cref="T:RemoteCongress.Common.RemoteCongressMediaType"/> of the block.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <remarks>
+            This private constructor is used to generate the Genisys block.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.GenerateHash">
+            <summary>
+            Generates a Hash based on the block content.
+            </summary>
+            <returns>
+            A SHA256 Hash for the current <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/> state.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlock.CreateGenisysBlock">
+            <summary>
+            Logic to generate a root <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/>.
+            </summary>
+            <returns>
+            A special <see cref="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlock"/> that can be used as the root of a blockchain.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain">
+            <summary>
+            A simple proof of concept in memory blockchain implementation.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain.GenerateGenisysBlock">
+            <summary>
+            Creates a genisys block
+            </summary>
+            <returns>
+            The genisys block
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchain.GenerateBlock(RemoteCongress.Server.DAL.InMemory.InMemoryBlock,System.String,RemoteCongress.Common.RemoteCongressMediaType)">
+            <summary>
+            Creates a new block
+            </summary>
+            <param name="last">
+            The previous block
+            </param>
+            <param name="content">
+            The content of the block
+            </param>
+            <param name="mediaType">
+            The mediatype of the block content
+            </param>
+            <returns>
+            The created block
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient">
+            <summary>
+            An In Memory implementation of <see cref="T:RemoteCongress.Common.Repositories.IDataClient"/> for testing.
+            </summary>
+            <remarks>
+            This data store is not distributed, and since it's in memory it's also not immutable.
+                It is only useful for testing code and validating the layers above this.
+                It should not be used for a production version.
+            
+                This implementation is also pretty naive. It's really only useful for development testing.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.#ctor(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Serialization.ICodec{RemoteCongress.Common.SignedData}})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="codecs">
+            The <see cref="T:RemoteCongress.Common.Serialization.ICodec`1"/> to use for <see cref="T:RemoteCongress.Common.SignedData"/> data.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="codecs"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.AppendToChain(RemoteCongress.Common.ISignedData,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new block containing the verified content in <paramref name="data"/> in the blockchain.
+            </summary>
+            <param name="data">
+            The signed and verified data structure to store in the blockchain.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            The unique id of the stored block.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchFromChain(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Fetches the verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain by block id.
+            </summary>
+            <param name="id">
+            The unique block id to pull verified data from.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Server.DAL.InMemory.InMemoryBlockchainClient.FetchAllFromChain(System.Collections.Generic.IEnumerable{RemoteCongress.Common.Repositories.Queries.IQuery},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all matching verified data in the form of <see cref="T:RemoteCongress.Common.ISignedData"/> from the blockchain.
+            </summary>
+            <param name="query">
+            The query to pull data by.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation requests.
+            </param>
+            <returns>
+            An <see cref="T:RemoteCongress.Common.ISignedData"/> instance containing the block data.
+            </returns>
+        </member>
+    </members>
+</doc>

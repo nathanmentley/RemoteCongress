@@ -1,0 +1,505 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteCongress.Utils.DataSeeder</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteCongress.Utils.DataSeeder.App">
+            <summary>
+            Application logic.
+            </summary>
+            <remarks>
+            This impl is essentially glue code that ties an <see cref="T:RemoteCongress.Utils.DataSeeder.IDataProvider"/>, and an <see cref="T:RemoteCongress.Client.IRemoteCongressClient"/> to seed data. 
+            </remarks>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.App._adminPrivateKey">
+            <summary>
+            The "admin" private key to seed members
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.App._adminPublicKey">
+            <summary>
+            The "admin" public key to seed members
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.App._client">
+            <summary>
+            The <see cref="T:RemoteCongress.Client.IRemoteCongressClient"/> to seed against.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.App._dataProviders">
+            <summary>
+            The <see cref="T:RemoteCongress.Utils.DataSeeder.IDataProvider"/> to load data from.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.App._logger">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to log against.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.App.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Utils.DataSeeder.App},System.String,System.String,RemoteCongress.Client.IRemoteCongressClient,System.Collections.Generic.IEnumerable{RemoteCongress.Utils.DataSeeder.IDataProvider})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to log against.
+            </param>
+            <param name="adminPrivateKey">
+            The "admin" private key to seed members
+            </param>
+            <param name="adminPublicKey">
+            The "admin" public key to seed members
+            </param>
+            <param name="client">
+            The <see cref="T:RemoteCongress.Client.IRemoteCongressClient"/> to seed against.
+            </param>
+            <param name="dataProviders">
+            All the <see cref="T:RemoteCongress.Utils.DataSeeder.IDataProvider"/> to load data from.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="adminPrivateKey"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="adminPublicKey"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="client"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="dataProviders"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.App.Run(System.Threading.CancellationToken)">
+            <summary>
+            Runs the seed data logic.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+            <returns>
+            The result code
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.App.Logic(System.Threading.CancellationToken)">
+            <summary>
+            Runs the logic to seed data.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.App.SeedBill(RemoteCongress.Common.Bill,System.String,RemoteCongress.Utils.DataSeeder.IDataProvider,System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="bill">
+            
+            </param>
+            <param name="id">
+            
+            </param>
+            <param name="dataProvider">
+            
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.AppResultCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.AppResultCode.Success">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.AppResultCode.OperationCancelled">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.AppResultCode.UnknownError">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.HouseDataProvider">
+            <summary>
+            A <see cref="T:RemoteCongress.Utils.DataSeeder.IDataProvider"/> for fetching data for the US House from xml files.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.HouseDataProvider._keys">
+            <summary>
+            A local in memory cache of members, and their pub/priv keys.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.HouseDataProvider._keyGenerator">
+            <summary>
+            A <see cref="T:RemoteCongress.Utils.DataSeeder.IKeyGenerator"/> to create keys for seeded <see cref="T:RemoteCongress.Common.Member"/>s.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.HouseDataProvider._congress">
+            <summary>
+            The congress number to seed.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.HouseDataProvider._session">
+            <summary>
+            The session number to seed.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.HouseDataProvider.#ctor(RemoteCongress.Utils.DataSeeder.IKeyGenerator,System.Int32,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="keyGenerator">
+            A <see cref="T:RemoteCongress.Utils.DataSeeder.IKeyGenerator"/> to create keys for seeded <see cref="T:RemoteCongress.Common.Member"/>s.
+            </param>
+            <param name="congress">
+            The congress number to seed.
+            </param>
+            <param name="session">
+            The session number to seed.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="keyGenerator"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetMembers(System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Member"/>s to seed.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Member"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetBills(System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Bill"/>s to seed.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Bill"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.HouseDataProvider.GetVotes(System.String,RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Vote"/>s for a <see cref="T:RemoteCongress.Common.Bill"/> to seed.
+            </summary>
+            <param name="id">
+            The unique id of the bill.
+            </param>
+            <param name="bill">
+            The seeded <see cref="T:RemoteCongress.Common.Bill"/> wrapped in a <see cref="T:RemoteCongress.Common.VerifiedData`1"/>.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Vote"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.HouseDataProvider.BuildVote(RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Xml.Linq.XElement)">
+            <summary>
+            Generates a <see cref="T:RemoteCongress.Common.Vote"/> poco.
+            </summary>
+            <param name="bill">
+            The <see cref="T:RemoteCongress.Common.Bill"/> related to the <see cref="T:RemoteCongress.Common.Vote"/>.
+            </param>
+            <param name="recordedVote">
+            The XML element containing the vote data.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Vote"/> poco to use.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.IApp">
+            <summary>
+            Application logic.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.IApp.Run(System.Threading.CancellationToken)">
+            <summary>
+            Runs application logic.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+            <returns>
+            The result code from the logic.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.IDataProvider">
+            <summary>
+            An interface that defines a type that's able to provide data for seeding
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.IDataProvider.GetMembers(System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Member"/>s to seed.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Member"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.IDataProvider.GetBills(System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Bill"/>s to seed.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Bill"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.IDataProvider.GetVotes(System.String,RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Vote"/>s for a <see cref="T:RemoteCongress.Common.Bill"/> to seed.
+            </summary>
+            <param name="id">
+            The unique id of the bill.
+            </param>
+            <param name="bill">
+            The seeded <see cref="T:RemoteCongress.Common.Bill"/> wrapped in a <see cref="T:RemoteCongress.Common.VerifiedData`1"/>.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Vote"/>s to seed.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.IKeyGenerator">
+            <summary>
+            An interface that abstracts the generation of key pairs.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.IKeyGenerator.GenerateKeys(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Generates a public and private key pair.
+            </summary>
+            <param name="bit">
+            How many bits should the key be.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.KeyGenerator">
+            <summary>
+            An implementation of <see cref="T:RemoteCongress.Utils.DataSeeder.IKeyGenerator"/> that'll return RSA key pairs.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.KeyGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{RemoteCongress.Utils.DataSeeder.KeyGenerator})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to log against.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="logger"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.KeyGenerator.GenerateKeys(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Generates a public and private key pair.
+            </summary>
+            <param name="bit">
+            How many bits should the key be.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to handle cancellation.
+            </param>
+            <exception cref="T:System.OperationCanceledException">
+            Thrown if <paramref name="cancellationToken"/> is cancelled.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if <paramref name="bit"/> is less than 1.
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            Thrown if <paramref name="cancellationToken"/> is cancelled.
+            </exception>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.Program">
+            <summary>
+            Entry point class.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.Program.AdminPrivateKey">
+            <remarks>
+            Throw away private / pub key
+            </remarks>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.Program.AdminPublicKey">
+            <remarks>
+            Throw away private / pub key
+            </remarks>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.Program.Congress">
+            <summary>
+            The congress to seed.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.Program.Session">
+            <summary>
+            The session to seed.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.Program.Hostname">
+            <summary>
+            The hardcoded hostname to seed against
+            </summary>
+            <remarks>
+            TODO: Provide this from the cli.
+            </remarks>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.Program.Protocol">
+            <summary>
+            The hardcoded protocol to seed against
+            </summary>
+            <remarks>
+            TODO: Provide this from the cli.
+            </remarks>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.Program.Main(System.String[])">
+            <summary>
+            Runs the application logic
+            </summary>
+            <param name="args">
+            Command line arguments
+            </param>
+            <returns>
+            Result code
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.Program.GetServiceProvider(RemoteCongress.Client.DAL.Http.ClientConfig)">
+            <summary>
+            Sets up the <see cref="T:Microsoft.Extensions.DependencyInjection.ServiceProvider"/> and registers the Remote Congress client in DI.
+            </summary>
+            <param name="config">
+            The <see cref="T:RemoteCongress.Client.DAL.Http.ClientConfig"/> to use to configure the RemoteCongress client instances.
+            </param>
+            <returns>
+            The DI <see cref="T:Microsoft.Extensions.DependencyInjection.ServiceProvider"/>.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.Program.GetCancellationTokenSource">
+            <summary>
+            Sets up the <see cref="T:System.Threading.CancellationTokenSource"/> for the cli application.
+            </summary>
+            <returns>
+            A <see cref="T:System.Threading.CancellationTokenSource"/> linked to the application cancellation event.
+            </returns>
+        </member>
+        <member name="T:RemoteCongress.Utils.DataSeeder.SenateDataProvider">
+            <summary>
+            A <see cref="T:RemoteCongress.Utils.DataSeeder.IDataProvider"/> for fetching data for the US Senate from xml files.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.SenateDataProvider._keys">
+            <summary>
+            A local in memory cache of members, and their pub/priv keys.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.SenateDataProvider._keyGenerator">
+            <summary>
+            A <see cref="T:RemoteCongress.Utils.DataSeeder.IKeyGenerator"/> to create keys for seeded <see cref="T:RemoteCongress.Common.Member"/>s.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.SenateDataProvider._congress">
+            <summary>
+            The congress number to seed.
+            </summary>
+        </member>
+        <member name="F:RemoteCongress.Utils.DataSeeder.SenateDataProvider._session">
+            <summary>
+            The session number to seed.
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.SenateDataProvider.#ctor(RemoteCongress.Utils.DataSeeder.IKeyGenerator,System.Int32,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="keyGenerator">
+            A <see cref="T:RemoteCongress.Utils.DataSeeder.IKeyGenerator"/> to create keys for seeded <see cref="T:RemoteCongress.Common.Member"/>s.
+            </param>
+            <param name="congress">
+            The congress number to seed.
+            </param>
+            <param name="session">
+            The session number to seed.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="keyGenerator"/> is null.
+            </exception>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.SenateDataProvider.GetMembers(System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Member"/>s to seed.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Member"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.SenateDataProvider.GetBills(System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Bill"/>s to seed.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Bill"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.SenateDataProvider.GetVotes(System.String,RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Threading.CancellationToken)">
+            <summary>
+            Fetches all <see cref="T:RemoteCongress.Common.Vote"/>s for a <see cref="T:RemoteCongress.Common.Bill"/> to seed.
+            </summary>
+            <param name="id">
+            The unique id of the bill.
+            </param>
+            <param name="bill">
+            The seeded <see cref="T:RemoteCongress.Common.Bill"/> wrapped in a <see cref="T:RemoteCongress.Common.VerifiedData`1"/>.
+            </param>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> that triggers a cancellation.
+            </param>
+            <returns>
+            A collection of <see cref="T:RemoteCongress.Common.Vote"/>s to seed.
+            </returns>
+        </member>
+        <member name="M:RemoteCongress.Utils.DataSeeder.SenateDataProvider.BuildVote(RemoteCongress.Common.VerifiedData{RemoteCongress.Common.Bill},System.Xml.Linq.XElement)">
+            <summary>
+            Generates a <see cref="T:RemoteCongress.Common.Vote"/> poco.
+            </summary>
+            <param name="bill">
+            The <see cref="T:RemoteCongress.Common.Bill"/> related to the <see cref="T:RemoteCongress.Common.Vote"/>.
+            </param>
+            <param name="member">
+            The XML element containing the vote data.
+            </param>
+            <returns>
+            The <see cref="T:RemoteCongress.Common.Vote"/> poco to use.
+            </returns>
+        </member>
+    </members>
+</doc>

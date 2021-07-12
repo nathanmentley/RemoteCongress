@@ -259,14 +259,8 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             _client = client;
 
             Engine.Razor.Compile(
-                Templates.BillTemplate,
-                Templates.BillTemplateName,
-                typeof(BillResult)
-            );
-
-            Engine.Razor.Compile(
-                Templates.IndexTemplate,
-                Templates.IndexTemplateName,
+                IndexPageTemplate.Content,
+                IndexPageTemplate.Name,
                 typeof(IEnumerable<BillResult>)
             );
         }
@@ -422,28 +416,15 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
                 );
             }
 
-            await RenderBillPage(billResult, cancellationToken);
-
             return billResult;
         }
-
-        private async Task RenderBillPage(
-            BillResult billResult,
-            CancellationToken cancellationToken
-        ) =>
-            await RenderToFile(
-                Templates.BillTemplateName,
-                $"data/{billResult.BillId}.html",
-                billResult,
-                cancellationToken
-            );
 
         private async Task RenderIndexPage(
             IEnumerable<BillResult> billResults,
             CancellationToken cancellationToken
         ) =>
             await RenderToFile(
-                Templates.IndexTemplateName,
+                IndexPageTemplate.Name,
                 $"data/index.html",
                 billResults,
                 cancellationToken
