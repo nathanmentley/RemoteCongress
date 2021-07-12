@@ -79,6 +79,7 @@ namespace RemoteCongress.Common.Serialization
                 FirstName = jToken.Value<string>("firstName"),
                 LastName = jToken.Value<string>("lastName"),
                 Seat = jToken.Value<string>("seat"),
+                Chamber = jToken.Value<string>("chamber"),
                 Party = jToken.Value<string>("party"),
                 PublicKey = jToken.Value<string>("publicKey"),
             };
@@ -101,6 +102,7 @@ namespace RemoteCongress.Common.Serialization
                 .WithData("firstName", data.FirstName)
                 .WithData("lastName", data.LastName)
                 .WithData("seat", data.Seat)
+                .WithData("chamber", data.Chamber)
                 .WithData("party", data.Party)
                 .WithData("publicKey", data.PublicKey)
                 .Build();

@@ -23,6 +23,7 @@
   - [GetPreferredMediaType()](#M-RemoteCongress-Common-Serialization-BaseJsonCodec`1-GetPreferredMediaType 'RemoteCongress.Common.Serialization.BaseJsonCodec`1.GetPreferredMediaType')
 - [BaseRemoteCongressException](#T-RemoteCongress-Common-Exceptions-BaseRemoteCongressException 'RemoteCongress.Common.Exceptions.BaseRemoteCongressException')
 - [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
+  - [Chamber](#P-RemoteCongress-Common-Bill-Chamber 'RemoteCongress.Common.Bill.Chamber')
   - [Content](#P-RemoteCongress-Common-Bill-Content 'RemoteCongress.Common.Bill.Content')
   - [Title](#P-RemoteCongress-Common-Bill-Title 'RemoteCongress.Common.Bill.Title')
 - [BillIdQuery](#T-RemoteCongress-Common-Repositories-Queries-BillIdQuery 'RemoteCongress.Common.Repositories.Queries.BillIdQuery')
@@ -56,6 +57,9 @@
   - [#ctor(message,innerException)](#M-RemoteCongress-Common-Exceptions-BlockStorageException-#ctor-System-String,System-Exception- 'RemoteCongress.Common.Exceptions.BlockStorageException.#ctor(System.String,System.Exception)')
   - [#ctor(message)](#M-RemoteCongress-Common-Exceptions-BlockStorageException-#ctor-System-String- 'RemoteCongress.Common.Exceptions.BlockStorageException.#ctor(System.String)')
   - [#ctor()](#M-RemoteCongress-Common-Exceptions-BlockStorageException-#ctor 'RemoteCongress.Common.Exceptions.BlockStorageException.#ctor')
+- [ChamberQuery](#T-RemoteCongress-Common-Repositories-Queries-ChamberQuery 'RemoteCongress.Common.Repositories.Queries.ChamberQuery')
+  - [#ctor(chamber)](#M-RemoteCongress-Common-Repositories-Queries-ChamberQuery-#ctor-System-String- 'RemoteCongress.Common.Repositories.Queries.ChamberQuery.#ctor(System.String)')
+  - [Chamber](#P-RemoteCongress-Common-Repositories-Queries-ChamberQuery-Chamber 'RemoteCongress.Common.Repositories.Queries.ChamberQuery.Chamber')
 - [ICodec\`1](#T-RemoteCongress-Common-Serialization-ICodec`1 'RemoteCongress.Common.Serialization.ICodec`1')
   - [CanHandle(mediaType)](#M-RemoteCongress-Common-Serialization-ICodec`1-CanHandle-RemoteCongress-Common-RemoteCongressMediaType- 'RemoteCongress.Common.Serialization.ICodec`1.CanHandle(RemoteCongress.Common.RemoteCongressMediaType)')
   - [Decode(mediaType,data)](#M-RemoteCongress-Common-Serialization-ICodec`1-Decode-RemoteCongress-Common-RemoteCongressMediaType,System-IO-Stream- 'RemoteCongress.Common.Serialization.ICodec`1.Decode(RemoteCongress.Common.RemoteCongressMediaType,System.IO.Stream)')
@@ -110,6 +114,7 @@
   - [WithData(key,jToken)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithData-System-String,Newtonsoft-Json-Linq-JToken- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithData(System.String,Newtonsoft.Json.Linq.JToken)')
   - [WithObject(key,jObject)](#M-RemoteCongress-Common-Serialization-JObjectBuilder-WithObject-System-String,Newtonsoft-Json-Linq-JObject- 'RemoteCongress.Common.Serialization.JObjectBuilder.WithObject(System.String,Newtonsoft.Json.Linq.JObject)')
 - [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member')
+  - [Chamber](#P-RemoteCongress-Common-Member-Chamber 'RemoteCongress.Common.Member.Chamber')
   - [FirstName](#P-RemoteCongress-Common-Member-FirstName 'RemoteCongress.Common.Member.FirstName')
   - [Id](#P-RemoteCongress-Common-Member-Id 'RemoteCongress.Common.Member.Id')
   - [LastName](#P-RemoteCongress-Common-Member-LastName 'RemoteCongress.Common.Member.LastName')
@@ -546,6 +551,13 @@ RemoteCongress.Common
 ##### Summary
 
 A model representing a bill
+
+<a name='P-RemoteCongress-Common-Bill-Chamber'></a>
+### Chamber `property`
+
+##### Summary
+
+The Chamber related to this [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill').
 
 <a name='P-RemoteCongress-Common-Bill-Content'></a>
 ### Content `property`
@@ -993,6 +1005,37 @@ Constructor
 ##### Parameters
 
 This constructor has no parameters.
+
+<a name='T-RemoteCongress-Common-Repositories-Queries-ChamberQuery'></a>
+## ChamberQuery `type`
+
+##### Namespace
+
+RemoteCongress.Common.Repositories.Queries
+
+##### Summary
+
+An [IQuery](#T-RemoteCongress-Common-Repositories-Queries-IQuery 'RemoteCongress.Common.Repositories.Queries.IQuery') to filter on Chamber.
+
+<a name='M-RemoteCongress-Common-Repositories-Queries-ChamberQuery-#ctor-System-String-'></a>
+### #ctor(chamber) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| chamber | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The Chamber to filter on. |
+
+<a name='P-RemoteCongress-Common-Repositories-Queries-ChamberQuery-Chamber'></a>
+### Chamber `property`
+
+##### Summary
+
+The Chamber to filter on.
 
 <a name='T-RemoteCongress-Common-Serialization-ICodec`1'></a>
 ## ICodec\`1 `type`
@@ -1811,6 +1854,13 @@ RemoteCongress.Common
 ##### Summary
 
 A model representing a voting member
+
+<a name='P-RemoteCongress-Common-Member-Chamber'></a>
+### Chamber `property`
+
+##### Summary
+
+The Chamber related to this [Member](#T-RemoteCongress-Common-Member 'RemoteCongress.Common.Member').
 
 <a name='P-RemoteCongress-Common-Member-FirstName'></a>
 ### FirstName `property`

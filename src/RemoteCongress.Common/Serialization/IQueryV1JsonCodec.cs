@@ -82,6 +82,9 @@ namespace RemoteCongress.Common.Serialization
                 "publicKey" => new PublicKeyQuery(
                     data.Value<string>("publicKey")
                 ),
+                "chamber" => new ChamberQuery(
+                    data.Value<string>("chamber")
+                ),
                 "opinion" => new OpinionQuery(
                     data.Value<bool>("opinion")
                 ),
@@ -114,6 +117,10 @@ namespace RemoteCongress.Common.Serialization
                 case PublicKeyQuery publicKeyQuery:
                     jObject["_type"] = "publicKey";
                     jObject["publicKey"] = publicKeyQuery.PublicKey;
+                    break;
+                case ChamberQuery chamberQuery:
+                    jObject["_type"] = "chamber";
+                    jObject["chamber"] = chamberQuery.Chamber;
                     break;
                 case OpinionQuery opinionQuery:
                     jObject["_type"] = "opinion";

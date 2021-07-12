@@ -46,6 +46,11 @@ namespace RemoteCongress.Common
         public string Seat { get; set; }
 
         /// <summary>
+        /// The Chamber related to this <see cref="Member"/>.
+        /// </summary>
+        public string Chamber { get; set; }
+
+        /// <summary>
         /// The member's party
         /// </summary>
         public string Party { get; set; }

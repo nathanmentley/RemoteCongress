@@ -319,7 +319,13 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             IList<string> bannedKeys = GetBannedKeys(members);
 
             IAsyncEnumerable<VerifiedData<Bill>> bills =
-                _client.GetBills(new List<IQuery>(), cancellationToken);
+                _client.GetBills(
+                    new List<IQuery>()
+                    {
+                        new ChamberQuery("house")
+                    },
+                    cancellationToken
+                );
 
             int count = 0;
             List<BillResult> billResults = new List<BillResult>();
@@ -352,7 +358,13 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             IDictionary<string, Member> result = new Dictionary<string, Member>();
 
             IAsyncEnumerable<VerifiedData<Member>> members =
-                _client.GetMembers(new List<IQuery>(), cancellationToken);
+                _client.GetMembers(
+                    new List<IQuery>()
+                    {
+                        new ChamberQuery("house")
+                    },
+                    cancellationToken
+                );
 
             await foreach(VerifiedData<Member> member in members)
             {

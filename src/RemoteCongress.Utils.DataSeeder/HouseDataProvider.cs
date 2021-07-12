@@ -114,6 +114,7 @@ namespace RemoteCongress.Utils.DataSeeder
                     FirstName = houseData.Element("member-info").Element("firstname").Value,
                     LastName = houseData.Element("member-info").Element("lastname").Value,
                     Seat = houseData.Element("statedistrict").Value,
+                    Chamber = "house",
                     Party = houseData.Element("member-info").Element("party").Value,
                     PublicKey = publicKey
                 };
@@ -168,7 +169,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     new Bill()
                     {
                         Title = title,
-                        Content = content
+                        Content = content,
+                        Chamber = "house"
                     },
                     id
                 );

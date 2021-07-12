@@ -34,5 +34,10 @@ namespace RemoteCongress.Common
         /// The content of the bill.
         /// </summary>
         public string Content { get; set; }
+
+        /// <summary>
+        /// The Chamber related to this <see cref="Bill"/>.
+        /// </summary>
+        public string Chamber { get; set; }
     }
 }

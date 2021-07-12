@@ -114,6 +114,7 @@ namespace RemoteCongress.Utils.DataSeeder
                     FirstName = senatorData.Element("name").Element("first").Value,
                     LastName = senatorData.Element("name").Element("last").Value,
                     Seat = senatorData.Element("state").Value + senatorData.Element("stateRank").Value,
+                    Chamber = "senate",
                     Party = senatorData.Element("party").Value,
                     PublicKey = publicKey
                 };
@@ -155,7 +156,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     new Bill()
                     {
                         Title = voteData.Element("vote_question_text").Value,
-                        Content = voteData.Element("vote_document_text").Value
+                        Content = voteData.Element("vote_document_text").Value,
+                        Chamber = "senate"
                     },
                     voteData.Element("vote_number").Value.PadLeft(5, '0')
                 );

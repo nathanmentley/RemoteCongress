@@ -77,6 +77,7 @@ namespace RemoteCongress.Common.Serialization
             {
                 Title = data.Value<string>("title"),
                 Content = data.Value<string>("content"),
+                Chamber = data.Value<string>("chamber"),
             };
 
         /// <summary>
@@ -95,6 +96,7 @@ namespace RemoteCongress.Common.Serialization
             new JObjectBuilder()
                 .WithData("title", data.Title)
                 .WithData("content", data.Content)
+                .WithData("chamber", data.Chamber)
                 .Build();
     }
 }

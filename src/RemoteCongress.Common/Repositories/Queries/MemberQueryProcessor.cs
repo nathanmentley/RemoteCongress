@@ -127,6 +127,8 @@ namespace RemoteCongress.Common.Repositories.Queries
                     true,
                 PublicKeyQuery publicKey =>
                     string.Equals(publicKey.PublicKey, signedData.PublicKey, StringComparison.Ordinal),
+                ChamberQuery chamberQuery =>
+                    string.Equals(chamberQuery.Chamber, data.Chamber, StringComparison.Ordinal),
                 BillIdQuery _ =>
                     false,
                 OpinionQuery _ =>
