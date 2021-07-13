@@ -27,17 +27,19 @@
   - [AddVote(vote)](#M-RemoteCongress-Util-FilteredVoteGenerator-BillResult-AddVote-RemoteCongress-Util-FilteredVoteGenerator-VoteResult- 'RemoteCongress.Util.FilteredVoteGenerator.BillResult.AddVote(RemoteCongress.Util.FilteredVoteGenerator.VoteResult)')
 - [IApp](#T-RemoteCongress-Util-FilteredVoteGenerator-IApp 'RemoteCongress.Util.FilteredVoteGenerator.IApp')
   - [Run(cancellationToken)](#M-RemoteCongress-Util-FilteredVoteGenerator-IApp-Run-System-Threading-CancellationToken- 'RemoteCongress.Util.FilteredVoteGenerator.IApp.Run(System.Threading.CancellationToken)')
+- [IndexPageTemplate](#T-RemoteCongress-Util-FilteredVoteGenerator-IndexPageTemplate 'RemoteCongress.Util.FilteredVoteGenerator.IndexPageTemplate')
+  - [Content](#F-RemoteCongress-Util-FilteredVoteGenerator-IndexPageTemplate-Content 'RemoteCongress.Util.FilteredVoteGenerator.IndexPageTemplate.Content')
+  - [Name](#F-RemoteCongress-Util-FilteredVoteGenerator-IndexPageTemplate-Name 'RemoteCongress.Util.FilteredVoteGenerator.IndexPageTemplate.Name')
+- [PageModel](#T-RemoteCongress-Util-FilteredVoteGenerator-PageModel 'RemoteCongress.Util.FilteredVoteGenerator.PageModel')
+  - [#ctor()](#M-RemoteCongress-Util-FilteredVoteGenerator-PageModel-#ctor-System-Collections-Generic-IEnumerable{RemoteCongress-Util-FilteredVoteGenerator-BillResult},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Member}- 'RemoteCongress.Util.FilteredVoteGenerator.PageModel.#ctor(System.Collections.Generic.IEnumerable{RemoteCongress.Util.FilteredVoteGenerator.BillResult},System.Collections.Generic.IEnumerable{RemoteCongress.Common.Member})')
+  - [Bills](#P-RemoteCongress-Util-FilteredVoteGenerator-PageModel-Bills 'RemoteCongress.Util.FilteredVoteGenerator.PageModel.Bills')
+  - [IllegitamteMembers](#P-RemoteCongress-Util-FilteredVoteGenerator-PageModel-IllegitamteMembers 'RemoteCongress.Util.FilteredVoteGenerator.PageModel.IllegitamteMembers')
 - [Program](#T-RemoteCongress-Util-FilteredVoteGenerator-Program 'RemoteCongress.Util.FilteredVoteGenerator.Program')
   - [Hostname](#F-RemoteCongress-Util-FilteredVoteGenerator-Program-Hostname 'RemoteCongress.Util.FilteredVoteGenerator.Program.Hostname')
   - [Protocol](#F-RemoteCongress-Util-FilteredVoteGenerator-Program-Protocol 'RemoteCongress.Util.FilteredVoteGenerator.Program.Protocol')
   - [GetCancellationTokenSource()](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-GetCancellationTokenSource 'RemoteCongress.Util.FilteredVoteGenerator.Program.GetCancellationTokenSource')
   - [GetServiceProvider(config)](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-GetServiceProvider-RemoteCongress-Client-DAL-Http-ClientConfig- 'RemoteCongress.Util.FilteredVoteGenerator.Program.GetServiceProvider(RemoteCongress.Client.DAL.Http.ClientConfig)')
   - [Main(args)](#M-RemoteCongress-Util-FilteredVoteGenerator-Program-Main-System-String[]- 'RemoteCongress.Util.FilteredVoteGenerator.Program.Main(System.String[])')
-- [Templates](#T-RemoteCongress-Util-FilteredVoteGenerator-Templates 'RemoteCongress.Util.FilteredVoteGenerator.Templates')
-  - [BillTemplate](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplate 'RemoteCongress.Util.FilteredVoteGenerator.Templates.BillTemplate')
-  - [BillTemplateName](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplateName 'RemoteCongress.Util.FilteredVoteGenerator.Templates.BillTemplateName')
-  - [IndexTemplate](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplate 'RemoteCongress.Util.FilteredVoteGenerator.Templates.IndexTemplate')
-  - [IndexTemplateName](#F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplateName 'RemoteCongress.Util.FilteredVoteGenerator.Templates.IndexTemplateName')
 - [VoteResult](#T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult')
   - [IsInvalid](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-IsInvalid 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.IsInvalid')
   - [Member](#P-RemoteCongress-Util-FilteredVoteGenerator-VoteResult-Member 'RemoteCongress.Util.FilteredVoteGenerator.VoteResult.Member')
@@ -273,6 +275,67 @@ The result code from the logic.
 | ---- | ---- | ----------- |
 | cancellationToken | [System.Threading.CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') | A [CancellationToken](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Threading.CancellationToken 'System.Threading.CancellationToken') to handle cancellation. |
 
+<a name='T-RemoteCongress-Util-FilteredVoteGenerator-IndexPageTemplate'></a>
+## IndexPageTemplate `type`
+
+##### Namespace
+
+RemoteCongress.Util.FilteredVoteGenerator
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Util-FilteredVoteGenerator-IndexPageTemplate-Content'></a>
+### Content `constants`
+
+##### Summary
+
+
+
+<a name='F-RemoteCongress-Util-FilteredVoteGenerator-IndexPageTemplate-Name'></a>
+### Name `constants`
+
+##### Summary
+
+
+
+<a name='T-RemoteCongress-Util-FilteredVoteGenerator-PageModel'></a>
+## PageModel `type`
+
+##### Namespace
+
+RemoteCongress.Util.FilteredVoteGenerator
+
+##### Summary
+
+
+
+<a name='M-RemoteCongress-Util-FilteredVoteGenerator-PageModel-#ctor-System-Collections-Generic-IEnumerable{RemoteCongress-Util-FilteredVoteGenerator-BillResult},System-Collections-Generic-IEnumerable{RemoteCongress-Common-Member}-'></a>
+### #ctor() `constructor`
+
+##### Summary
+
+
+
+##### Parameters
+
+This constructor has no parameters.
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-PageModel-Bills'></a>
+### Bills `property`
+
+##### Summary
+
+The [BillResult](#T-RemoteCongress-Util-FilteredVoteGenerator-BillResult 'RemoteCongress.Util.FilteredVoteGenerator.BillResult')s loaded for this page model to render.
+
+<a name='P-RemoteCongress-Util-FilteredVoteGenerator-PageModel-IllegitamteMembers'></a>
+### IllegitamteMembers `property`
+
+##### Summary
+
+
+
 <a name='T-RemoteCongress-Util-FilteredVoteGenerator-Program'></a>
 ## Program `type`
 
@@ -354,45 +417,6 @@ Result code
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | args | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | Command line arguments |
-
-<a name='T-RemoteCongress-Util-FilteredVoteGenerator-Templates'></a>
-## Templates `type`
-
-##### Namespace
-
-RemoteCongress.Util.FilteredVoteGenerator
-
-##### Summary
-
-
-
-<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplate'></a>
-### BillTemplate `constants`
-
-##### Summary
-
-
-
-<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-BillTemplateName'></a>
-### BillTemplateName `constants`
-
-##### Summary
-
-
-
-<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplate'></a>
-### IndexTemplate `constants`
-
-##### Summary
-
-
-
-<a name='F-RemoteCongress-Util-FilteredVoteGenerator-Templates-IndexTemplateName'></a>
-### IndexTemplateName `constants`
-
-##### Summary
-
-
 
 <a name='T-RemoteCongress-Util-FilteredVoteGenerator-VoteResult'></a>
 ## VoteResult `type`

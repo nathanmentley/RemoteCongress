@@ -15,34 +15,38 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RemoteCongress.Common;
 
-namespace RemoteCongress.Common
+namespace RemoteCongress.Util.FilteredVoteGenerator
 {
     /// <summary>
-    /// A model representing a bill
+    /// 
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public sealed class Bill
+    public class PageModel
     {
         /// <summary>
-        /// The title of the bill.
+        /// The <see cref="BillResult"/>s loaded for this page model to render.
         /// </summary>
-        public string Title { get; set; }
+        public IEnumerable<BillResult> Bills { get; }
 
         /// <summary>
-        /// The content of the bill.
+        /// 
         /// </summary>
-        public string Content { get; set; }
+        public IEnumerable<Member> IllegitamteMembers { get; }
 
         /// <summary>
-        /// The Chamber related to this <see cref="Bill"/>.
+        /// 
         /// </summary>
-        public string Chamber { get; set; }
+        public PageModel(IEnumerable<BillResult> bills, IEnumerable<Member> illegitamteMembers)
+        {
+            Bills = bills?.OrderBy(bill => bill.Bill.Code) ??
+                throw new ArgumentNullException(nameof(bills));
 
-        /// <summary>
-        /// A unqiue code for this bill.
-        /// </summary>
-        public string Code { get; set; }
+            IllegitamteMembers = illegitamteMembers ??
+                throw new ArgumentNullException(nameof(illegitamteMembers));
+        }
     }
 }

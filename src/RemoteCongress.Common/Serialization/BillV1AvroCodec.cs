@@ -80,12 +80,14 @@ namespace RemoteCongress.Common.Serialization
             string title = decoder.ReadString();
             string content = decoder.ReadString();
             string chamber = decoder.ReadString();
+            string code = decoder.ReadString();
 
             return new Bill()
             {
                 Title = title,
                 Content = content,
-                Chamber = chamber
+                Chamber = chamber,
+                Code = code
             };
         }
 
@@ -110,6 +112,7 @@ namespace RemoteCongress.Common.Serialization
             encoder.WriteString(data.Title);
             encoder.WriteString(data.Content);
             encoder.WriteString(data.Chamber);
+            encoder.WriteString(data.Code);
         }
     }
 }

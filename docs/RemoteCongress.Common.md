@@ -24,6 +24,7 @@
 - [BaseRemoteCongressException](#T-RemoteCongress-Common-Exceptions-BaseRemoteCongressException 'RemoteCongress.Common.Exceptions.BaseRemoteCongressException')
 - [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill')
   - [Chamber](#P-RemoteCongress-Common-Bill-Chamber 'RemoteCongress.Common.Bill.Chamber')
+  - [Code](#P-RemoteCongress-Common-Bill-Code 'RemoteCongress.Common.Bill.Code')
   - [Content](#P-RemoteCongress-Common-Bill-Content 'RemoteCongress.Common.Bill.Content')
   - [Title](#P-RemoteCongress-Common-Bill-Title 'RemoteCongress.Common.Bill.Title')
 - [BillIdQuery](#T-RemoteCongress-Common-Repositories-Queries-BillIdQuery 'RemoteCongress.Common.Repositories.Queries.BillIdQuery')
@@ -558,6 +559,13 @@ A model representing a bill
 ##### Summary
 
 The Chamber related to this [Bill](#T-RemoteCongress-Common-Bill 'RemoteCongress.Common.Bill').
+
+<a name='P-RemoteCongress-Common-Bill-Code'></a>
+### Code `property`
+
+##### Summary
+
+A unqiue code for this bill.
 
 <a name='P-RemoteCongress-Common-Bill-Content'></a>
 ### Content `property`

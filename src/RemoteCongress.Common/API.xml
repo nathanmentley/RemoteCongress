@@ -24,6 +24,11 @@
             The Chamber related to this <see cref="T:RemoteCongress.Common.Bill"/>.
             </summary>
         </member>
+        <member name="P:RemoteCongress.Common.Bill.Code">
+            <summary>
+            A unqiue code for this bill.
+            </summary>
+        </member>
         <member name="T:RemoteCongress.Common.Encryption.RsaUtils">
             <summary>
             A simple utility class to handle RSA Signing and Verification

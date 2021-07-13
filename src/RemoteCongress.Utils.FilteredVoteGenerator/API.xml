@@ -169,6 +169,26 @@
             
             </summary>
         </member>
+        <member name="T:RemoteCongress.Util.FilteredVoteGenerator.PageModel">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Util.FilteredVoteGenerator.PageModel.Bills">
+            <summary>
+            The <see cref="T:RemoteCongress.Util.FilteredVoteGenerator.BillResult"/>s loaded for this page model to render.
+            </summary>
+        </member>
+        <member name="P:RemoteCongress.Util.FilteredVoteGenerator.PageModel.IllegitamteMembers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:RemoteCongress.Util.FilteredVoteGenerator.PageModel.#ctor(System.Collections.Generic.IEnumerable{RemoteCongress.Util.FilteredVoteGenerator.BillResult},System.Collections.Generic.IEnumerable{RemoteCongress.Common.Member})">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:RemoteCongress.Util.FilteredVoteGenerator.Program">
             <summary>
             Entry point class.

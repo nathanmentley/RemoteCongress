@@ -170,7 +170,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     {
                         Title = title,
                         Content = content,
-                        Chamber = "house"
+                        Chamber = "house",
+                        Code = id
                     },
                     id
                 );

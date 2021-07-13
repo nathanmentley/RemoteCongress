@@ -196,7 +196,7 @@ namespace RemoteCongress.Client.DAL.Http
                 Content = streamContent
             };
 
-            using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+            using HttpResponseMessage response = await SendAsync(request, cancellationToken);
             using Stream responseBodyStream = await response.Content.ReadAsStreamAsync();
 
             //TODO: Get MediaType from response
@@ -244,7 +244,7 @@ namespace RemoteCongress.Client.DAL.Http
                 }
             };
 
-            using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+            using HttpResponseMessage response = await SendAsync(request, cancellationToken);
             using Stream body = await response.Content.ReadAsStreamAsync();
 
             //TODO: Get MediaType from response
@@ -313,7 +313,7 @@ namespace RemoteCongress.Client.DAL.Http
                 }
             };
 
-            using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+            using HttpResponseMessage response = await SendAsync(request, cancellationToken);
             using Stream body = await response.Content.ReadAsStreamAsync();
 
             //TODO: Get MediaType from response
@@ -323,6 +323,14 @@ namespace RemoteCongress.Client.DAL.Http
 
                 yield return data;
             }
+        }
+
+        private async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken
+        )
+        {
+            return await _httpClient.SendAsync(request, cancellationToken);
         }
 
         /// <summary>

@@ -26,6 +26,7 @@ using RemoteCongress.Common.Repositories.Queries;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -261,7 +262,7 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
             Engine.Razor.Compile(
                 IndexPageTemplate.Content,
                 IndexPageTemplate.Name,
-                typeof(IEnumerable<BillResult>)
+                typeof(PageModel)
             );
         }
 
@@ -308,9 +309,8 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            IDictionary<string, Member> members = await GetMembers(cancellationToken);
-
-            IList<string> bannedKeys = GetBannedKeys(members);
+            IEnumerable<Member> members = await GetMembers(cancellationToken);
+            IEnumerable<Member> bannedMembers = GetBannedMembers(members);
 
             IAsyncEnumerable<VerifiedData<Bill>> bills =
                 _client.GetBills(
@@ -334,7 +334,12 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
                 }
 
                 billTasks.Add(
-                    ProcessBill(members, bannedKeys, bill, cancellationToken)
+                    ProcessBill(
+                        members,
+                        bannedMembers.Select(member => member.PublicKey),
+                        bill,
+                        cancellationToken
+                    )
                 );
 
                 count++;
@@ -342,15 +347,16 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
 
             billResults.AddRange(await Task.WhenAll(billTasks));
 
-            await RenderIndexPage(billResults, cancellationToken);
+            await RenderIndexPage(
+                new PageModel(billResults, bannedMembers),
+                cancellationToken
+            );
         }
 
-        private async Task<IDictionary<string, Member>> GetMembers(
+        private async Task<IEnumerable<Member>> GetMembers(
             CancellationToken cancellationToken
         )
         {
-            IDictionary<string, Member> result = new Dictionary<string, Member>();
-
             IAsyncEnumerable<VerifiedData<Member>> members =
                 _client.GetMembers(
                     new List<IQuery>()
@@ -360,23 +366,24 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
                     cancellationToken
                 );
 
+            IList<Member> result = new List<Member>();
             await foreach(VerifiedData<Member> member in members)
             {
-                result.Add(member.Data.PublicKey, member.Data);
+                result.Add(member.Data);
             }
 
             return result;
         }
 
-        private IList<string> GetBannedKeys(IDictionary<string, Member> members)
+        private IEnumerable<Member> GetBannedMembers(IEnumerable<Member> members)
         {
-            IList<string> result = new List<string>();
+            IList<Member> result = new List<Member>();
 
-            foreach((string key, Member member) in members)
+            foreach(Member member in members)
             {
                 if (_bannedMemberIds.Contains(member.Id))
                 {
-                    result.Add(key);
+                    result.Add(member);
                 }
             }
 
@@ -384,8 +391,8 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
         }
 
         private async Task<BillResult> ProcessBill(
-            IDictionary<string, Member> members,
-            IList<string> bannedKeys,
+            IEnumerable<Member> members,
+            IEnumerable<string> bannedKeys,
             VerifiedData<Bill> bill,
             CancellationToken cancellationToken
         )
@@ -409,7 +416,7 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
                 billResult.AddVote(
                     new VoteResult()
                     {
-                        Member = members[vote.PublicKey],
+                        Member = members.First(member => member.PublicKey == vote.PublicKey),
                         IsInvalid = bannedKeys.Contains(vote.PublicKey),
                         Opinion = vote.Data.Opinion
                     }
@@ -420,13 +427,13 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
         }
 
         private async Task RenderIndexPage(
-            IEnumerable<BillResult> billResults,
+            PageModel model,
             CancellationToken cancellationToken
         ) =>
             await RenderToFile(
                 IndexPageTemplate.Name,
                 $"data/index.html",
-                billResults,
+                model,
                 cancellationToken
             );
 

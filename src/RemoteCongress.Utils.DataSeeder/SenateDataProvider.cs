@@ -157,7 +157,8 @@ namespace RemoteCongress.Utils.DataSeeder
                     {
                         Title = voteData.Element("vote_question_text").Value,
                         Content = voteData.Element("vote_document_text").Value,
-                        Chamber = "senate"
+                        Chamber = "senate",
+                        Code = voteData.Element("vote_number").Value.PadLeft(5, '0')
                     },
                     voteData.Element("vote_number").Value.PadLeft(5, '0')
                 );
