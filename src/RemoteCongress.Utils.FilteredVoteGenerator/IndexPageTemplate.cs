@@ -41,15 +41,12 @@ namespace RemoteCongress.Util.FilteredVoteGenerator
         <div class=""container"">
             <div class=""row p-2"">
                 <div class=""col"">
-                    In late 2020 126 gop lawmakers publicly supported a <a href=""https://www.mercurynews.com/2020/12/12/list-the-126-congress-members-19-states-and-2-imaginary-states-that-backed-texas-suit-over-trump-defeat/"">seditious lawsuit</a>.
-                    This lawsuit asked the courts to throw out the 2020 election results and appoint Donald Trump as President. It was a direct attack on our democracy by these members of congress.
-                    Our constitution, specificly section 3 of the 14th amendment, actually specifically states that no one shall be a senator or representative in congress if they've taken the outh of office and then engaged in insurection or rebillion against the nation. This has previously been interpreted to include seditious speech.
-                    I believe that Nancy Pelosi should have refused to seat any of these 126 republicans who were re-elected for the 117th session of congress.
+                    In late 2020 126 GOP lawmakers publicly supported a <a href=""https://www.mercurynews.com/2020/12/12/list-the-126-congress-members-19-states-and-2-imaginary-states-that-backed-texas-suit-over-trump-defeat/"">seditious lawsuit</a>. This lawsuit asked the courts to throw out the 2020 election results and appoint Donald Trump as President. It was a direct attack on our democracy by these members of congress. Our constitution, specifically section 3 of the 14th amendment, actually specifically states that no one shall be a senator or representative in congress if they've taken the oath of office and then engaged in insurection or rebellion against the nation. This has previously been interpreted to include seditious speech. I believe that Nancy Pelosi should have refused to seat any of these 126 republicans who were re-elected for the 117th session of congress.
                 </div>
             </div>
             <div class=""row p-2"">
-                <div class=""col"">
-                    This page contains unofficial results to house rollcall votes that filter out the votes from these seditious house members to show what effect sitting these illegitimate congress members has had on our government.
+                <div class=""col"">a
+                    This page has unofficial results to house roll call votes that filter out the votes from these seditious house members to show what effect sitting these illegitimate congress members has had on our government.
                 </div>
             </div>
             <div class=""row p-2"">
