@@ -17,6 +17,8 @@
 */
 using Flurl;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using RemoteCongress.Common;
 using RemoteCongress.Common.Exceptions;
 using RemoteCongress.Common.Logging;
@@ -42,6 +44,12 @@ namespace RemoteCongress.Client.DAL.Http
         private readonly static string AcceptHeaderKey = "Accept";
         private readonly static string ContentTypeHeaderKey = "Content-Type";
         private readonly static string QueryKey = "query";
+
+        private readonly static int MaxRetryAttempts = 3;
+        private readonly static TimeSpan PauseBetweenFailures = TimeSpan.FromSeconds(2);
+        private readonly static AsyncRetryPolicy RetryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .WaitAndRetryAsync(MaxRetryAttempts, i => PauseBetweenFailures);
 
         private readonly ILogger<HttpDataClient> _logger;
         private readonly ClientConfig _config;
@@ -328,10 +336,10 @@ namespace RemoteCongress.Client.DAL.Http
         private async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken
-        )
-        {
-            return await _httpClient.SendAsync(request, cancellationToken);
-        }
+        ) =>
+            await RetryPolicy.ExecuteAsync(
+                async () => await _httpClient.SendAsync(request, cancellationToken)
+            );
 
         /// <summary>
         /// Fetches the codec for a collection data for a mediatype
